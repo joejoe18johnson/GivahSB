@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Cascadia_Mono } from "next/font/google";
+import { Lato } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Providers from "@/components/Providers";
 import MainWithPadding from "@/components/MainWithPadding";
 import ConditionalFooter from "@/components/ConditionalFooter";
 
-const cascadiaMono = Cascadia_Mono({ weight: ["400", "600", "700"], subsets: ["latin"] });
+const lato = Lato({ weight: ["300", "400", "700"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "GivahBz - Supporting Communities in Need",
@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${cascadiaMono.className} bg-white`}>
+      <body className={`${lato.className} bg-white`}>
         <Providers>
           <Header />
           <MainWithPadding>{children}</MainWithPadding>

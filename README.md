@@ -1,4 +1,4 @@
-# GivahBz — Belizean Supporting Belizeans
+# GivahBz — Sharing Burdens. Together.
 
 A Belizean-based crowdfunding platform for organizations, charities, and individuals in need. Built with Next.js, React, TypeScript, and Tailwind CSS.
 

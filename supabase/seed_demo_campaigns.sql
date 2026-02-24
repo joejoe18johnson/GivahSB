@@ -1,17 +1,11 @@
--- GivahBz: Demo campaign data (8 campaigns)
+-- GivahBz: Demo campaign data
 --
--- HOW TO RUN (choose one):
+-- For 40 campaigns (8 fully funded, 32 in progress), run from project:  npm run seed
 --
--- 1) From project (recommended):  npm run seed
---    Uses SUPABASE_SERVICE_ROLE_KEY from .env and inserts via Supabase client.
+-- This file contains the first 8 campaigns only (for SQL Editor). In Supabase SQL Editor:
+-- paste this file and Run. Ensure the initial migration has been run first.
 --
--- 2) In Supabase Dashboard: SQL Editor → New query → paste this file → Run.
---    Ensure the initial migration has been run first (supabase/migrations/20260223000000_initial.sql).
---
--- Safe to re-run: ON CONFLICT (id) DO NOTHING (SQL) / upsert (npm run seed).
---
--- Optional: clear existing demo campaigns before re-seed (uncomment to use):
--- DELETE FROM public.campaigns WHERE creator_id IS NULL AND (title LIKE '%Maria%' OR title LIKE '%Hurricane%' OR title LIKE '%School Supplies%' OR title LIKE '%Carlos%' OR title LIKE '%Community Center%' OR title LIKE '%Elderly%' OR title LIKE '%Fire Recovery%' OR title LIKE '%Youth Sports%');
+-- Safe to re-run: ON CONFLICT (id) DO NOTHING.
 
 INSERT INTO public.campaigns (
   id, title, description, full_description, creator, creator_type, creator_id,
