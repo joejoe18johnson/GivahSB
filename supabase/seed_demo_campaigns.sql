@@ -1,8 +1,17 @@
--- GivahBz: Demo campaign data (run in Supabase SQL Editor after initial migration)
--- Run once; safe to re-run (deletes existing demo campaigns by title pattern or use TRUNCATE if you prefer)
-
--- Optional: clear existing demo campaigns (uncomment if you want a clean re-seed)
--- DELETE FROM public.campaigns WHERE creator_id IS NULL AND title LIKE '%Maria%' OR title LIKE '%Hurricane%' OR title LIKE '%School Supplies%' OR title LIKE '%Carlos%' OR title LIKE '%Community Center%' OR title LIKE '%Elderly%' OR title LIKE '%Fire Recovery%' OR title LIKE '%Youth Sports%';
+-- GivahBz: Demo campaign data (8 campaigns)
+--
+-- HOW TO RUN (choose one):
+--
+-- 1) From project (recommended):  npm run seed
+--    Uses SUPABASE_SERVICE_ROLE_KEY from .env and inserts via Supabase client.
+--
+-- 2) In Supabase Dashboard: SQL Editor → New query → paste this file → Run.
+--    Ensure the initial migration has been run first (supabase/migrations/20260223000000_initial.sql).
+--
+-- Safe to re-run: ON CONFLICT (id) DO NOTHING (SQL) / upsert (npm run seed).
+--
+-- Optional: clear existing demo campaigns before re-seed (uncomment to use):
+-- DELETE FROM public.campaigns WHERE creator_id IS NULL AND (title LIKE '%Maria%' OR title LIKE '%Hurricane%' OR title LIKE '%School Supplies%' OR title LIKE '%Carlos%' OR title LIKE '%Community Center%' OR title LIKE '%Elderly%' OR title LIKE '%Fire Recovery%' OR title LIKE '%Youth Sports%');
 
 INSERT INTO public.campaigns (
   id, title, description, full_description, creator, creator_type, creator_id,
