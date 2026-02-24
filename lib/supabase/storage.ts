@@ -9,6 +9,22 @@ const BUCKET_PROFILE = "profile-photos";
 const BUCKET_CAMPAIGNS = "campaigns";
 const BUCKET_VERIFICATION = "verification-docs";
 
+/** Create bucket if it does not exist (idempotent). Use service-role client. */
+export async function ensureStorageBucket(
+  supabase: SupabaseClient,
+  bucketId: string,
+  options?: { public?: boolean }
+): Promise<void> {
+  const { error } = await supabase.storage.createBucket(bucketId, {
+    public: options?.public ?? true,
+  });
+  if (error) {
+    const msg = (error as { message?: string }).message ?? "";
+    if (msg.includes("already exists") || msg.includes("duplicate")) return;
+    throw error;
+  }
+}
+
 function sanitizeFileName(name: string): string {
   const base = name.replace(/\.[^/.]+$/, "").trim() || "document";
   return base.replace(/[/\\?#*[\]^\s]+/g, "_").slice(0, 180) || "document";
