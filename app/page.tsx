@@ -51,7 +51,8 @@ export default function Home() {
     async function loadCampaigns() {
       setCampaignsError(null);
       try {
-        const fetchedCampaigns = await fetchCampaignsFromAPI({ trending: true });
+        // Fetch all campaigns; we'll show trending (60–99%) in Top Campaigns, or recent if none trending
+        const fetchedCampaigns = await fetchCampaignsFromAPI();
         setCampaigns(fetchedCampaigns);
       } catch (error) {
         console.error("Error loading campaigns:", error);
@@ -84,7 +85,15 @@ export default function Home() {
     return () => { cancelled = true; };
   }, []);
 
-  const allTrendingCampaigns = getTopCampaignsByFunding(campaigns, 12);
+  const allTrendingCampaigns = (() => {
+    const goal = (c: Campaign) => Number(c.goal) || 1;
+    const raised = (c: Campaign) => Number(c.raised) || 0;
+    const trending = campaigns.filter(
+      (c) => goal(c) > 0 && raised(c) / goal(c) >= 0.6 && raised(c) < goal(c)
+    );
+    if (trending.length > 0) return getTopCampaignsByFunding(trending, 12);
+    return getTopCampaignsByFunding(campaigns, 12);
+  })();
   const cardsPerPage = 4;
   const totalPages = Math.max(1, Math.ceil(allTrendingCampaigns.length / cardsPerPage));
   const TRENDING_PAGE_WIDTH = 280 * cardsPerPage + 24 * (cardsPerPage - 1); // card w + gap
