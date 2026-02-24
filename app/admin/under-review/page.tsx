@@ -43,13 +43,18 @@ export default function AdminUnderReviewPage() {
     if (!ok) return;
     try {
       const res = await fetch("/api/admin/approve-campaign", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ underReviewId: id }), credentials: "include" });
-      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const msg = typeof data?.error === "string" ? data.error : "Failed to approve. Please try again.";
+        throw new Error(msg);
+      }
       invalidateUnderReviewCache();
       invalidateCampaignsCache();
       setList((prev) => prev.filter((c) => c.id !== id));
     } catch (error) {
       console.error("Error approving:", error);
-      alert("Failed to approve. Please try again.", { variant: "error" });
+      const message = error instanceof Error ? error.message : "Failed to approve. Please try again.";
+      alert(message, { variant: "error" });
     }
   };
 

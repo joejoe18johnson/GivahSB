@@ -176,8 +176,8 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <aside className="fixed left-0 top-0 bottom-0 w-56 bg-white border-r border-gray-200 shadow-sm z-40 overflow-y-auto flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+      <aside className="w-full md:w-56 md:fixed md:left-0 md:top-0 md:bottom-0 bg-white border-b md:border-b-0 md:border-r border-gray-200 shadow-sm z-40 overflow-y-auto flex flex-col">
         <nav className="p-4 space-y-1 flex-1 pb-24">
           <div className="flex flex-col items-center gap-3 py-4 border-b border-gray-100">
             <Image src="/givah-logo.png" alt="GivahBz" width={120} height={36} className="h-8 w-auto" priority />
@@ -373,7 +373,7 @@ export default function AdminLayout({
           </div>
           
           {/* Profile Section at Bottom */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-white">
+          <div className="p-4 border-t border-gray-200 bg-white md:absolute md:bottom-0 md:left-0 md:right-0">
             {user && (
               <div className="space-y-3">
                 <div className="flex items-center gap-3 px-2">
@@ -401,8 +401,8 @@ export default function AdminLayout({
         </nav>
       </aside>
 
-      <main className="pl-56 pt-6 min-h-screen">
-        <div className="p-6 md:p-8">{children}</div>
+      <main className="min-h-screen pt-4 md:pt-6 md:pl-56">
+        <div className="p-4 md:p-6 lg:p-8">{children}</div>
       </main>
     </div>
   );

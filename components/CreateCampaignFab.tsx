@@ -15,11 +15,11 @@ export default function CreateCampaignFab() {
   return (
     <Link
       href="/campaigns/create"
-      className="lg:hidden fixed bottom-20 right-4 z-40 flex items-center gap-2 bg-success-500 text-white px-5 py-3 rounded-full shadow-lg hover:bg-success-600 active:bg-success-600 font-semibold text-sm"
-      aria-label="Create Campaign"
+      className="hidden md:flex fixed bottom-6 left-1/2 -translate-x-1/2 z-40 items-center gap-2 bg-success-500 text-white px-6 py-3 rounded-full shadow-lg hover:bg-success-600 active:bg-success-600 font-semibold text-sm"
+      aria-label="Create / Start Campaign"
     >
-      <Plus className="w-5 h-5" />
-      Create Campaign
+      <Plus className="w-5 h-5 shrink-0" />
+      Create/ Start Campaign
     </Link>
   );
 }

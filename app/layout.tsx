@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Providers from "@/components/Providers";
 import MainWithPadding from "@/components/MainWithPadding";
 import ConditionalFooter from "@/components/ConditionalFooter";
+import CreateCampaignFab from "@/components/CreateCampaignFab";
 
 const lato = Lato({ weight: ["300", "400", "700"], subsets: ["latin"] });
 
@@ -31,6 +32,7 @@ export default function RootLayout({
           <Header />
           <MainWithPadding>{children}</MainWithPadding>
           <ConditionalFooter />
+          <CreateCampaignFab />
         </Providers>
       </body>
     </html>
