@@ -1,4 +1,4 @@
--- GivahBz: initial schema for Supabase (replacing Firebase/Firestore)
+-- GivahBz: initial schema for Supabase
 -- Run in Supabase SQL Editor or via supabase db push
 
 -- Profiles (extends auth.users; id = auth.uid())

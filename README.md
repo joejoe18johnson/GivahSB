@@ -159,9 +159,15 @@ Run the SQL migration in `supabase/migrations/20260223000000_initial.sql` in the
 - Admin panel for campaign verification
 - Multi-language support (English, Spanish, Creole)
 
+## Git: "Unable to merge unrelated histories"
+
+If you see this (e.g. when pulling or merging on GitHub), merge locally then push:
+
+```bash
+git pull origin main --allow-unrelated-histories --no-rebase --no-edit
+git push origin main
+```
+
 ## License
 
 MIT
-# givahsb
-# givahsb
-# GivahSB
