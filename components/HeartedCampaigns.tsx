@@ -298,7 +298,7 @@ export default function HeartedCampaigns({ isOpen, onClose }: HeartedCampaignsPr
                               </div>
                               <div className="flex items-center gap-1">
                                 <Calendar className="w-4 h-4" />
-                                <span>{campaign.daysLeft} days left</span>
+                                <span>{campaign.daysLeft === 0 ? "Unlimited" : `${campaign.daysLeft} days left`}</span>
                               </div>
                               <div className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">
                                 {campaign.category}

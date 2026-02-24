@@ -181,7 +181,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
                 </div>
                 <div className="flex items-center gap-1">
                   <Calendar className="w-4 h-4" />
-                  <span>{campaign.daysLeft} days left</span>
+                  <span>{campaign.daysLeft === 0 ? "Unlimited" : `${campaign.daysLeft} days left`}</span>
                 </div>
               </div>
             </>

@@ -8,7 +8,7 @@ import { compressImageForUpload } from "@/lib/compressImage";
 import { useThemedModal } from "@/components/ThemedModal";
 import { Upload, ArrowLeft, Shield } from "lucide-react";
 
-const CATEGORIES = ["Medical expenses", "Educational support", "Disaster recovery", "Other"];
+const CATEGORIES = ["Medical expenses", "Educational support", "Other"];
 const CREATOR_TYPES = [
   { value: "individual", label: "Individual" },
   { value: "organization", label: "Organization" },
@@ -147,7 +147,7 @@ export default function AdminCreateCampaignPage() {
           goal: goalNum,
           category: formData.category,
           location: formData.location.trim() || undefined,
-          daysLeft: parseInt(formData.daysLeft, 10) || 30,
+          daysLeft: formData.daysLeft === "" ? 30 : (parseInt(formData.daysLeft, 10) ?? 30),
           creatorType: formData.creatorType,
           image: imageUrl1,
           image2: imageUrl2,
@@ -275,10 +275,11 @@ export default function AdminCreateCampaignPage() {
               onChange={handleChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
             >
-              <option value="30">30 days</option>
-              <option value="60">60 days</option>
-              <option value="90">90 days</option>
-              <option value="120">120 days</option>
+            <option value="30">30 days</option>
+            <option value="60">60 days</option>
+            <option value="90">90 days</option>
+            <option value="120">120 days</option>
+            <option value="0">Unlimited Time</option>
             </select>
           </div>
         </div>

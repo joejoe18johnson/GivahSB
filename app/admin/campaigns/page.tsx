@@ -225,7 +225,7 @@ export default function AdminCampaignsPage() {
                   <td className="px-5 py-3 font-medium">{formatCurrency(c.goal)}</td>
                   <td className="px-5 py-3 font-medium text-verified-600">{formatCurrency(c.raised)}</td>
                   <td className="px-5 py-3">{c.backers}</td>
-                  <td className="px-5 py-3">{c.daysLeft}</td>
+                  <td className="px-5 py-3">{c.daysLeft === 0 ? "Unlimited" : c.daysLeft}</td>
                   <td className="px-5 py-3 text-gray-600">{c.createdAt}</td>
                   <td className="px-5 py-3">
                     {c.status === "on_hold" ? (

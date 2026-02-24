@@ -283,6 +283,7 @@ export default function CreateCampaignPage() {
           creatorName,
           image: imageUrl1,
           image2: imageUrl2,
+          daysLeft: formData.daysLeft === "" ? 30 : parseInt(formData.daysLeft, 10),
         }),
       });
       if (!res.ok) {
@@ -470,7 +471,6 @@ export default function CreateCampaignPage() {
             <option value="">Select a category</option>
             <option value="Medical expenses">Medical expenses</option>
             <option value="Educational support">Educational support</option>
-            <option value="Disaster recovery">Disaster recovery</option>
             <option value="Other">Other</option>
           </select>
         </div>
@@ -564,6 +564,7 @@ export default function CreateCampaignPage() {
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
           >
             <option value="">Select duration</option>
+            <option value="0">Unlimited Time</option>
             <option value="30">30 days</option>
             <option value="60">60 days</option>
             <option value="90">90 days</option>

@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { LayoutDashboard, Megaphone, Users, Heart, ArrowLeft, Clock, Bell, LogOut, Trophy, FileText } from "lucide-react";
-import Image from "next/image";
+import UserAvatar from "@/components/UserAvatar";
 import {
   getCampaignsUnderReviewCountCached,
   getCampaignsUnderReviewCached,
@@ -378,18 +378,7 @@ export default function AdminLayout({
               <div className="space-y-3">
                 <div className="flex items-center gap-3 px-2">
                   <div className="w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0">
-                    {user.profilePhoto ? (
-                      <Image 
-                        src={user.profilePhoto} 
-                        alt={user.name}
-                        width={40}
-                        height={40}
-                        className="w-full h-full object-cover"
-                        unoptimized
-                      />
-                    ) : (
-                      <span className="text-sm">{user.name.charAt(0).toUpperCase()}</span>
-                    )}
+                    <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={40} className="w-full h-full" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>

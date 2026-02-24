@@ -9,7 +9,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { TrendingUp } from "lucide-react";
 
 function CampaignsContent() {
-  const categories = ["All", "Medical expenses", "Educational support", "Disaster recovery", "Other"];
+  const categories = ["All", "Medical expenses", "Educational support", "Other"];
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [showTrending, setShowTrending] = useState(false);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);

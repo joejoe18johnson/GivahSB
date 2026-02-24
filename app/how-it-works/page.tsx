@@ -67,7 +67,7 @@ export default function HowItWorksPage() {
     {
       icon: <Clock className="w-6 h-6" />,
       title: "No Time Pressure",
-      text: "Your campaign stays active as long as you need it. Keep receiving donations even after reaching your goal."
+      text: "Your campaign stays active until your funding goal is reached. Once the goal has been met, the campaign automatically closes and no additional donations are accepted."
     },
     {
       icon: <Users className="w-6 h-6" />,
@@ -262,7 +262,7 @@ export default function HowItWorksPage() {
                 <div>
                   <h3 className="font-medium text-lg mb-2">No Time Pressure</h3>
                   <p className="text-primary-100">
-                    Your campaign stays active as long as you want and can keep receiving donations even after hitting your goal. You control when to close your campaign.
+                    Your campaign stays active until your funding goal is reached. Once the goal has been met, the campaign automatically closes and no additional donations are accepted.
                   </p>
                 </div>
               </div>

@@ -7,6 +7,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
 import { useHearted } from "./HeartedCampaigns";
+import UserAvatar from "./UserAvatar";
 
 interface UserNotification {
   id: string;
@@ -246,18 +247,7 @@ export default function Header() {
                     className="flex items-center gap-2 text-gray-700 hover:text-primary-600 transition-colors"
                   >
                     <div className="w-8 h-8 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium">
-                      {user.profilePhoto ? (
-                        <Image 
-                          src={user.profilePhoto} 
-                          alt={user.name}
-                          width={32}
-                          height={32}
-                          className="w-full h-full object-cover"
-                          unoptimized
-                        />
-                      ) : (
-                        <span>{user.name.charAt(0).toUpperCase()}</span>
-                      )}
+                      <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={32} className="w-full h-full" />
                     </div>
                     <span className="hidden md:inline">{user.name}</span>
                   </button>
@@ -265,18 +255,7 @@ export default function Header() {
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
                       <div className="px-4 py-2 border-b border-gray-200 flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0">
-                          {user.profilePhoto ? (
-                            <Image 
-                              src={user.profilePhoto} 
-                              alt={user.name}
-                              width={40}
-                              height={40}
-                              className="w-full h-full object-cover"
-                              unoptimized
-                            />
-                          ) : (
-                            <span className="text-sm">{user.name.charAt(0).toUpperCase()}</span>
-                          )}
+                          <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={40} className="w-full h-full" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
@@ -343,18 +322,7 @@ export default function Header() {
                 className="w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {user.profilePhoto ? (
-                  <Image 
-                    src={user.profilePhoto} 
-                    alt={user.name}
-                    width={40}
-                    height={40}
-                    className="w-full h-full object-cover"
-                    unoptimized
-                  />
-                ) : (
-                  <span className="text-sm">{user.name.charAt(0).toUpperCase()}</span>
-                )}
+                <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={40} className="w-full h-full" />
               </Link>
             )}
             <button

@@ -332,10 +332,10 @@ export default function CampaignPage({ params }: PageProps) {
                 </div>
               </div>
               <div>
-                <div className="text-lg font-medium text-gray-900">{campaign.daysLeft}</div>
+                <div className="text-lg font-medium text-gray-900">{campaign.daysLeft === 0 ? "Unlimited" : campaign.daysLeft}</div>
                 <div className="text-xs text-gray-600 flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
-                  days left
+                  {campaign.daysLeft === 0 ? "No end date" : "days left"}
                 </div>
               </div>
             </div>

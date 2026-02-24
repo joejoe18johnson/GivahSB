@@ -21,12 +21,28 @@ body {
 
 /* All form inputs: always dark text + light background (mobile, desktop, dark mode) */
 input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
-textarea,
-select {
+textarea {
   color: #1f2937 !important;
   -webkit-text-fill-color: #1f2937 !important;
   background-color: #ffffff !important;
   caret-color: #1f2937 !important;
+}
+
+/* Selection inputs: website theme (primary blue) */
+select {
+  color: #1f2937 !important;
+  -webkit-text-fill-color: #1f2937 !important;
+  background-color: #e6f0f8 !important; /* primary-50 */
+  border-color: #66a5d5 !important;   /* primary-300 */
+  caret-color: #1f2937 !important;
+}
+select:hover {
+  border-color: #3387c7 !important;     /* primary-400 */
+}
+select:focus {
+  outline: none;
+  border-color: #003F87 !important;       /* primary-500 */
+  box-shadow: 0 0 0 2px rgba(0, 63, 135, 0.25);
 }
 /* Placeholders: dark gray so they stay visible */
 input::placeholder,

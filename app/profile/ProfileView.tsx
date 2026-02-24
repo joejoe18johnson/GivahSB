@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import UserAvatar from "@/components/UserAvatar";
 import {
   Phone,
   Mail,
@@ -175,17 +175,13 @@ export default function ProfileView(props: ProfileViewProps) {
               className="relative flex-shrink-0 w-24 h-24 min-w-[6rem] min-h-[6rem] rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-600 text-3xl font-medium"
               style={{ aspectRatio: "1" }}
             >
-              {(profilePhoto || user?.profilePhoto) ? (
-                <Image
-                  src={profilePhoto || user?.profilePhoto || ""}
-                  alt="Profile"
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              ) : (
-                <span>{name.charAt(0).toUpperCase()}</span>
-              )}
+              <UserAvatar
+                profilePhoto={profilePhoto || user?.profilePhoto || null}
+                name={name}
+                email={user?.email}
+                size={96}
+                className="w-full h-full"
+              />
             </div>
             <div className="flex flex-col gap-2">
               <input

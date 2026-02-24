@@ -61,6 +61,7 @@ interface CampaignUnderReviewRow {
   status: string;
   submitted_at: string;
   created_at: string;
+  days_left?: number | null;
 }
 
 function toCampaign(r: CampaignRow): Campaign {
@@ -75,7 +76,7 @@ function toCampaign(r: CampaignRow): Campaign {
     goal: Number(r.goal),
     raised: Number(r.raised),
     backers: Number(r.backers) || 0,
-    daysLeft: Number(r.days_left) || 30,
+    daysLeft: (r.days_left !== null && r.days_left !== undefined && Number(r.days_left) === 0) ? 0 : (Number(r.days_left) || 30),
     category: r.category,
     image: r.image,
     image2: r.image2 ?? undefined,
@@ -399,9 +400,13 @@ export interface CampaignUnderReviewDoc {
   status: "pending" | "approved" | "rejected";
   image?: string;
   image2?: string;
+  daysLeft?: number;
 }
 
 function toUnderReview(r: CampaignUnderReviewRow): CampaignUnderReviewDoc {
+  const daysLeft = r.days_left !== null && r.days_left !== undefined && Number(r.days_left) === 0
+    ? 0
+    : (Number(r.days_left) || 30);
   return {
     id: r.id,
     title: r.title,
@@ -415,6 +420,7 @@ function toUnderReview(r: CampaignUnderReviewRow): CampaignUnderReviewDoc {
     status: (r.status as CampaignUnderReviewDoc["status"]) || "pending",
     image: r.image ?? undefined,
     image2: r.image2 ?? undefined,
+    daysLeft,
   };
 }
 
@@ -434,6 +440,7 @@ export async function addCampaignUnderReview(
       creator_id: data.creatorId,
       image: data.image,
       image2: data.image2,
+      days_left: data.daysLeft ?? 30,
       status: "pending",
     })
     .select("id")
@@ -520,7 +527,7 @@ export async function approveAndPublishCampaign(
       goal: underReview.goal,
       raised: 0,
       backers: 0,
-      days_left: 30,
+      days_left: underReview.daysLeft ?? 30,
       category: underReview.category,
       image: underReview.image || defaultImage,
       image2: underReview.image2 || underReview.image || defaultImage,
@@ -838,7 +845,7 @@ export async function adminCreateCampaign(
       goal: Number(payload.goal) || 0,
       raised: 0,
       backers: 0,
-      days_left: Number(payload.daysLeft) ?? 30,
+      days_left: payload.daysLeft != null && Number.isFinite(Number(payload.daysLeft)) ? Number(payload.daysLeft) : 30,
       category: (payload.category || "Other").trim(),
       image: payload.image,
       image2: payload.image2 ?? payload.image,
