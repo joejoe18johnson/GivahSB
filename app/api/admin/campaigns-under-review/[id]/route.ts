@@ -46,7 +46,8 @@ export async function DELETE(
   if (!isAdmin) {
     const supabase = getSupabaseAdmin()!;
     const { data } = await supabase.from("campaigns_under_review").select("creator_id").eq("id", id).single();
-    if (!data || (data.creator_id as string) !== user.id) {
+    const row = data as { creator_id: string } | null;
+    if (!row || row.creator_id !== user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
   }
