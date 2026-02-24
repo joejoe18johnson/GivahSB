@@ -118,7 +118,7 @@ export async function getCampaigns(
   const { data, error } = await supabase
     .from("campaigns")
     .select("*")
-    .in("status", ["live", "on_hold"]);
+    .eq("status", "live");
   if (error) throw error;
   let campaigns: Campaign[] = (data || [])
     .filter((r: CampaignRow) => r.status !== "pending")
