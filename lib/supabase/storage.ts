@@ -123,6 +123,7 @@ export async function uploadVerificationDocumentServer(
   originalFileName: string,
   mimeType: string
 ): Promise<string> {
+  await ensureStorageBucket(supabase, BUCKET_VERIFICATION, { public: true });
   const ext = (originalFileName.split(".").pop() || "").toLowerCase() ||
     (mimeType === "application/pdf" ? "pdf" : "jpg");
   const safeName = sanitizePath(originalFileName);
@@ -143,6 +144,7 @@ export async function uploadCampaignUnderReviewImageServer(
   originalFileName: string,
   mimeType: string
 ): Promise<string> {
+  await ensureStorageBucket(supabase, BUCKET_CAMPAIGNS, { public: true });
   const ext = (originalFileName.split(".").pop() || "").toLowerCase() || "jpg";
   const path = `under-review/${pendingId}/image${index + 1}.${ext}`;
   const { error } = await supabase.storage

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseUserFromRequest } from "@/lib/supabase/auth-server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
+import { ensureStorageBucket } from "@/lib/supabase/storage";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
@@ -20,6 +21,7 @@ export async function POST(request: NextRequest) {
   }
   try {
     const supabase = getSupabaseAdmin()!;
+    await ensureStorageBucket(supabase, "profile-photos", { public: true });
     const buffer = Buffer.from(await file.arrayBuffer());
     const path = `${user.id}/${Date.now()}_${file.name}`;
     const { error } = await supabase.storage

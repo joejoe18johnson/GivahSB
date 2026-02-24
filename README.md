@@ -37,7 +37,7 @@ npm install
    - Create a project at [Supabase Dashboard](https://supabase.com/dashboard)
    - In **SQL Editor**, run the migration: `supabase/migrations/20260223000000_initial.sql`
    - In **Authentication → Providers**, enable **Email** and **Google** (add your Google OAuth client ID/secret in Google Cloud Console and Supabase redirect URL)
-   - In **Storage**, create buckets: `profile-photos`, `campaigns`, `verification-docs` (public read if you want public URLs, or use RLS)
+   - In **Storage**, create buckets manually if you prefer, or let the app create them: on first upload of profile photo, campaign image, or verification document the bucket will be created; or as an admin call `POST /api/admin/ensure-storage` once to create `profile-photos`, `campaigns`, and `verification-docs` (public).
    - In **Project Settings → API**, copy the project URL, anon key, and service_role key
 
 3. Configure environment variables:
@@ -146,7 +146,7 @@ This project uses **Supabase** as the primary backend:
 - ✅ **PostgreSQL (Supabase)** - Campaigns, profiles, donations, notifications, site config
 - ✅ **Supabase Storage** - Profile photos, campaign images, verification documents
 
-Run the SQL migration in `supabase/migrations/20260223000000_initial.sql` in the Supabase SQL Editor, then create Storage buckets `profile-photos`, `campaigns`, and `verification-docs` in the dashboard.
+Run the SQL migration in `supabase/migrations/20260223000000_initial.sql` in the Supabase SQL Editor. Storage buckets (`profile-photos`, `campaigns`, `verification-docs`) are created automatically on first use, or create them in the dashboard; if you see "Bucket not found" when viewing verification documents, call `POST /api/admin/ensure-storage` as an admin once to create missing buckets.
 
 ## Future Enhancements
 
