@@ -604,13 +604,13 @@ export async function getUserNotifications(
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data || []).map((r: Record<string, unknown>) => ({
-    id: r.id,
-    userId: r.user_id,
-    type: r.type,
-    title: r.title,
-    body: r.body,
-    campaignId: r.campaign_id,
-    read: r.read ?? false,
+    id: r.id as string,
+    userId: r.user_id as string,
+    type: r.type as string,
+    title: r.title as string,
+    body: r.body as string,
+    campaignId: r.campaign_id as string | undefined,
+    read: (r.read as boolean) ?? false,
     createdAt: (r.created_at as string) ?? new Date().toISOString(),
   }));
 }
@@ -664,19 +664,19 @@ export async function getUsersFromSupabase(
   const { data, error } = await supabase.from("profiles").select("*");
   if (error) throw error;
   return (data || []).map((r: Record<string, unknown>) => ({
-    id: r.id,
+    id: r.id as string,
     email: (r.email as string) ?? "",
     name: (r.name as string) ?? "",
     role: (r.role as "user" | "admin") ?? "user",
     status: (r.status as UserStatus) ?? "active",
-    phoneNumber: r.phone_number,
+    phoneNumber: r.phone_number as string | undefined,
     phoneVerified: !!r.phone_verified,
     phonePending: !!r.phone_pending,
-    idDocument: r.id_document,
-    idDocumentType: r.id_document_type,
+    idDocument: r.id_document as string | undefined,
+    idDocumentType: r.id_document_type as "social_security" | "passport" | undefined,
     idVerified: !!r.id_verified,
     idPending: !!r.id_pending,
-    addressDocument: r.address_document,
+    addressDocument: r.address_document as string | undefined,
     addressPending: !!r.address_pending,
     verified: !!r.verified,
     addressVerified: !!r.address_verified,

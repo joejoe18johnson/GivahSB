@@ -15,7 +15,7 @@ function getAdminClient() {
   });
 }
 
-let _adminClient: ReturnType<typeof createClient> | null = null;
+let _adminClient: ReturnType<typeof getAdminClient> = null;
 
 export function getSupabaseAdmin() {
   if (_adminClient) return _adminClient;
