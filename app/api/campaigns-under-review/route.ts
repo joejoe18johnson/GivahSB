@@ -37,6 +37,38 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Goal must be a positive number." }, { status: 400 });
   }
   const supabase = getSupabaseAdmin()!;
+
+  // Require phone, ID, and address verification before submitting a campaign
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("phone_verified, id_verified, address_verified, phone_number, id_document, address_document")
+    .eq("id", user.id)
+    .single();
+  if (!profile) {
+    return NextResponse.json(
+      { error: "Your profile must be set up with verified phone, ID, and address before you can create a campaign. Complete these in your profile." },
+      { status: 403 }
+    );
+  }
+  if (!profile.phone_verified) {
+    return NextResponse.json(
+      { error: "Your phone number must be verified before you can create a campaign. Add and verify it in your profile." },
+      { status: 403 }
+    );
+  }
+  if (!profile.id_verified) {
+    return NextResponse.json(
+      { error: "Your ID document must be verified before you can create a campaign. Upload it in your profile and wait for approval." },
+      { status: 403 }
+    );
+  }
+  if (!profile.address_verified) {
+    return NextResponse.json(
+      { error: "Your address document must be verified before you can create a campaign. Upload it in your profile and wait for approval." },
+      { status: 403 }
+    );
+  }
+
   const id = await addCampaignUnderReview(supabase, {
     title,
     description,

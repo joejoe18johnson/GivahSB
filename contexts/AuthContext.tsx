@@ -98,16 +98,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        try {
-          const profile = await supabaseUserToProfile(supabase, session.user);
-          if (profile) setUser(profileToUser(profile));
-        } catch {
-          // ignore
+      const supabase = createClient();
+      const timeout = setTimeout(() => setIsLoading(false), 10000); // safety: stop loading after 10s
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          try {
+            const profile = await supabaseUserToProfile(supabase, session.user);
+            if (profile) setUser(profileToUser(profile));
+          } catch {
+            // ignore
+          }
         }
+      } finally {
+        clearTimeout(timeout);
+        setIsLoading(false);
       }
-      setIsLoading(false);
     })();
 
     return () => subscription.unsubscribe();

@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { Upload, FileText, AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
-/** TEMPORARY: set to true to require phone + ID + address verification before creating campaigns. */
-const REQUIRE_VERIFICATION_TO_CREATE = false;
+/** Require phone, ID, and address verification before users can create campaigns. */
+const REQUIRE_VERIFICATION_TO_CREATE = true;
 import { useRouter } from "next/navigation";
 import { addCampaignUnderReview } from "@/lib/campaignsUnderReview";
 import { compressImageForUpload } from "@/lib/compressImage";
@@ -107,54 +107,98 @@ export default function CreateCampaignPage() {
   }
 
   if (REQUIRE_VERIFICATION_TO_CREATE && (!user.phoneVerified || !user.idVerified || !user.addressVerified)) {
-    const missingVerifications = [];
-    const pendingVerifications = [];
-    
+    const missingVerifications: string[] = [];
+    const pendingVerifications: string[] = [];
+
     if (!user.phoneNumber) {
-      missingVerifications.push("phone number");
+      missingVerifications.push("Phone number");
     } else if (!user.phoneVerified) {
-      pendingVerifications.push("phone number");
+      pendingVerifications.push("Phone number");
     }
-    
+
     if (!user.idDocument) {
       missingVerifications.push("ID document");
     } else if (!user.idVerified) {
       pendingVerifications.push("ID document");
     }
-    
+
     if (!user.addressDocument) {
-      missingVerifications.push("address document");
+      missingVerifications.push("Address document");
     } else if (!user.addressVerified) {
-      pendingVerifications.push("address document");
+      pendingVerifications.push("Address document");
     }
-    
+
     const missingText = missingVerifications.length > 0 ? missingVerifications.join(", ") : null;
     const pendingText = pendingVerifications.length > 0 ? pendingVerifications.join(", ") : null;
 
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
+      <div className="min-h-screen flex items-center justify-center px-4 py-8">
+        <div className="max-w-lg w-full bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
           <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-amber-600" />
           </div>
-          <h1 className="text-xl font-semibold text-gray-900 mb-2">Verification required</h1>
-          <p className="text-gray-600 mb-6">
+          <h1 className="text-xl font-semibold text-gray-900 mb-2">Verification required to create a campaign</h1>
+          <p className="text-gray-600 mb-4">
+            To create a campaign, your <strong>phone number</strong>, <strong>ID document</strong>, and <strong>address document</strong> must be verified by our team. This helps keep the platform safe for donors and creators.
+          </p>
+          <div className="bg-gray-50 rounded-lg p-4 text-left text-sm text-gray-700 mb-6">
+            <p className="font-medium text-gray-900 mb-2">Your status:</p>
+            <ul className="space-y-1">
+              {user.phoneVerified ? (
+                <li className="flex items-center gap-2 text-verified-600">
+                  <span className="font-medium">✓</span> Phone number verified
+                </li>
+              ) : user.phoneNumber ? (
+                <li className="flex items-center gap-2 text-amber-700">
+                  <span className="font-medium">○</span> Phone number — pending approval
+                </li>
+              ) : (
+                <li className="flex items-center gap-2 text-gray-600">
+                  <span className="font-medium">○</span> Phone number — add in profile
+                </li>
+              )}
+              {user.idVerified ? (
+                <li className="flex items-center gap-2 text-verified-600">
+                  <span className="font-medium">✓</span> ID document verified
+                </li>
+              ) : user.idDocument ? (
+                <li className="flex items-center gap-2 text-amber-700">
+                  <span className="font-medium">○</span> ID document — pending approval
+                </li>
+              ) : (
+                <li className="flex items-center gap-2 text-gray-600">
+                  <span className="font-medium">○</span> ID document — upload in profile
+                </li>
+              )}
+              {user.addressVerified ? (
+                <li className="flex items-center gap-2 text-verified-600">
+                  <span className="font-medium">✓</span> Address document verified
+                </li>
+              ) : user.addressDocument ? (
+                <li className="flex items-center gap-2 text-amber-700">
+                  <span className="font-medium">○</span> Address document — pending approval
+                </li>
+              ) : (
+                <li className="flex items-center gap-2 text-gray-600">
+                  <span className="font-medium">○</span> Address document — upload in profile
+                </li>
+              )}
+            </ul>
+          </div>
+          <p className="text-gray-600 text-sm mb-6">
             {missingText && (
-              <>You must upload your {missingText} in your profile before you can create campaigns. </>
+              <>Add and submit your {missingText.toLowerCase()} in your profile. </>
             )}
             {pendingText && (
-              <>Your {pendingText} {pendingText.includes(",") ? "are" : "is"} pending admin approval. </>
+              <>Your {pendingText.toLowerCase()} {pendingVerifications.length > 1 ? "are" : "is"} under review. We&apos;ll notify you once approved. </>
             )}
-            {!missingText && !pendingText && (
-              <>Your phone number, ID document, and address document must be approved by an admin before you can create campaigns. </>
-            )}
-            Once approved, you will be able to create campaigns.
+            Once all three are verified, you can create campaigns from this page.
           </p>
           <Link
             href="/profile"
             className="inline-block bg-primary-600 text-white px-6 py-3 rounded-full font-medium hover:bg-primary-700"
           >
-            {missingText ? "Go to profile" : "View profile"}
+            Go to my profile
           </Link>
         </div>
       </div>
