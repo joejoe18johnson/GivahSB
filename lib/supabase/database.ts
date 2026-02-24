@@ -128,12 +128,14 @@ export async function getCampaigns(
   if (!filters?.forStats) {
     if (filters?.onlyFullyFunded === true) {
       campaigns = campaigns.filter((c) => goal(c) > 0 && raised(c) >= goal(c));
-    } else {
-      campaigns = campaigns.filter((c) => goal(c) <= 0 || raised(c) < goal(c));
     }
+    // Default: show all campaigns (in progress + fully funded). No filter.
   }
   if (filters?.trending) {
-    campaigns = campaigns.filter((c) => goal(c) > 0 && raised(c) / goal(c) >= 0.6);
+    // Top campaigns = at least 60% funded (includes fully funded)
+    campaigns = campaigns.filter(
+      (c) => goal(c) > 0 && raised(c) / goal(c) >= 0.6
+    );
   }
   if (filters?.category && filters.category !== "All") {
     campaigns = campaigns.filter((c) => c.category === filters!.category);
