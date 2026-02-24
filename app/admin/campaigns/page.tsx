@@ -29,7 +29,7 @@ export default function AdminCampaignsPage() {
     setLoadError(null);
     setIsLoading(true);
     try {
-      const fetchedCampaigns = await getCampaignsForAdmin();
+      const fetchedCampaigns = await getCampaignsForAdminCached();
       const sorted = [...fetchedCampaigns].sort((a, b) =>
         new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime()
       );
