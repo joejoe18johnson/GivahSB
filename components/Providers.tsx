@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { SessionProvider } from "next-auth/react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { HeartedProvider } from "@/components/HeartedCampaigns";
@@ -14,7 +15,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         <HeartedProvider>
           <ThemedModalProvider>
             <ToastProvider>
-              <OAuthRedirectHandler />
+              <Suspense fallback={null}>
+                <OAuthRedirectHandler />
+              </Suspense>
               {children}
             </ToastProvider>
           </ThemedModalProvider>

@@ -88,11 +88,17 @@ export default function Home() {
   const allTrendingCampaigns = (() => {
     const goal = (c: Campaign) => Number(c.goal) || 1;
     const raised = (c: Campaign) => Number(c.raised) || 0;
+    const pct = (c: Campaign) => (goal(c) > 0 ? raised(c) / goal(c) : 0);
+    // Trending = 60%+ funded but not fully funded
     const trending = campaigns.filter(
       (c) => goal(c) > 0 && raised(c) / goal(c) >= 0.6 && raised(c) < goal(c)
     );
     if (trending.length > 0) return getTopCampaignsByFunding(trending, 12);
-    return getTopCampaignsByFunding(campaigns, 12);
+    // Fallback: 8 top campaigns by percentage funded (not fully funded)
+    const notFullyFunded = campaigns.filter((c) => goal(c) > 0 && raised(c) < goal(c));
+    return [...notFullyFunded]
+      .sort((a, b) => pct(b) - pct(a))
+      .slice(0, 8);
   })();
   const cardsPerPage = 4;
   const totalPages = Math.max(1, Math.ceil(allTrendingCampaigns.length / cardsPerPage));
