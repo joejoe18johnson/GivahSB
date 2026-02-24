@@ -43,12 +43,12 @@ export default function HowItWorksPage() {
     {
       number: "4",
       title: "Receive Funds",
-      description: "People donate online, and funds are paid to you regularly. No time pressure - your campaign stays active as long as you want.",
+      description: "People donate online, and funds are collected securely toward your funding goal. For now, donations are processed only up to your stated goal amount — no additional funds are accepted beyond that limit.",
       icon: <DollarSign className="w-8 h-8" />,
       details: [
         "Donations processed securely online",
-        "Funds transferred to your account monthly",
-        "Keep receiving donations even after hitting your goal"
+        "Funds transferred to your account when needed or upon request",
+        "Campaign closes once the funding goal is reached"
       ]
     }
   ];
