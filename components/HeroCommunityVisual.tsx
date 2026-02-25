@@ -27,19 +27,6 @@ const HERO_CIRCLES: Array<{
     position: "top-[5%] right-[5%] w-20 h-20 sm:w-24 sm:h-24",
   },
   {
-    src: "https://images.unsplash.com/photo-1529636798458-92182e662485?w=200&h=200&fit=crop",
-    alt: "Mayan woman in traditional dress",
-    borderColor: "ring-4 ring-amber-400",
-    position: "top-[38%] right-[2%] w-16 h-16 sm:w-20 sm:h-20",
-    onTop: true, // render in front so it sits over the central image (e.g. woman's hair)
-  },
-  {
-    src: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop",
-    alt: "Black woman, grateful community supporter",
-    borderColor: "ring-4 ring-green-500",
-    position: "bottom-[28%] right-[2%] w-16 h-16 sm:w-20 sm:h-20",
-  },
-  {
     src: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=200&h=200&fit=crop",
     alt: "Happy Latin American man",
     borderColor: "ring-4 ring-green-500",
