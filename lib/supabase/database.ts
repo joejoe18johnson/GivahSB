@@ -256,6 +256,21 @@ export async function getCampaignsOnHoldForUser(
   return (data || []).map((r: CampaignRow) => ({ ...toCampaign(r), status: r.status }));
 }
 
+/** Live campaigns for a given creator (by user id). Used for My Campaigns so raised/backers are always current. */
+export async function getLiveCampaignsForUser(
+  supabase: SupabaseClient,
+  creatorId: string
+): Promise<Campaign[]> {
+  if (!creatorId) return [];
+  const { data, error } = await supabase
+    .from("campaigns")
+    .select("*")
+    .eq("creator_id", creatorId)
+    .eq("status", "live");
+  if (error) throw error;
+  return (data || []).map((r: CampaignRow) => toCampaign(r));
+}
+
 // Donations
 export async function getDonations(
   supabase: SupabaseClient,

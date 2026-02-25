@@ -1,20 +1,21 @@
 "use client";
 
 import { useEffect, useState, useRef, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const AUTH_CALLBACK_URL_KEY = "auth_callback_url";
 const EXCHANGE_TIMEOUT_MS = 15000;
 
 function AuthCallbackContent() {
-  const searchParams = useSearchParams();
   const [status, setStatus] = useState<"exchanging" | "redirecting" | "error">("exchanging");
   const exchangeStarted = useRef(false);
 
   useEffect(() => {
-    const code = searchParams.get("code");
-    const nextParam = searchParams.get("next");
+    // Read code from the URL directly so we don't depend on useSearchParams() being
+    // populated on first render (avoids false "no code" → redirect to login with error)
+    const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    const code = params?.get("code") ?? null;
+    const nextParam = params?.get("next") ?? null;
 
     if (!code) {
       window.location.replace("/auth/login?error=auth_callback");
@@ -73,7 +74,7 @@ function AuthCallbackContent() {
         console.error("Auth code exchange error:", err);
         fail();
       });
-  }, [searchParams]);
+  }, []);
 
   if (status === "error") {
     return (

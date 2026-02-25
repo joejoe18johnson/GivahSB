@@ -2,7 +2,6 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import { Campaign } from "@/lib/data";
-import { fetchCampaignsFromAPI } from "@/lib/services/campaignService";
 import { formatCurrency } from "@/lib/utils";
 import {
   getStoppedCampaignIds,
@@ -73,21 +72,34 @@ export default function MyCampaignsPage() {
     }
   }, [user?.id]);
 
-  useEffect(() => {
-    async function loadCampaigns() {
-      try {
-        const fetchedCampaigns = await fetchCampaignsFromAPI();
-        setCampaigns(fetchedCampaigns);
-      } catch (error) {
-        console.error("Error loading campaigns:", error);
-      } finally {
-        setCampaignsLoading(false);
-      }
+  /** Load current user's live campaigns from API (raised/backers from DB so they stay up to date) */
+  const loadMyLiveCampaigns = useCallback(async () => {
+    if (!user?.id) return;
+    try {
+      const res = await fetch("/api/my/campaigns", { credentials: "include", cache: "no-store" });
+      const list = res.ok ? await res.json() : [];
+      setCampaigns(Array.isArray(list) ? list : []);
+    } catch (error) {
+      console.error("Error loading my campaigns:", error);
+      setCampaigns([]);
+    } finally {
+      setCampaignsLoading(false);
     }
-    loadCampaigns();
+  }, [user?.id]);
+
+  useEffect(() => {
     setStoppedIds(new Set(getStoppedCampaignIds()));
     setDeletedIds(new Set(getDeletedCampaignIds()));
   }, []);
+
+  useEffect(() => {
+    if (!user?.id) {
+      setCampaignsLoading(false);
+      return;
+    }
+    setCampaignsLoading(true);
+    loadMyLiveCampaigns();
+  }, [user?.id, loadMyLiveCampaigns]);
 
   useEffect(() => {
     loadUnderReview();
@@ -104,11 +116,12 @@ export default function MyCampaignsPage() {
       if (document.visibilityState === "visible") {
         loadUnderReview();
         loadOnHold();
+        if (user?.id) loadMyLiveCampaigns();
       }
     };
     document.addEventListener("visibilitychange", onVisibilityChange);
     return () => document.removeEventListener("visibilitychange", onVisibilityChange);
-  }, [loadUnderReview, loadOnHold]);
+  }, [loadUnderReview, loadOnHold, loadMyLiveCampaigns, user?.id]);
 
   const handleStop = useCallback((e: React.MouseEvent, campaignId: string) => {
     e.preventDefault();
@@ -176,11 +189,7 @@ export default function MyCampaignsPage() {
     return null;
   }
 
-  const myCampaigns = campaigns.filter(
-    (c) =>
-      c.creator.trim().toLowerCase() === user.name.trim().toLowerCase() &&
-      !deletedIds.has(c.id)
-  );
+  const myCampaigns = campaigns.filter((c) => !deletedIds.has(c.id));
 
   const myUnderReview = underReview;
   const myOnHold = onHold;
