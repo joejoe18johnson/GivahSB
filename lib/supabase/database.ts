@@ -755,6 +755,24 @@ export async function getPayoutRequestByCampaign(
   return data as PayoutRequestRow;
 }
 
+/** Get payout request status for multiple campaigns. Returns campaignId -> status. */
+export async function getPayoutStatusForCampaigns(
+  supabase: SupabaseClient,
+  campaignIds: string[]
+): Promise<Record<string, string>> {
+  if (campaignIds.length === 0) return {};
+  const { data, error } = await supabase
+    .from("payout_requests")
+    .select("campaign_id, status")
+    .in("campaign_id", campaignIds);
+  if (error) return {};
+  const out: Record<string, string> = {};
+  for (const row of data || []) {
+    out[(row as { campaign_id: string }).campaign_id] = (row as { status: string }).status;
+  }
+  return out;
+}
+
 export async function getPayoutRequestById(
   supabase: SupabaseClient,
   payoutRequestId: string

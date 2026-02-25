@@ -431,6 +431,12 @@ export default function MyCampaignsPage() {
                           Stopped
                         </span>
                       )}
+                      {(campaign as { payoutStatus?: string | null }).payoutStatus === "completed" && (
+                        <span className="bg-verified-500 text-white px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1" title="Payout completed">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          Successfully paid out
+                        </span>
+                      )}
                       <span className="bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-xs font-medium text-primary-600">
                         {campaign.category}
                       </span>
@@ -500,13 +506,21 @@ export default function MyCampaignsPage() {
                     </div>
 
                     <div className="mt-4 pt-4 border-t border-gray-200 flex flex-wrap items-center gap-2">
-                      {goalReached && !isStopped && (
+                      {(campaign as { payoutStatus?: string | null }).payoutStatus === "completed" && (
+                        <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-verified-100 text-verified-800 text-sm font-medium">
+                          <CheckCircle2 className="w-4 h-4" />
+                          Successfully paid out
+                        </span>
+                      )}
+                      {goalReached && !isStopped && (campaign as { payoutStatus?: string | null }).payoutStatus !== "completed" && (
                         <Link
                           href={`/my-campaigns/${campaign.id}/request-payout`}
                           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700 text-sm font-medium transition-colors"
                         >
                           <DollarSign className="w-4 h-4" />
-                          Request Payout
+                          {(campaign as { payoutStatus?: string | null }).payoutStatus === "pending"
+                            ? "View payout status"
+                            : "Request Payout"}
                         </Link>
                       )}
                       <Link

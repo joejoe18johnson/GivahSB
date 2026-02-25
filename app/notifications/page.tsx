@@ -46,6 +46,7 @@ export default function NotificationsPage() {
       // ignore
     }
     if (n.campaignId && n.type === "donation") router.push(`/my-campaigns/${n.campaignId}/donations`);
+    else if (n.campaignId && n.type === "payout_completed") router.push("/my-campaigns");
     else if (n.campaignId) router.push(`/campaigns/${n.campaignId}`);
     else router.push("/my-campaigns");
   };

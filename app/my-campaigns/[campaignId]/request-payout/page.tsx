@@ -27,6 +27,9 @@ interface PayoutRequestInfo {
   status: string;
   bankName: string;
   accountHolderName: string;
+  accountNumber: string;
+  accountType?: string;
+  branch?: string;
   createdAt: string;
 }
 
@@ -122,6 +125,9 @@ export default function RequestPayoutPage() {
         status: "pending",
         bankName: form.bankName,
         accountHolderName: form.accountHolderName,
+        accountNumber: form.accountNumber,
+        accountType: form.accountType,
+        branch: form.branch || undefined,
         createdAt: new Date().toISOString(),
       });
     } catch {
@@ -197,6 +203,13 @@ export default function RequestPayoutPage() {
                 <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-700 space-y-1">
                   <p><span className="font-medium">Bank:</span> {payoutRequest.bankName}</p>
                   <p><span className="font-medium">Account holder:</span> {payoutRequest.accountHolderName}</p>
+                  <p><span className="font-medium">Account number:</span> {payoutRequest.accountNumber}</p>
+                  {payoutRequest.accountType && (
+                    <p><span className="font-medium">Account type:</span> <span className="capitalize">{payoutRequest.accountType}</span></p>
+                  )}
+                  {payoutRequest.branch && (
+                    <p><span className="font-medium">Branch:</span> {payoutRequest.branch}</p>
+                  )}
                   <p><span className="font-medium">Status:</span> <span className="capitalize">{payoutRequest.status}</span></p>
                 </div>
               )}

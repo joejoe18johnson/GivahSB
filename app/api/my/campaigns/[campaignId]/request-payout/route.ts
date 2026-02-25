@@ -54,6 +54,9 @@ export async function GET(
           status: existing.status,
           bankName: existing.bank_name,
           accountHolderName: existing.account_holder_name,
+          accountNumber: existing.account_number,
+          accountType: existing.account_type,
+          branch: existing.branch ?? undefined,
           createdAt: existing.created_at,
         }
       : null,
