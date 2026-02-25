@@ -174,22 +174,9 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right: Hero image slider (2s delay, loop) */}
-          <div className="order-1 lg:order-2 flex justify-center items-start relative max-w-md w-full aspect-[4/3] min-h-[240px]">
-            {HERO_SLIDES.map((slide, i) => (
-              <div
-                key={slide.src}
-                className="absolute inset-0 transition-opacity duration-500 ease-in-out"
-                style={{ opacity: heroSlideIndex === i ? 1 : 0 }}
-                aria-hidden={heroSlideIndex !== i}
-              >
-                <SafeImage
-                  src={slide.src}
-                  alt={slide.alt}
-                  className="w-full h-full object-contain block"
-                />
-              </div>
-            ))}
+          {/* Right: Hero with central image + circular photos of happy/grateful community (Hispanic & Black) */}
+          <div className="order-1 lg:order-2 flex justify-center items-start">
+            <HeroCommunityVisual />
           </div>
         </section>
         </div>
