@@ -28,6 +28,7 @@ export default function Header() {
   const [heartedCount, setHeartedCount] = useState(0);
   const [notifications, setNotifications] = useState<UserNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [totalNotificationCount, setTotalNotificationCount] = useState(0);
   const notificationDropdownRef = useRef<HTMLDivElement>(null);
   const { user, isAdmin, logout } = useAuth();
   const router = useRouter();
@@ -38,12 +39,14 @@ export default function Header() {
     if (!user?.id) return;
     try {
       const res = await fetch("/api/notifications", { cache: "no-store" });
-      const data = res.ok ? await res.json() : { notifications: [], unreadCount: 0 };
+      const data = res.ok ? await res.json() : { notifications: [], unreadCount: 0, totalCount: 0 };
       setNotifications(data.notifications ?? []);
       setUnreadCount(data.unreadCount ?? 0);
+      setTotalNotificationCount(data.totalCount ?? 0);
     } catch {
       setNotifications([]);
       setUnreadCount(0);
+      setTotalNotificationCount(0);
     }
   }, [user?.id]);
 
@@ -183,9 +186,9 @@ export default function Header() {
                     aria-label="Notifications"
                   >
                     <Bell className="w-5 h-5" />
-                    {unreadCount > 0 && (
+                    {totalNotificationCount > 0 && (
                       <span className="absolute top-0 right-0 min-w-[1.25rem] h-5 px-1 flex items-center justify-center rounded-full bg-primary-600 text-white text-xs font-medium">
-                        {unreadCount > 99 ? "99+" : unreadCount}
+                        {totalNotificationCount > 99 ? "99+" : totalNotificationCount}
                       </span>
                     )}
                   </button>

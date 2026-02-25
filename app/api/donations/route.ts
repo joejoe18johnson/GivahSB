@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseUserFromRequest } from "@/lib/supabase/auth-server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
-import { recordDonationAndUpdateCampaign, createDonation } from "@/lib/supabase/database";
+import { recordDonationAndUpdateCampaign, createDonation, addNotification } from "@/lib/supabase/database";
 import type { AdminDonation } from "@/lib/adminData";
 
 export const dynamic = "force-dynamic";
@@ -75,6 +75,20 @@ export async function POST(request: NextRequest) {
       donationId = await createDonation(supabase, donation);
     } else {
       donationId = await recordDonationAndUpdateCampaign(supabase, donation, campaignId);
+    }
+    // Notify campaign creator about the new donation (one notification per donation)
+    const { data: camp } = await supabase.from("campaigns").select("creator_id, title").eq("id", campaignId).single();
+    const creatorId = camp && typeof (camp as { creator_id: string | null }).creator_id === "string" ? (camp as { creator_id: string }).creator_id : null;
+    const titleForNotification = (camp && (camp as { title?: string }).title) ? (camp as { title: string }).title : campaignTitle;
+    if (creatorId) {
+      const amountStr = `BZ$${amount.toLocaleString()}`;
+      await addNotification(supabase, creatorId, {
+        type: "donation",
+        title: "New donation",
+        body: `${amountStr} donated to ${titleForNotification || "your campaign"}.`,
+        campaignId,
+        read: false,
+      });
     }
     return NextResponse.json({ success: true, donationId });
   } catch (err) {

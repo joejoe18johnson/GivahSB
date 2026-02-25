@@ -667,6 +667,18 @@ export async function getUnreadNotificationCount(
   return count ?? 0;
 }
 
+export async function getTotalNotificationCount(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<number> {
+  const { count, error } = await supabase
+    .from("notifications")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId);
+  if (error) throw error;
+  return count ?? 0;
+}
+
 export async function markNotificationRead(
   supabase: SupabaseClient,
   notificationId: string
