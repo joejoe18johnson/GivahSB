@@ -93,16 +93,17 @@ export async function supabaseUserToProfile(
         .eq("id", supabaseUser.id);
     }
     const profile = rowToProfile(row, email || (row.email as string));
-    // Use Google avatar when profile has no custom photo (e.g. first sign-in or never uploaded)
+    // Prefer Google profile image when user signed in with Google and has no custom upload
     const googleAvatar = supabaseUser.user_metadata?.avatar_url as string | undefined;
     if (!profile.profilePhoto && googleAvatar) profile.profilePhoto = googleAvatar;
     return profile;
   }
+  // New user or no profile row: use Google avatar from OAuth metadata when present
   return rowToProfile(
     {
       id: supabaseUser.id,
       name: (supabaseUser.user_metadata?.name as string) ?? (supabaseUser.user_metadata?.full_name as string) ?? "User",
-      profile_photo: supabaseUser.user_metadata?.avatar_url,
+      profile_photo: supabaseUser.user_metadata?.avatar_url ?? undefined,
       role: isAdminByEmail ? "admin" : "user",
     },
     email

@@ -18,7 +18,7 @@ const sizeClasses = {
 
 const sizePx = { 32: 32, 40: 40, 96: 96 } as const;
 
-/** Vibrant background colors for initial avatars (white letter). Same user => same color. */
+/** Vibrant background colors for initial/letter avatars (white letter on circle). Same user => same color. */
 const INITIAL_AVATAR_COLORS = [
   "bg-[#0d9488]", // teal
   "bg-[#0891b2]", // cyan
@@ -33,6 +33,12 @@ const INITIAL_AVATAR_COLORS = [
   "bg-[#ca8a04]", // yellow
   "bg-[#65a30d]", // lime
   "bg-[#059669]", // emerald
+  "bg-[#0f766e]", // teal dark
+  "bg-[#1e40af]", // blue dark
+  "bg-[#6d28d9]", // violet dark
+  "bg-[#be185d]", // pink dark
+  "bg-[#b45309]", // amber
+  "bg-[#4d7c0f]", // lime dark
 ] as const;
 
 function getInitialAvatarColor(name?: string, email?: string): string {
@@ -44,8 +50,8 @@ function getInitialAvatarColor(name?: string, email?: string): string {
 }
 
 /**
- * Shows user profile photo (e.g. Google image) or an initial avatar: first letter on a colored circle.
- * For no photo, uses a deterministic color from name/email so the same user always gets the same color.
+ * Profile picture: uses Google photo when available (e.g. sign-in with Google), otherwise shows
+ * an alphabet-style initial (first letter of name or email) in a circle with a colored background.
  */
 export default function UserAvatar({
   profilePhoto,
@@ -74,8 +80,8 @@ export default function UserAvatar({
   const bgColor = getInitialAvatarColor(name, email);
   return (
     <div
-      className={`rounded-full overflow-hidden ${bgColor} flex items-center justify-center text-white font-medium flex-shrink-0 ${sizeClass} ${className}`}
-      aria-hidden
+      className={`rounded-full ${bgColor} flex items-center justify-center text-white font-semibold flex-shrink-0 ${sizeClass} ${className}`}
+      aria-label={name ? `${name} avatar` : "Avatar"}
     >
       <span>{initial}</span>
     </div>

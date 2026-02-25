@@ -24,7 +24,8 @@ const HERO_CIRCLES = [
     src: "https://images.unsplash.com/photo-1529636798458-92182e662485?w=200&h=200&fit=crop",
     alt: "Mayan woman in traditional dress",
     borderColor: "ring-4 ring-amber-400",
-    position: "top-[45%] right-[-2%] w-16 h-16 sm:w-20 sm:h-20",
+    position: "top-[38%] right-[2%] w-16 h-16 sm:w-20 sm:h-20",
+    onTop: true, // render in front so it sits over the central image (e.g. woman's hair)
   },
   {
     src: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop",
