@@ -348,7 +348,7 @@ export default function MyCampaignsPage() {
                       <span className="font-medium text-success-600">
                         {formatCurrency(campaign.raised)} / {formatCurrency(campaign.goal)}
                       </span>
-                      <span>{campaign.backers} backers</span>
+                      <span>{campaign.backers} donors</span>
                       <span>{campaign.daysLeft === 0 ? "Unlimited" : `${campaign.daysLeft} days left`}</span>
                     </div>
                     <div className="mt-2 w-full bg-gray-200 rounded-full h-1.5">
@@ -470,7 +470,7 @@ export default function MyCampaignsPage() {
                       </div>
                       <div className="flex items-center gap-1.5 text-gray-600">
                         <Users className="w-4 h-4" />
-                        <span>{campaign.backers} backers</span>
+                        <span>{campaign.backers} donors</span>
                       </div>
                       <div className="flex items-center gap-1.5 text-gray-600">
                         <Calendar className="w-4 h-4" />

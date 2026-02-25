@@ -124,7 +124,7 @@ export default function AdminCompletedCampaignsPage() {
                   <th className="px-5 py-3 font-medium">Creator</th>
                   <th className="px-5 py-3 font-medium">Goal</th>
                   <th className="px-5 py-3 font-medium">Raised</th>
-                  <th className="px-5 py-3 font-medium">Backers</th>
+                  <th className="px-5 py-3 font-medium">Donors</th>
                   <th className="px-5 py-3 font-medium">Created</th>
                   <th className="px-5 py-3 font-medium">Actions</th>
                 </tr>

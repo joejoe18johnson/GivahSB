@@ -211,17 +211,119 @@ const DEMO_CAMPAIGNS = [
   campaign(40, { title: "Playground for San Ignacio School", description: "Safe playground equipment for a primary school.", fullDescription: "A primary school in San Ignacio has no proper playground. We want to install safe, durable equipment so children can play at recess. The school has cleared the space; we need the equipment and installation.", creator: "San Ignacio School Parents", creatorType: "organization", category: "Community", location: "San Ignacio, Cayo District, Belize", goal: 3200, raised: 1280, backers: 42, daysLeft: 20 }),
 ];
 
+/** Donor names/emails for seeded donations (cycle through; ~25% anonymous). */
+const DONOR_POOL: Array<{ name: string; email: string }> = [
+  { name: "John Smith", email: "john.donor@email.com" },
+  { name: "Patricia Martinez", email: "patricia.m@email.com" },
+  { name: "Robert Brown", email: "robert.b@email.com" },
+  { name: "Sarah Johnson", email: "sarah.j@email.com" },
+  { name: "Michael Thompson", email: "michael.t@email.com" },
+  { name: "Emily Chen", email: "emily.c@email.com" },
+  { name: "James Rodriguez", email: "james.r@email.com" },
+  { name: "Maria Gonzalez", email: "maria.g@email.com" },
+  { name: "Thomas King", email: "thomas.k@email.com" },
+  { name: "Nancy Perez", email: "nancy.p@email.com" },
+  { name: "Linda Smith", email: "linda.s@email.com" },
+  { name: "Karen Williams", email: "karen.w@email.com" },
+  { name: "Jennifer Lee", email: "jennifer.l@email.com" },
+  { name: "Paul Rodriguez", email: "paul.r@email.com" },
+  { name: "Susan Martinez", email: "susan.m@email.com" },
+  { name: "Frank Brown", email: "frank.b@email.com" },
+  { name: "Helen Johnson", email: "helen.j@email.com" },
+  { name: "George Martinez", email: "george.m@email.com" },
+  { name: "Belize Corp", email: "donor@company.bz" },
+  { name: "David Wilson", email: "david.w@email.com" },
+];
+
+const METHODS = ["bank", "digiwallet", "ekyash"] as const;
+
+/** Build donation amounts that sum exactly to `raised` with `backers` count (integers). */
+function donationAmounts(raised: number, backers: number): number[] {
+  if (backers <= 0) return [];
+  if (backers === 1) return [raised];
+  const base = Math.floor(raised / backers);
+  const remainder = raised - base * backers;
+  const amounts: number[] = [];
+  for (let i = 0; i < backers - remainder; i++) amounts.push(base);
+  for (let i = 0; i < remainder; i++) amounts.push(base + 1);
+  return amounts;
+}
+
+function buildDonations() {
+  const rows: Array<{
+    id: string;
+    campaign_id: string;
+    amount: number;
+    donor_email: string | null;
+    donor_name: string | null;
+    anonymous: boolean;
+    method: string;
+    status: string;
+    reference_number: string | null;
+    note: string | null;
+    created_at: string;
+    updated_at: string;
+  }> = [];
+  const now = new Date();
+  for (const c of DEMO_CAMPAIGNS) {
+    const backers = c.backers ?? 0;
+    const raised = c.raised ?? 0;
+    if (backers === 0) continue;
+    const amounts = donationAmounts(raised, backers);
+    for (let i = 0; i < backers; i++) {
+      const isAnonymous = i % 4 === 0; // ~25% anonymous
+      const donor = isAnonymous ? null : DONOR_POOL[i % DONOR_POOL.length];
+      const created = new Date(now.getTime() - (backers - i) * 3600 * 1000).toISOString();
+      rows.push({
+        id: crypto.randomUUID(),
+        campaign_id: c.id,
+        amount: amounts[i],
+        donor_email: isAnonymous ? null : donor!.email,
+        donor_name: isAnonymous ? null : donor!.name,
+        anonymous: isAnonymous,
+        method: METHODS[i % METHODS.length],
+        status: "completed",
+        reference_number: null,
+        note: null,
+        created_at: created,
+        updated_at: created,
+      });
+    }
+  }
+  return rows;
+}
+
 async function seed() {
   console.log("Seeding 40 demo campaigns (8 fully funded, 32 in progress)...");
-  const { error } = await supabase.from("campaigns").upsert(DEMO_CAMPAIGNS, {
+  const { error: campaignsError } = await supabase.from("campaigns").upsert(DEMO_CAMPAIGNS, {
     onConflict: "id",
     ignoreDuplicates: false,
   });
-  if (error) {
-    console.error("Seed failed:", error.message);
+  if (campaignsError) {
+    console.error("Seed failed:", campaignsError.message);
     process.exit(1);
   }
-  console.log("Done. Inserted/updated", DEMO_CAMPAIGNS.length, "campaigns.");
+  console.log("Campaigns done. Seeding donations so each campaign has backers count and amounts sum to raised...");
+  const campaignIds = DEMO_CAMPAIGNS.map((c) => c.id);
+  const { error: delError } = await supabase.from("donations").delete().in("campaign_id", campaignIds);
+  if (delError) {
+    console.error("Delete existing demo donations failed:", delError.message);
+    process.exit(1);
+  }
+  const donations = buildDonations();
+  const BATCH = 500;
+  for (let i = 0; i < donations.length; i += BATCH) {
+    const chunk = donations.slice(i, i + BATCH);
+    const { error: donError } = await supabase.from("donations").upsert(chunk, {
+      onConflict: "id",
+      ignoreDuplicates: false,
+    });
+    if (donError) {
+      console.error("Donations seed failed:", donError.message);
+      process.exit(1);
+    }
+  }
+  console.log("Done. Inserted/updated", DEMO_CAMPAIGNS.length, "campaigns and", donations.length, "donations.");
 }
 
 seed();

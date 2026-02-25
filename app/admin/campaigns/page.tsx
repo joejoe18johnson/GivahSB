@@ -200,7 +200,7 @@ export default function AdminCampaignsPage() {
                 <th className="px-5 py-3 font-medium">Category</th>
                 <th className="px-5 py-3 font-medium">Goal</th>
                 <th className="px-5 py-3 font-medium">Raised</th>
-                <th className="px-5 py-3 font-medium">Backers</th>
+                <th className="px-5 py-3 font-medium">Donors</th>
                 <th className="px-5 py-3 font-medium">Days left</th>
                 <th className="px-5 py-3 font-medium">Created</th>
                 <th className="px-5 py-3 font-medium">Status</th>

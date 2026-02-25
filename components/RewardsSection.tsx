@@ -25,7 +25,7 @@ export default function RewardsSection({ rewards }: RewardsSectionProps) {
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600 flex items-center gap-1">
                 <Users className="w-4 h-4" />
-                {reward.backers} backers
+                {reward.backers} donors
               </span>
               <span className="text-gray-600">
                 Est. delivery: {new Date(reward.estimatedDelivery).toLocaleDateString()}

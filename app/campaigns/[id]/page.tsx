@@ -328,7 +328,7 @@ export default function CampaignPage({ params }: PageProps) {
                 <div className="text-lg font-medium text-gray-900">{campaign.backers}</div>
                 <div className="text-xs text-gray-600 flex items-center gap-1">
                   <Users className="w-3 h-3" />
-                  backers
+                  donors
                 </div>
               </div>
               <div>

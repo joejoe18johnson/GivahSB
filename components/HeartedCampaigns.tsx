@@ -294,7 +294,7 @@ export default function HeartedCampaigns({ isOpen, onClose }: HeartedCampaignsPr
                             <div className="flex items-center justify-between text-sm text-gray-600">
                               <div className="flex items-center gap-1">
                                 <Users className="w-4 h-4" />
-                                <span>{campaign.backers} backers</span>
+                                <span>{campaign.backers} donors</span>
                               </div>
                               <div className="flex items-center gap-1">
                                 <Calendar className="w-4 h-4" />

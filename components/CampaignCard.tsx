@@ -150,7 +150,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
               <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
                 <div className="flex items-center gap-1">
                   <Users className="w-4 h-4" />
-                  <span>{campaign.backers} backers</span>
+                  <span>{campaign.backers} donors</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Calendar className="w-4 h-4" />
@@ -177,7 +177,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
               <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
                 <div className="flex items-center gap-1">
                   <Users className="w-4 h-4" />
-                  <span>{campaign.backers} backers</span>
+                  <span>{campaign.backers} donors</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Calendar className="w-4 h-4" />

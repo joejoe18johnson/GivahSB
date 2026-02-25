@@ -110,7 +110,7 @@ export default function SuccessStoriesPage() {
                     <div className="flex flex-col flex-1 min-w-0 p-4 justify-center">
                       <p className="text-sm text-gray-500 flex items-center gap-1">
                         <Users className="w-3.5 h-3.5" />
-                        {(campaign.backers ?? 0).toLocaleString()} donations
+                        {(campaign.backers ?? 0).toLocaleString()} donors
                       </p>
                       <h3 className="font-semibold text-gray-900 line-clamp-2 mt-1">
                         {campaign.title}
