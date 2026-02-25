@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const AUTH_CALLBACK_URL_KEY = "auth_callback_url";
+const EXCHANGE_TIMEOUT_MS = 15000;
 
 function AuthCallbackContent() {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<"exchanging" | "redirecting" | "error">("exchanging");
+  const exchangeStarted = useRef(false);
 
   useEffect(() => {
     const code = searchParams.get("code");
@@ -19,33 +21,57 @@ function AuthCallbackContent() {
       return;
     }
 
+    // Run exchange only once (avoids double run from React Strict Mode or re-renders)
+    if (exchangeStarted.current) return;
+    exchangeStarted.current = true;
+
     const supabase = createClient();
+    let done = false;
+
+    const redirectToNext = () => {
+      if (done) return;
+      done = true;
+      setStatus("redirecting");
+      const next =
+        nextParam ||
+        (typeof window !== "undefined" ? sessionStorage.getItem(AUTH_CALLBACK_URL_KEY) : null) ||
+        "/";
+      if (typeof window !== "undefined") sessionStorage.removeItem(AUTH_CALLBACK_URL_KEY);
+      const path = next.startsWith("http") ? new URL(next).pathname : next.startsWith("/") ? next : `/${next}`;
+      window.location.replace(path || "/");
+    };
+
+    const fail = () => {
+      if (done) return;
+      done = true;
+      setStatus("error");
+      setTimeout(() => {
+        window.location.replace("/auth/login?error=auth_callback");
+      }, 2000);
+    };
+
+    const timeoutId = setTimeout(() => {
+      if (!done) {
+        console.error("Auth code exchange timed out");
+        fail();
+      }
+    }, EXCHANGE_TIMEOUT_MS);
+
     supabase.auth
       .exchangeCodeForSession(code)
       .then(({ error }) => {
+        clearTimeout(timeoutId);
         if (error) {
           console.error("Auth code exchange failed:", error);
-          setStatus("error");
-          setTimeout(() => {
-            window.location.replace("/auth/login?error=auth_callback");
-          }, 2000);
+          fail();
           return;
         }
-        setStatus("redirecting");
-        const next =
-          nextParam ||
-          (typeof window !== "undefined" ? sessionStorage.getItem(AUTH_CALLBACK_URL_KEY) : null) ||
-          "/";
-        if (typeof window !== "undefined") sessionStorage.removeItem(AUTH_CALLBACK_URL_KEY);
-        const path = next.startsWith("http") ? new URL(next).pathname : next.startsWith("/") ? next : `/${next}`;
-        window.location.replace(path || "/");
+        redirectToNext();
       })
       .catch((err) => {
+        clearTimeout(timeoutId);
         console.error("Auth code exchange error:", err);
-        setStatus("error");
-        setTimeout(() => {
-          window.location.replace("/auth/login?error=auth_callback");
-        }, 2000);
+        fail();
       });
   }, [searchParams]);
 
