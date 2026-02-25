@@ -731,6 +731,19 @@ export async function getPayoutRequestByCampaign(
   return data as PayoutRequestRow;
 }
 
+export async function getPayoutRequestById(
+  supabase: SupabaseClient,
+  payoutRequestId: string
+): Promise<PayoutRequestRow | null> {
+  const { data, error } = await supabase
+    .from("payout_requests")
+    .select("*")
+    .eq("id", payoutRequestId)
+    .single();
+  if (error || !data) return null;
+  return data as PayoutRequestRow;
+}
+
 export async function createPayoutRequest(
   supabase: SupabaseClient,
   campaignId: string,
@@ -760,6 +773,82 @@ export async function createPayoutRequest(
     .single();
   if (error) throw error;
   return row.id;
+}
+
+/** Get user IDs for admin emails (from profiles). */
+export async function getAdminUserIds(
+  supabase: SupabaseClient,
+  adminEmails: string[]
+): Promise<string[]> {
+  if (adminEmails.length === 0) return [];
+  const { data, error } = await supabase.from("profiles").select("id, email");
+  if (error) throw error;
+  const lower = new Set(adminEmails.map((e) => e.toLowerCase()));
+  return (data || [])
+    .filter((r) => r.email && lower.has(String(r.email).trim().toLowerCase()))
+    .map((r) => r.id);
+}
+
+/** All payout requests for admin with campaign and creator info. */
+export interface PayoutRequestForAdmin {
+  id: string;
+  campaignId: string;
+  campaignTitle: string;
+  raised: number;
+  creatorId: string;
+  creatorName: string;
+  creatorEmail: string;
+  bankName: string;
+  accountType: string;
+  accountNumber: string;
+  accountHolderName: string;
+  branch: string | null;
+  status: string;
+  createdAt: string;
+}
+
+export async function getPayoutRequestsForAdmin(
+  supabase: SupabaseClient
+): Promise<PayoutRequestForAdmin[]> {
+  const { data: pr, error: prErr } = await supabase
+    .from("payout_requests")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (prErr) throw prErr;
+  const out: PayoutRequestForAdmin[] = [];
+  for (const p of pr || []) {
+    const { data: camp } = await supabase.from("campaigns").select("title, raised").eq("id", p.campaign_id).single();
+    const { data: prof } = await supabase.from("profiles").select("name, email").eq("id", p.user_id).single();
+    out.push({
+      id: p.id,
+      campaignId: p.campaign_id,
+      campaignTitle: (camp as { title?: string })?.title ?? "",
+      raised: Number((camp as { raised?: number })?.raised) ?? 0,
+      creatorId: p.user_id,
+      creatorName: (prof as { name?: string })?.name ?? "",
+      creatorEmail: (prof as { email?: string })?.email ?? "",
+      bankName: p.bank_name,
+      accountType: p.account_type,
+      accountNumber: p.account_number,
+      accountHolderName: p.account_holder_name,
+      branch: p.branch,
+      status: p.status,
+      createdAt: p.created_at,
+    });
+  }
+  return out;
+}
+
+export async function updatePayoutRequestStatus(
+  supabase: SupabaseClient,
+  payoutRequestId: string,
+  status: "pending" | "processing" | "completed" | "rejected"
+): Promise<void> {
+  const { error } = await supabase
+    .from("payout_requests")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", payoutRequestId);
+  if (error) throw error;
 }
 
 // Profiles (admin users list)

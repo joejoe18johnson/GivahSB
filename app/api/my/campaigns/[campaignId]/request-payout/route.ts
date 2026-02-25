@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseUserFromRequest } from "@/lib/supabase/auth-server";
+import { getSupabaseUserFromRequest, getAdminEmails } from "@/lib/supabase/auth-server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
-import { getPayoutRequestByCampaign, createPayoutRequest } from "@/lib/supabase/database";
+import { getPayoutRequestByCampaign, createPayoutRequest, getAdminUserIds, addNotification } from "@/lib/supabase/database";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -76,7 +76,7 @@ export async function POST(
   const supabase = getSupabaseAdmin()!;
   const { data: row, error: campError } = await supabase
     .from("campaigns")
-    .select("id, goal, raised, creator_id")
+    .select("id, title, goal, raised, creator_id")
     .eq("id", campaignId)
     .single();
 
@@ -130,6 +130,21 @@ export async function POST(
       accountHolderName,
       branch,
     });
+    const amountStr = `BZ$${Number((row as { raised: number }).raised).toLocaleString()}`;
+    const titleForNotif = (row as { title?: string }).title ?? "Campaign";
+    const adminEmails = getAdminEmails();
+    if (adminEmails.length > 0) {
+      const adminIds = await getAdminUserIds(supabase, adminEmails);
+      for (const adminId of adminIds) {
+        await addNotification(supabase, adminId, {
+          type: "payout_request",
+          title: "Payout requested",
+          body: `Creator requested payout of ${amountStr} for "${titleForNotif}".`,
+          campaignId,
+          read: false,
+        });
+      }
+    }
     return NextResponse.json({ success: true, id });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Failed to submit payout request.";

@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { LayoutDashboard, Megaphone, Users, Heart, ArrowLeft, Clock, Bell, LogOut, Trophy, FileText } from "lucide-react";
+import { LayoutDashboard, Megaphone, Users, Heart, ArrowLeft, Clock, Bell, LogOut, Trophy, FileText, Banknote } from "lucide-react";
 import UserAvatar from "@/components/UserAvatar";
 import {
   getCampaignsUnderReviewCountCached,
@@ -36,6 +36,7 @@ export default function AdminLayout({
     pendingDonations: 0,
     addressPending: 0,
     idPending: 0,
+    pendingPayouts: 0,
   });
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -45,11 +46,13 @@ export default function AdminLayout({
     sectionCounts.phonePending +
     sectionCounts.pendingDonations +
     sectionCounts.addressPending +
-    sectionCounts.idPending;
+    sectionCounts.idPending +
+    sectionCounts.pendingPayouts;
   // Order action items by count descending (most needing action first)
   const actionItemsSorted = [
     { key: "underReview", label: "Campaigns under review", count: sectionCounts.underReview, href: "/admin/under-review" },
     { key: "pendingDonations", label: "Pending donations to approve", count: sectionCounts.pendingDonations, href: "/admin/donations" },
+    { key: "pendingPayouts", label: "Payout requests", count: sectionCounts.pendingPayouts, href: "/admin/payouts" },
     { key: "phonePending", label: "Phone numbers to review", count: sectionCounts.phonePending, href: "/admin/users" },
     { key: "addressPending", label: "Address documents to review", count: sectionCounts.addressPending, href: "/admin/users" },
     { key: "idPending", label: "Identity documents to review", count: sectionCounts.idPending, href: "/admin/users" },
@@ -81,6 +84,16 @@ export default function AdminLayout({
         const addressPending = users.filter((u) => u.addressDocument && !u.addressVerified).length;
         const idPending = users.filter((u) => u.idDocument && u.idPending).length;
         const pendingDonations = donations.filter((d) => d.status === "pending").length;
+        let pendingPayouts = 0;
+        try {
+          const payoutsRes = await fetch("/api/admin/payouts", { credentials: "include" });
+          if (payoutsRes.ok) {
+            const payouts: { status: string }[] = await payoutsRes.json();
+            pendingPayouts = payouts.filter((p) => p.status === "pending").length;
+          }
+        } catch {
+          // ignore
+        }
         setSectionCounts({
           underReview: underReviewCount,
           campaigns: campaigns.filter((c) => new Date(c.createdAt).getTime() >= since).length,
@@ -90,6 +103,7 @@ export default function AdminLayout({
           pendingDonations,
           addressPending,
           idPending,
+          pendingPayouts,
         });
       } catch {
         setNotifications([]);
@@ -102,6 +116,7 @@ export default function AdminLayout({
           pendingDonations: 0,
           addressPending: 0,
           idPending: 0,
+          pendingPayouts: 0,
         });
       }
     }
@@ -247,6 +262,9 @@ export default function AdminLayout({
                       <Link href="/admin/donations" onClick={() => setShowNotificationDropdown(false)} className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 text-sm text-gray-700">
                         Donations
                       </Link>
+                      <Link href="/admin/payouts" onClick={() => setShowNotificationDropdown(false)} className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 text-sm text-gray-700">
+                        Payouts
+                      </Link>
                     </div>
                   </div>
                   {notifications.length > 0 && (
@@ -343,6 +361,24 @@ export default function AdminLayout({
               {sectionCounts.pendingDonations > 0 && (
                 <span className="min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-medium">
                   {sectionCounts.pendingDonations > 99 ? "99+" : sectionCounts.pendingDonations}
+                </span>
+              )}
+            </Link>
+            <Link
+              href="/admin/payouts"
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
+                pathname === "/admin/payouts"
+                  ? "bg-primary-50 text-primary-700 font-medium"
+                  : sectionCounts.pendingPayouts > 0
+                    ? "bg-amber-50/80 border border-amber-200 text-amber-900 hover:bg-amber-100"
+                    : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              <Banknote className="w-4 h-4" />
+              <span className="flex-1">Payouts</span>
+              {sectionCounts.pendingPayouts > 0 && (
+                <span className="min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-medium">
+                  {sectionCounts.pendingPayouts > 99 ? "99+" : sectionCounts.pendingPayouts}
                 </span>
               )}
             </Link>
