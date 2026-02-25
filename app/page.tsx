@@ -6,6 +6,7 @@ import { Campaign } from "@/lib/data";
 import { getTopCampaignsByFunding } from "@/lib/campaignUtils";
 import { fetchCampaignsFromAPI } from "@/lib/services/campaignService";
 import SafeImage from "@/components/SafeImage";
+import HeroCommunityVisual from "@/components/HeroCommunityVisual";
 import { TrendingUp, FileText, Share2, ArrowUpRight, Shield, DollarSign, Calendar, Users, CheckCircle2, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
@@ -14,11 +15,6 @@ import { useSiteContent } from "@/hooks/useSiteContent";
 
 const permanentMarker = Permanent_Marker({ weight: "400", subsets: ["latin"] });
 
-const HERO_SLIDES = [
-  { src: "/hero-right.png", alt: "Community connections" },
-  { src: "/hero-right-2.png", alt: "Community connections" },
-];
-
 export default function Home() {
   const { content: siteContent } = useSiteContent();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -26,7 +22,6 @@ export default function Home() {
   const [campaignsError, setCampaignsError] = useState<string | null>(null);
   const [siteStats, setSiteStats] = useState<{ totalRaisedFormatted: string; campaignCount: number; totalSupporters: number } | null>(null);
   const [faqOpenIndex, setFaqOpenIndex] = useState<number | null>(null);
-  const [heroSlideIndex, setHeroSlideIndex] = useState(0);
   const trendingScrollRef = useRef<HTMLDivElement>(null);
   const [trendingCanScrollLeft, setTrendingCanScrollLeft] = useState(false);
   const [trendingCanScrollRight, setTrendingCanScrollRight] = useState(false);
@@ -39,13 +34,6 @@ export default function Home() {
     const page = Math.min(totalPages, Math.round(el.scrollLeft / TRENDING_PAGE_WIDTH) + 1);
     setCurrentPage((p) => (page >= 1 && page <= totalPages ? page : p));
   };
-
-  useEffect(() => {
-    const t = setInterval(() => {
-      setHeroSlideIndex((i) => (i + 1) % HERO_SLIDES.length);
-    }, 2000);
-    return () => clearInterval(t);
-  }, []);
 
   useEffect(() => {
     async function loadCampaigns() {
