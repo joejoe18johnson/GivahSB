@@ -186,9 +186,12 @@ export default function AdminCampaignsPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[800px]">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+        <p className="px-5 py-2 text-xs text-gray-500 border-b border-gray-100 md:sr-only" aria-hidden="true">
+          Scroll horizontally to view Status, Verified, Actions, and ID columns.
+        </p>
+        <div className="overflow-x-auto min-w-0 w-full" style={{ WebkitOverflowScrolling: "touch" }}>
+          <table className="w-full text-sm min-w-[1100px]">
             <thead>
               <tr className="bg-gray-50 text-left text-gray-500">
                 <th className="px-5 py-3 font-medium">Title</th>
