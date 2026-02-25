@@ -11,9 +11,13 @@ import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
-import HeroCommunityCollage from "@/components/HeroCommunityCollage";
 
 const permanentMarker = Permanent_Marker({ weight: "400", subsets: ["latin"] });
+
+const HERO_SLIDES = [
+  { src: "/hero-right.png", alt: "Community connections" },
+  { src: "/hero-right-2.png", alt: "Community connections" },
+];
 
 export default function Home() {
   const { content: siteContent } = useSiteContent();
@@ -22,6 +26,7 @@ export default function Home() {
   const [campaignsError, setCampaignsError] = useState<string | null>(null);
   const [siteStats, setSiteStats] = useState<{ totalRaisedFormatted: string; campaignCount: number; totalSupporters: number } | null>(null);
   const [faqOpenIndex, setFaqOpenIndex] = useState<number | null>(null);
+  const [heroSlideIndex, setHeroSlideIndex] = useState(0);
   const trendingScrollRef = useRef<HTMLDivElement>(null);
   const [trendingCanScrollLeft, setTrendingCanScrollLeft] = useState(false);
   const [trendingCanScrollRight, setTrendingCanScrollRight] = useState(false);
@@ -34,6 +39,13 @@ export default function Home() {
     const page = Math.min(totalPages, Math.round(el.scrollLeft / TRENDING_PAGE_WIDTH) + 1);
     setCurrentPage((p) => (page >= 1 && page <= totalPages ? page : p));
   };
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setHeroSlideIndex((i) => (i + 1) % HERO_SLIDES.length);
+    }, 2000);
+    return () => clearInterval(t);
+  }, []);
 
   useEffect(() => {
     async function loadCampaigns() {
@@ -174,9 +186,22 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right: Hero community collage — happy and grateful people (diverse) */}
-          <div className="order-1 lg:order-2 flex justify-center items-center">
-            <HeroCommunityCollage />
+          {/* Right: Hero image slider (2s delay, loop) */}
+          <div className="order-1 lg:order-2 flex justify-center items-start relative max-w-md w-full aspect-[4/3] min-h-[240px]">
+            {HERO_SLIDES.map((slide, i) => (
+              <div
+                key={slide.src}
+                className="absolute inset-0 transition-opacity duration-500 ease-in-out"
+                style={{ opacity: heroSlideIndex === i ? 1 : 0 }}
+                aria-hidden={heroSlideIndex !== i}
+              >
+                <SafeImage
+                  src={slide.src}
+                  alt={slide.alt}
+                  className="w-full h-full object-contain block"
+                />
+              </div>
+            ))}
           </div>
         </section>
         </div>
