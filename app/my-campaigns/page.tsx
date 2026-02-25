@@ -500,11 +500,11 @@ export default function MyCampaignsPage() {
 
                     <div className="mt-4 pt-4 border-t border-gray-200 flex flex-wrap items-center gap-2">
                       <Link
-                        href={`/campaigns/${campaign.id}`}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm font-medium transition-colors"
+                        href={`/my-campaigns/${campaign.id}/donations`}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-verified-500 text-white hover:bg-verified-600 text-sm font-medium transition-colors"
                       >
                         <ArrowRight className="w-4 h-4" />
-                        View
+                        View Campaign Donations
                       </Link>
                       {!isStopped && (
                         <button

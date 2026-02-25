@@ -139,8 +139,8 @@ export default function Home() {
 
           {/* Left: Content - vertically centered */}
           <div className="order-2 lg:order-1 flex flex-col justify-center mt-14 sm:mt-16 lg:mt-0 min-h-[320px] lg:min-h-[400px] animate-fade-in-up opacity-0 [animation-fill-mode:forwards]">
-            <div className="overflow-x-auto overflow-y-hidden -mx-4 px-4 sm:mx-0 sm:px-0 mb-4 w-full md:w-max pb-1">
-              <h1 className="font-bold text-gray-900 whitespace-nowrap min-w-max md:w-auto text-[clamp(0.875rem,(100vw - 2rem) / 15,2.25rem)] md:text-4xl lg:text-5xl xl:text-6xl pb-[0.2em]">
+            <div className="overflow-x-auto overflow-y-hidden -mx-4 px-4 sm:mx-0 sm:px-0 mb-4 w-full md:w-max pb-1 flex justify-center md:justify-start">
+              <h1 className="font-bold text-gray-900 whitespace-nowrap min-w-max md:w-auto text-center md:text-left text-[clamp(1.1rem,(100vw - 2rem) / 15,2.5rem)] md:text-4xl lg:text-5xl xl:text-6xl pb-[0.2em]">
                 {siteContent.heroTitle.split(/(Burdens|Together)/).map((part, i) =>
                   part === "Burdens" ? (
                     <span key={i} className="text-accent-600">Burdens</span>
