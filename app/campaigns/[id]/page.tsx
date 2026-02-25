@@ -351,6 +351,7 @@ export default function CampaignPage({ params }: PageProps) {
                 campaignTitle={campaign.title}
                 goal={campaign.goal}
                 raised={campaign.raised}
+                campaignReferenceNumber={campaign.referenceNumber}
                 onDonationModalChange={setIsDonationModalOpen}
               />
             </div>

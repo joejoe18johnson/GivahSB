@@ -8,10 +8,12 @@ import DonationModal from "./DonationModal";
 interface DonateButtonProps {
   campaignId: string;
   campaignTitle?: string;
+  /** Campaign reference number; all donations use this for tracking. */
+  campaignReferenceNumber?: string | null;
   onDonationModalChange?: (open: boolean) => void;
 }
 
-export default function DonateButton({ campaignId, campaignTitle = "Campaign", onDonationModalChange }: DonateButtonProps) {
+export default function DonateButton({ campaignId, campaignTitle = "Campaign", campaignReferenceNumber, onDonationModalChange }: DonateButtonProps) {
   const [amount, setAmount] = useState("");
   const [showDonationModal, setShowDonationModal] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<number | null>(null);
@@ -97,6 +99,7 @@ export default function DonateButton({ campaignId, campaignTitle = "Campaign", o
           campaignTitle={campaignTitle}
           amount={parseFloat(amount)}
           isOpen={showDonationModal}
+          campaignReferenceNumber={campaignReferenceNumber}
           onClose={() => {
             setShowDonationModal(false);
             setAmount("");

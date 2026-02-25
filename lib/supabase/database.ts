@@ -180,6 +180,7 @@ export async function createCampaign(
   supabase: SupabaseClient,
   campaign: Omit<Campaign, "id">
 ): Promise<string> {
+  const reference_number = await generateUniqueCampaignReference(supabase);
   const { data, error } = await supabase
     .from("campaigns")
     .insert({
@@ -199,6 +200,7 @@ export async function createCampaign(
       verified: campaign.verified,
       admin_backed: campaign.adminBacked ?? false,
       status: "live",
+      reference_number,
     })
     .select("id")
     .single();
@@ -320,6 +322,13 @@ export async function createDonation(
   supabase: SupabaseClient,
   donation: Omit<AdminDonation, "id">
 ): Promise<string> {
+  const { data: camp } = await supabase
+    .from("campaigns")
+    .select("reference_number")
+    .eq("id", donation.campaignId)
+    .single();
+  const campaignRef = (camp as { reference_number?: string | null } | null)?.reference_number ?? null;
+  const reference_number = campaignRef || donation.referenceNumber || generateShortRef();
   const { data, error } = await supabase
     .from("donations")
     .insert({
@@ -330,7 +339,7 @@ export async function createDonation(
       anonymous: donation.anonymous,
       method: donation.method,
       status: donation.status,
-      reference_number: donation.referenceNumber,
+      reference_number,
       note: donation.note,
     })
     .select("id")
@@ -346,7 +355,7 @@ export async function recordDonationAndUpdateCampaign(
 ): Promise<string> {
   const { data: camp, error: campErr } = await supabase
     .from("campaigns")
-    .select("goal, raised, backers")
+    .select("goal, raised, backers, reference_number")
     .eq("id", campaignId)
     .single();
   if (campErr || !camp) throw new Error("Campaign not found");
@@ -356,7 +365,7 @@ export async function recordDonationAndUpdateCampaign(
   if (goal > 0 && raised >= goal) {
     throw new Error("Campaign has been fully funded. No further donations are accepted.");
   }
-  const refNum = donation.referenceNumber || generateShortRef();
+  const refNum = (camp as { reference_number?: string | null }).reference_number || donation.referenceNumber || generateShortRef();
   const { data: don, error: insertErr } = await supabase
     .from("donations")
     .insert({
@@ -558,6 +567,7 @@ export async function approveAndPublishCampaign(
     if (!profile.address_verified) throw new Error("Creator's address must be verified before campaign can go live");
   }
   const defaultImage = "https://picsum.photos/seed/campaign/800/600";
+  const reference_number = await generateUniqueCampaignReference(supabase);
   const { data: newCamp, error: insertErr } = await supabase
     .from("campaigns")
     .insert({
@@ -577,6 +587,7 @@ export async function approveAndPublishCampaign(
       status: "live",
       verified: true,
       creator_id: underReview.creatorId,
+      reference_number,
     })
     .select("id")
     .single();

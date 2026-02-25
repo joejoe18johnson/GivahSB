@@ -18,6 +18,8 @@ export interface Campaign {
   verified: boolean;
   /** True when the campaign was created/approved by Givah (shows "Givah Approved Campaign" badge). */
   adminBacked?: boolean;
+  /** Single reference number for this campaign; used for all donations to this campaign. */
+  referenceNumber?: string;
   proofDocuments?: ProofDocument[];
   updates?: CampaignUpdate[];
   rewards?: Reward[];

@@ -11,6 +11,8 @@ interface CampaignDonateSectionProps {
   /** When provided and raised >= goal, donations are disabled and a "fully funded" message is shown. */
   goal?: number;
   raised?: number;
+  /** Campaign reference number; all donations to this campaign use this for tracking. */
+  campaignReferenceNumber?: string | null;
   onDonationModalChange?: (open: boolean) => void;
 }
 
@@ -19,6 +21,7 @@ export default function CampaignDonateSection({
   campaignTitle,
   goal,
   raised,
+  campaignReferenceNumber,
   onDonationModalChange,
 }: CampaignDonateSectionProps) {
   const [stopped, setStopped] = useState(false);
@@ -60,6 +63,7 @@ export default function CampaignDonateSection({
     <DonateButton
       campaignId={campaignId}
       campaignTitle={campaignTitle}
+      campaignReferenceNumber={campaignReferenceNumber}
       onDonationModalChange={onDonationModalChange}
     />
   );

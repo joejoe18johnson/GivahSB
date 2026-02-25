@@ -11,6 +11,8 @@ interface DonationModalProps {
   amount: number;
   isOpen: boolean;
   onClose: () => void;
+  /** Campaign reference number; all donations to this campaign use this ref for tracking. */
+  campaignReferenceNumber?: string | null;
 }
 
 type PaymentMethod = "bank" | "digiwallet" | "ekyash" | null;
@@ -265,7 +267,7 @@ export default function DonationModal({
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                   <button
                     type="button"
-                    onClick={() => { setSelectedMethod("bank"); setPaymentReference(generateShortRef()); }}
+                    onClick={() => { setSelectedMethod("bank"); setPaymentReference(campaignReferenceNumber || generateShortRef()); }}
                     className={`min-h-[56px] sm:min-h-0 p-4 border-2 rounded-xl sm:rounded-full transition-all ${
                       selectedMethod === "bank"
                         ? "border-primary-600 bg-primary-50"
@@ -279,7 +281,7 @@ export default function DonationModal({
 
                   <button
                     type="button"
-                    onClick={() => { setSelectedMethod("digiwallet"); setPaymentReference(generateShortRef()); }}
+                    onClick={() => { setSelectedMethod("digiwallet"); setPaymentReference(campaignReferenceNumber || generateShortRef()); }}
                     className={`min-h-[56px] sm:min-h-0 p-4 border-2 rounded-xl sm:rounded-full transition-all ${
                       selectedMethod === "digiwallet"
                         ? "border-primary-600 bg-primary-50"
@@ -297,7 +299,7 @@ export default function DonationModal({
 
                   <button
                     type="button"
-                    onClick={() => { setSelectedMethod("ekyash"); setPaymentReference(generateShortRef()); }}
+                    onClick={() => { setSelectedMethod("ekyash"); setPaymentReference(campaignReferenceNumber || generateShortRef()); }}
                     className={`min-h-[56px] sm:min-h-0 p-4 border-2 rounded-xl sm:rounded-full transition-all ${
                       selectedMethod === "ekyash"
                         ? "border-primary-600 bg-primary-50"
