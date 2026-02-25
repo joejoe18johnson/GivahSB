@@ -139,8 +139,8 @@ export default function Home() {
 
           {/* Left: Content - vertically centered */}
           <div className="order-2 lg:order-1 flex flex-col justify-center mt-14 sm:mt-16 lg:mt-0 min-h-[320px] lg:min-h-[400px] animate-fade-in-up opacity-0 [animation-fill-mode:forwards]">
-            <div className="overflow-x-auto overflow-y-hidden -mx-4 px-4 sm:mx-0 sm:px-0 mb-4">
-              <h1 className="text-lg min-[400px]:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 whitespace-nowrap min-w-max">
+            <div className="overflow-x-auto overflow-y-hidden -mx-4 px-4 sm:mx-0 sm:px-0 mb-4 w-full md:w-max">
+              <h1 className="font-bold text-gray-900 whitespace-nowrap min-w-max md:w-auto text-[clamp(0.875rem,(100vw - 2rem) / 15,2.25rem)] md:text-4xl lg:text-5xl xl:text-6xl">
                 {siteContent.heroTitle.split(/(Burdens|Together)/).map((part, i) =>
                   part === "Burdens" ? (
                     <span key={i} className="text-accent-600">Burdens</span>
@@ -270,7 +270,7 @@ export default function Home() {
                   key={campaign.id}
                   className="flex-shrink-0 w-[85vw] max-w-[340px] min-h-[580px] snap-center snap-always"
                 >
-                  <div className="min-h-[580px] h-full rounded-lg border border-gray-200 hover:border-verified-500 active:scale-[0.98] transition-all duration-200 overflow-hidden bg-white flex flex-col">
+                  <div className="min-h-[580px] h-full rounded-lg border border-gray-200 hover:border-verified-500 active:scale-[0.98] transition-all duration-300 ease-in-out overflow-hidden bg-white flex flex-col">
                     <CampaignCard campaign={campaign} />
                   </div>
                 </div>
@@ -288,7 +288,7 @@ export default function Home() {
             type="button"
             onClick={() => scrollTrending("left")}
             disabled={!trendingCanScrollLeft}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 z-20 w-12 h-12 rounded-full bg-white border border-gray-200 shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:border-success-500 hover:text-success-600 transition-colors disabled:opacity-40 disabled:pointer-events-none"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 z-20 w-12 h-12 rounded-full bg-white border border-gray-200 shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:border-success-500 hover:text-success-600 transition-all duration-300 ease-in-out disabled:opacity-40 disabled:pointer-events-none"
             aria-label="Previous campaigns"
           >
             <ChevronLeft className="w-6 h-6" />
@@ -298,7 +298,7 @@ export default function Home() {
             type="button"
             onClick={() => scrollTrending("right")}
             disabled={!trendingCanScrollRight}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 z-20 w-12 h-12 rounded-full bg-white border border-gray-200 shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:border-success-500 hover:text-success-600 transition-colors disabled:opacity-40 disabled:pointer-events-none"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 z-20 w-12 h-12 rounded-full bg-white border border-gray-200 shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:border-success-500 hover:text-success-600 transition-all duration-300 ease-in-out disabled:opacity-40 disabled:pointer-events-none"
             aria-label="Next campaigns"
           >
             <ChevronRight className="w-6 h-6" />
@@ -313,7 +313,7 @@ export default function Home() {
               {allTrendingCampaigns.map((campaign) => (
                 <div
                   key={campaign.id}
-                  className="flex-shrink-0 w-[280px] h-[500px] snap-start rounded-lg border border-gray-200 hover:border-verified-500 hover:shadow-[rgba(17,12,46,0.15)_0px_48px_100px_0px] hover:scale-[1.02] transition-all duration-300 overflow-hidden bg-white"
+                  className="flex-shrink-0 w-[280px] h-[500px] snap-start rounded-lg border border-gray-200 hover:border-verified-500 hover:shadow-[rgba(17,12,46,0.15)_0px_48px_100px_0px] hover:scale-[1.02] transition-all duration-300 ease-in-out overflow-hidden bg-white"
                 >
                   <CampaignCard campaign={campaign} />
                 </div>
@@ -329,7 +329,7 @@ export default function Home() {
                   key={page}
                   type="button"
                   onClick={() => scrollTrendingToPage(page)}
-                  className={`w-10 h-10 flex items-center justify-center rounded-full font-medium transition-colors ${
+                  className={`w-10 h-10 flex items-center justify-center rounded-full font-medium transition-colors duration-300 ease-in-out ${
                     currentPage === page
                       ? "bg-success-500 text-white"
                       : "border border-gray-300 text-gray-700 hover:bg-gray-100"
@@ -348,7 +348,7 @@ export default function Home() {
         <div className="text-center mt-6">
           <Link
             href="/campaigns?filter=trending"
-            className="inline-block bg-success-500 text-white px-8 py-3 rounded-full font-medium hover:bg-success-600 transition-colors shadow-md"
+            className="inline-block bg-success-500 text-white px-8 py-3 rounded-full font-medium hover:bg-success-600 transition-colors duration-300 ease-in-out shadow-md"
           >
             View All Top Campaigns →
           </Link>
@@ -488,7 +488,7 @@ export default function Home() {
                 <li key={campaign.id}>
                   <Link
                     href={`/campaigns/${campaign.id}`}
-                    className="flex flex-row rounded-xl border border-white/30 bg-white/95 overflow-hidden shadow-sm hover:border-white/50 hover:shadow-md transition-all"
+                    className="flex flex-row rounded-xl border border-white/30 bg-white/95 overflow-hidden shadow-sm hover:border-white/50 hover:shadow-md transition-all duration-300 ease-in-out"
                   >
                     <div className="relative w-32 sm:w-40 flex-shrink-0 aspect-square bg-gray-200">
                       {campaign.image ? (
@@ -520,7 +520,7 @@ export default function Home() {
                       </h3>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 mt-3">
                         <div
-                          className="bg-verified-500 h-2.5 rounded-full transition-all"
+                          className="bg-verified-500 h-2.5 rounded-full transition-all duration-300 ease-in-out"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
@@ -553,7 +553,7 @@ export default function Home() {
             {siteContent.homeFaqs.map((faq, index) => (
               <div
                 key={index}
-                className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:border-primary-200 transition-colors"
+                className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:border-primary-200 transition-colors duration-300 ease-in-out"
               >
                 <button
                   type="button"
@@ -561,7 +561,7 @@ export default function Home() {
                   aria-expanded={faqOpenIndex === index}
                   aria-controls={`faq-answer-${index}`}
                   id={`faq-question-${index}`}
-                  className="w-full flex items-center justify-between gap-4 text-left px-5 py-4 font-medium hover:bg-gray-50 transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-between gap-4 text-left px-5 py-4 font-medium hover:bg-gray-50 transition-colors duration-300 ease-in-out cursor-pointer"
                   style={{ color: "#111827" }}
                 >
                   <span className="pr-2">{faq.q}</span>

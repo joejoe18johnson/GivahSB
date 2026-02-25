@@ -7,7 +7,13 @@ import SafeImage from "@/components/SafeImage";
 const HERO_MAIN = { src: "/hero-right.png", alt: "Community connection and support" };
 
 /** Circular images: Black, Mayan, and Latin American people — happy and grateful community. */
-const HERO_CIRCLES = [
+const HERO_CIRCLES: Array<{
+  src: string;
+  alt: string;
+  borderColor: string;
+  position: string;
+  onTop?: boolean;
+}> = [
   {
     src: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&h=200&fit=crop",
     alt: "Happy Black community member",
@@ -63,7 +69,7 @@ export default function HeroCommunityVisual() {
       {HERO_CIRCLES.map((circle, i) => (
         <div
           key={i}
-          className={`absolute z-10 rounded-full overflow-hidden shadow-lg ${circle.borderColor} ${circle.position}`}
+          className={`absolute rounded-full overflow-hidden shadow-lg ${circle.borderColor} ${circle.position} ${circle.onTop ? "z-20" : "z-10"}`}
         >
           <Image
             src={circle.src}

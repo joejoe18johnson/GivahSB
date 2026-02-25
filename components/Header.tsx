@@ -141,26 +141,26 @@ export default function Header() {
           <nav className="hidden lg:flex items-center gap-4 xl:gap-6 shrink-0">
             <Link
               href="/"
-              className="text-gray-700 hover:text-primary-600 transition-colors"
+              className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
             >
               Home
             </Link>
             <Link
               href="/campaigns"
-              className="text-gray-700 hover:text-primary-600 transition-colors"
+              className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
             >
               Campaigns
             </Link>
             <Link
               href="/success-stories"
-              className="text-gray-700 hover:text-primary-600 transition-colors"
+              className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
             >
               Success Stories
             </Link>
             {!isAdminRoute && (
               <Link
                 href="/how-it-works"
-                className="text-gray-700 hover:text-primary-600 transition-colors"
+                className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
               >
                 How It Works
               </Link>
@@ -170,7 +170,7 @@ export default function Header() {
                 {!isAdminRoute && (
                   <Link
                     href="/campaigns/create"
-                    className="text-gray-700 hover:text-primary-600 transition-colors"
+                    className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
                   >
                     Start Fundraising
                   </Link>
@@ -179,7 +179,7 @@ export default function Header() {
                   <button
                     type="button"
                     onClick={() => setShowNotificationDropdown((v) => !v)}
-                    className="relative w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:text-primary-600 hover:bg-gray-100 transition-colors flex-shrink-0"
+                    className="relative w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:text-primary-600 hover:bg-gray-100 transition-colors duration-300 ease-in-out flex-shrink-0"
                     aria-label="Notifications"
                   >
                     <Bell className="w-5 h-5" />
@@ -231,7 +231,7 @@ export default function Header() {
                 </div>
                 <Link
                   href="/liked-campaigns"
-                  className="relative w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:text-primary-600 hover:bg-gray-100 transition-colors flex-shrink-0"
+                  className="relative w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:text-primary-600 hover:bg-gray-100 transition-colors duration-300 ease-in-out flex-shrink-0"
                   aria-label="View liked campaigns"
                 >
                   <Heart className="w-5 h-5" />
@@ -300,13 +300,13 @@ export default function Header() {
               <>
                 <Link
                   href="/auth/login"
-                  className="text-gray-700 hover:text-primary-600 transition-colors"
+                  className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/auth/signup"
-                  className="bg-success-500 text-white px-4 py-2 rounded-full font-medium hover:bg-success-600 transition-colors"
+                  className="bg-success-500 text-white px-4 py-2 rounded-full font-medium hover:bg-success-600 transition-colors duration-300 ease-in-out"
                 >
                   Sign Up
                 </Link>
@@ -328,7 +328,7 @@ export default function Header() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="w-11 h-11 rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-colors flex-shrink-0"
+              className="w-11 h-11 rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out flex-shrink-0"
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
