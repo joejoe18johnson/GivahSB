@@ -30,7 +30,7 @@ const DEFAULT_HOME_FAQS: HomeFaqItem[] = [
   { q: "Why is trust so important?", a: "Trust is the foundation of generosity. When donors feel confident that their contributions are going to a real and verified need, they are more willing to give.\n\nThis platform exists to build that trust — protecting both donors and recipients." },
   { q: "Who can start a campaign?", a: "Individuals, families, or representatives seeking assistance for legitimate and verifiable needs may apply. Each request is reviewed before approval." },
   { q: "How do donors know their money is used properly?", a: "We encourage:\n• Clear goal amounts\n• Updates from campaign organizers\n• Documentation of how funds are used\n• Ongoing communication\n\nTransparency is a core value of this platform." },
-  { q: "What kinds of needs can be supported?", a: "Examples include:\n• Medical expenses\n• Educational support\n• Disaster recovery\n\nEach campaign is evaluated individually to ensure it aligns with our guidelines." },
+  { q: "What kinds of needs can be supported?", a: "Examples include:\n• Medical expenses\n• Educational support\n• Community and emergency support\n\nEach campaign is evaluated individually to ensure it aligns with our guidelines." },
   { q: "What is the mission of this platform?", a: "Our mission is simple: To connect real needs with real generosity — through a trusted, verified, and transparent system that strengthens our community." },
 ];
 

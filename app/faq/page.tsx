@@ -63,7 +63,7 @@ export default function FAQPage() {
             <li>Medical costs and healthcare expenses</li>
             <li>Education (school supplies, tuition, resources)</li>
             <li>Community projects and initiatives</li>
-            <li>Disaster relief and emergency situations</li>
+            <li>Emergency situations</li>
             <li>Charity events and non-profit organizations</li>
             <li>Personal support and financial hardship</li>
           </ul>

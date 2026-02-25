@@ -93,11 +93,6 @@ export default function HowItWorksPage() {
       image: "https://picsum.photos/seed/usecase6/600/400"
     },
     {
-      title: "Disaster Relief",
-      description: "Emergency funding for hurricane damage, floods, or natural disasters",
-      image: "https://picsum.photos/seed/usecase4/600/400"
-    },
-    {
       title: "Charity Events",
       description: "Raise funds for charity organizations, non-profits, or community events",
       image: "https://picsum.photos/seed/usecase5/600/400"
