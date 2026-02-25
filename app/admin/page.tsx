@@ -298,16 +298,16 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Recent data sections */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm min-w-0">
           <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
             <h2 className="font-semibold text-gray-900">Recent Campaigns</h2>
             <Link href="/admin/campaigns" className="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
               View all <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto min-w-0" style={{ WebkitOverflowScrolling: "touch" }}>
+            <table className="w-full text-sm min-w-[500px]">
               <thead>
                 <tr className="bg-gray-50 text-left text-gray-500">
                   <th className="px-5 py-3 font-medium">Title</th>
@@ -339,7 +339,7 @@ export default function AdminDashboardPage() {
               View all <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto min-w-0" style={{ WebkitOverflowScrolling: "touch" }}>
             <table className="w-full text-sm min-w-[640px]">
               <thead>
                 <tr className="bg-gray-50 text-left text-gray-500">
@@ -472,15 +472,15 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm min-w-0">
         <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
           <h2 className="font-semibold text-gray-900">Recent Donations</h2>
           <Link href="/admin/donations" className="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
             View all <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto min-w-0" style={{ WebkitOverflowScrolling: "touch" }}>
+          <table className="w-full text-sm min-w-[700px]">
             <thead>
               <tr className="bg-gray-50 text-left text-gray-500">
                 <th className="px-5 py-3 font-medium">Ref</th>

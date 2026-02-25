@@ -438,8 +438,8 @@ export default function AdminLayout({
         </nav>
       </aside>
 
-      <main className="min-h-screen pt-4 md:pt-6 md:pl-56">
-        <div className="p-4 md:p-6 lg:p-8">{children}</div>
+      <main className="min-h-screen pt-4 md:pt-6 md:pl-56 min-w-0 flex-1">
+        <div className="p-4 md:p-6 lg:p-8 min-w-0">{children}</div>
       </main>
     </div>
   );

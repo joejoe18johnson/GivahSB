@@ -129,9 +129,10 @@ export default function AdminPayoutsPage() {
           No payout requests yet.
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+        <div className="bg-white rounded-xl border border-gray-200 min-w-0">
+          <p className="px-4 py-2 text-xs text-gray-500 border-b border-gray-100 md:sr-only" aria-hidden="true">Scroll horizontally to view all columns.</p>
+          <div className="overflow-x-auto min-w-0 w-full" style={{ WebkitOverflowScrolling: "touch" }}>
+            <table className="w-full text-sm min-w-[900px] divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>

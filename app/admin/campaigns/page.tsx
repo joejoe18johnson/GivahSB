@@ -186,7 +186,7 @@ export default function AdminCampaignsPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm min-w-0">
         <p className="px-5 py-2 text-xs text-gray-500 border-b border-gray-100 md:sr-only" aria-hidden="true">
           Scroll horizontally to view Status, Verified, Actions, and ID columns.
         </p>
