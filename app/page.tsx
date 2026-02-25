@@ -144,7 +144,7 @@ export default function Home() {
                 part === "Burdens" ? (
                   <span key={i} className="text-accent-600">Burdens</span>
                 ) : part === "Together" ? (
-                  <span key={i} className="text-success-600">Together</span>
+                  <span key={i} className="text-verified-600">Together</span>
                 ) : (
                   <span key={i}>{part}</span>
                 )
