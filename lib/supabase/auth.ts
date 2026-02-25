@@ -92,7 +92,11 @@ export async function supabaseUserToProfile(
         .update({ role: "admin", updated_at: new Date().toISOString() })
         .eq("id", supabaseUser.id);
     }
-    return rowToProfile(row, email || (row.email as string));
+    const profile = rowToProfile(row, email || (row.email as string));
+    // Use Google avatar when profile has no custom photo (e.g. first sign-in or never uploaded)
+    const googleAvatar = supabaseUser.user_metadata?.avatar_url as string | undefined;
+    if (!profile.profilePhoto && googleAvatar) profile.profilePhoto = googleAvatar;
+    return profile;
   }
   return rowToProfile(
     {

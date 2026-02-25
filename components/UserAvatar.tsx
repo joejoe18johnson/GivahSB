@@ -18,9 +18,34 @@ const sizeClasses = {
 
 const sizePx = { 32: 32, 40: 40, 96: 96 } as const;
 
+/** Vibrant background colors for initial avatars (white letter). Same user => same color. */
+const INITIAL_AVATAR_COLORS = [
+  "bg-[#0d9488]", // teal
+  "bg-[#0891b2]", // cyan
+  "bg-[#2563eb]", // blue
+  "bg-[#4f46e5]", // indigo
+  "bg-[#7c3aed]", // violet
+  "bg-[#a855f7]", // purple
+  "bg-[#c026d3]", // fuchsia
+  "bg-[#db2777]", // pink
+  "bg-[#dc2626]", // red
+  "bg-[#ea580c]", // orange
+  "bg-[#ca8a04]", // yellow
+  "bg-[#65a30d]", // lime
+  "bg-[#059669]", // emerald
+] as const;
+
+function getInitialAvatarColor(name?: string, email?: string): string {
+  const seed = (name?.trim() || "") + (email?.trim() || "");
+  if (!seed) return INITIAL_AVATAR_COLORS[0];
+  let n = 0;
+  for (let i = 0; i < seed.length; i++) n = (n * 31 + seed.charCodeAt(i)) >>> 0;
+  return INITIAL_AVATAR_COLORS[n % INITIAL_AVATAR_COLORS.length];
+}
+
 /**
- * Shows user profile photo or a default avatar with the first letter of their name.
- * For Google sign-in without a profile pic, the initial is used.
+ * Shows user profile photo (e.g. Google image) or an initial avatar: first letter on a colored circle.
+ * For no photo, uses a deterministic color from name/email so the same user always gets the same color.
  */
 export default function UserAvatar({
   profilePhoto,
@@ -46,9 +71,10 @@ export default function UserAvatar({
     );
   }
 
+  const bgColor = getInitialAvatarColor(name, email);
   return (
     <div
-      className={`rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0 ${sizeClass} ${className}`}
+      className={`rounded-full overflow-hidden ${bgColor} flex items-center justify-center text-white font-medium flex-shrink-0 ${sizeClass} ${className}`}
       aria-hidden
     >
       <span>{initial}</span>
