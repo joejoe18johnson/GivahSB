@@ -6,41 +6,41 @@ import SafeImage from "@/components/SafeImage";
 /** Main hero image (center) */
 const HERO_MAIN = { src: "/hero-right.png", alt: "Community connection and support" };
 
-/** Circular images around the hero: happy and grateful people (Hispanic and Black). Use local /hero/*.jpg or Unsplash. */
+/** Circular images: Black, Mayan, and Latin American people — happy and grateful community. */
 const HERO_CIRCLES = [
   {
     src: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&h=200&fit=crop",
-    alt: "Happy community member",
+    alt: "Happy Black community member",
     borderColor: "ring-4 ring-green-500",
     position: "top-[8%] left-[0%] w-20 h-20 sm:w-24 sm:h-24",
   },
   {
     src: "https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=200&h=200&fit=crop",
-    alt: "Grateful community member",
+    alt: "Grateful Latin American community member",
     borderColor: "ring-4 ring-pink-400",
     position: "top-[5%] right-[5%] w-20 h-20 sm:w-24 sm:h-24",
   },
   {
-    src: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=200&h=200&fit=crop",
-    alt: "Community support",
+    src: "https://images.unsplash.com/photo-1529636798458-92182e662485?w=200&h=200&fit=crop",
+    alt: "Mayan woman in traditional dress",
     borderColor: "ring-4 ring-amber-400",
     position: "top-[45%] right-[-2%] w-16 h-16 sm:w-20 sm:h-20",
   },
   {
-    src: "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=200&h=200&fit=crop",
-    alt: "Grateful hands",
+    src: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop",
+    alt: "Black woman, grateful community supporter",
     borderColor: "ring-4 ring-green-500",
     position: "bottom-[28%] right-[2%] w-16 h-16 sm:w-20 sm:h-20",
   },
   {
-    src: "https://images.unsplash.com/photo-1544005313-94ddf0286df8?w=200&h=200&fit=crop",
-    alt: "Happy supporter",
+    src: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=200&h=200&fit=crop",
+    alt: "Happy Latin American man",
     borderColor: "ring-4 ring-green-500",
     position: "bottom-[18%] right-[12%] w-14 h-14 sm:w-20 sm:h-20",
   },
   {
-    src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
-    alt: "Community member",
+    src: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
+    alt: "Latin American community member",
     borderColor: "ring-4 ring-primary-400",
     position: "bottom-[8%] left-[15%] w-14 h-14 sm:w-20 sm:h-20",
   },
