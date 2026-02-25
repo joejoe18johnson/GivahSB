@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useThemedModal } from "@/components/ThemedModal";
 import { Banknote, CheckCircle, Loader2 } from "lucide-react";
 
@@ -42,7 +42,7 @@ export default function AdminPayoutsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [completingId, setCompletingId] = useState<string | null>(null);
 
-  async function loadPayouts() {
+  const loadPayouts = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetch("/api/admin/payouts", { credentials: "include" });
@@ -62,11 +62,11 @@ export default function AdminPayoutsPage() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- loadPayouts intentionally runs once on mount
 
   useEffect(() => {
     loadPayouts();
-  }, []);
+  }, [loadPayouts]);
 
   async function handleComplete(id: string) {
     setCompletingId(id);

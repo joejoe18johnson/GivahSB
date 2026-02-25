@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { X, Heart, Building2, CheckCircle2, Copy } from "lucide-react";
 import { formatCurrency, generateShortRef } from "@/lib/utils";
 import { useThemedModal } from "@/components/ThemedModal";
@@ -23,6 +24,7 @@ export default function DonationModal({
   amount,
   isOpen,
   onClose,
+  campaignReferenceNumber,
 }: DonationModalProps) {
   const { alert } = useThemedModal();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(null);
@@ -288,11 +290,15 @@ export default function DonationModal({
                         : "border-gray-200 hover:border-primary-300"
                     }`}
                   >
-                    <img
-                      src="https://www.digiwallet.bz/wp-content/uploads/2021/11/DWL-web-logo.png"
-                      alt="Digi Wallet"
-                      className="w-10 h-10 mx-auto mb-2 object-contain"
-                    />
+                    <span className="relative w-10 h-10 mx-auto mb-2 block">
+                      <Image
+                        src="https://www.digiwallet.bz/wp-content/uploads/2021/11/DWL-web-logo.png"
+                        alt="Digi Wallet"
+                        width={40}
+                        height={40}
+                        className="object-contain"
+                      />
+                    </span>
                     <p className="font-medium">Digi Wallet</p>
                     <p className="text-xs text-gray-600 mt-1">Mobile wallet</p>
                   </button>
@@ -306,11 +312,15 @@ export default function DonationModal({
                         : "border-gray-200 hover:border-primary-300"
                     }`}
                   >
-                    <img
-                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTvpM-CtfXjjUgsq68dcfYkTzk88ke86G-5A&s"
-                      alt="E-Kyash"
-                      className="w-10 h-10 mx-auto mb-2 object-contain"
-                    />
+                    <span className="relative w-10 h-10 mx-auto mb-2 block">
+                      <Image
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTvpM-CtfXjjUgsq68dcfYkTzk88ke86G-5A&s"
+                        alt="E-Kyash"
+                        width={40}
+                        height={40}
+                        className="object-contain"
+                      />
+                    </span>
                     <p className="font-medium">E-Kyash</p>
                     <p className="text-xs text-gray-600 mt-1">Mobile payments</p>
                   </button>
@@ -390,10 +400,12 @@ export default function DonationModal({
               {selectedMethod === "digiwallet" && (
                 <div className="mb-6 bg-white rounded-lg p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <img
+                    <Image
                       src="https://www.digiwallet.bz/wp-content/uploads/2021/11/DWL-web-logo.png"
                       alt="Digi Wallet"
-                      className="w-12 h-12 object-contain"
+                      width={48}
+                      height={48}
+                      className="object-contain"
                     />
                     <h4 className="font-medium">Digi Wallet Payment</h4>
                   </div>
@@ -434,10 +446,12 @@ export default function DonationModal({
               {selectedMethod === "ekyash" && (
                 <div className="mb-6 bg-white rounded-lg p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <img
+                    <Image
                       src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTvpM-CtfXjjUgsq68dcfYkTzk88ke86G-5A&s"
                       alt="E-Kyash"
-                      className="w-12 h-12 object-contain"
+                      width={48}
+                      height={48}
+                      className="object-contain"
                     />
                     <h4 className="font-medium">E-Kyash Payment</h4>
                   </div>
