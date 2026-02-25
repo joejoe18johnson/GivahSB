@@ -25,7 +25,8 @@ export default function DonorsList({ campaignId }: DonorsListProps) {
       try {
         const res = await fetch(`/api/campaigns/${campaignId}/donations`, { cache: "no-store" });
         const fetchedDonations = res.ok ? await res.json() : [];
-        setDonations((fetchedDonations as AdminDonation[]).filter((d) => d.status === "completed"));
+        // Show all donations (completed and pending) so donors see their support; pending show a badge
+        setDonations((fetchedDonations as AdminDonation[]) || []);
       } catch (error) {
         console.error("Error loading donations:", error);
         setDonations([]);
@@ -37,10 +38,12 @@ export default function DonorsList({ campaignId }: DonorsListProps) {
   }, [campaignId]);
 
   const sortedDonations = useMemo(() => {
-    let filtered = [...donations];
-
-    // Sort
-    filtered.sort((a, b) => {
+    const list = [...donations];
+    // Completed first, then pending; within each group sort by selected order
+    list.sort((a, b) => {
+      const aDone = a.status === "completed" ? 1 : 0;
+      const bDone = b.status === "completed" ? 1 : 0;
+      if (bDone !== aDone) return bDone - aDone;
       if (sortBy === "date-desc") {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       } else if (sortBy === "date-asc") {
@@ -51,8 +54,7 @@ export default function DonorsList({ campaignId }: DonorsListProps) {
         return a.amount - b.amount;
       }
     });
-
-    return filtered;
+    return list;
   }, [donations, sortBy]);
 
   return (
@@ -114,6 +116,11 @@ export default function DonorsList({ campaignId }: DonorsListProps) {
                     </p>
                     <p className="text-sm text-gray-500 mt-0.5">
                       {formatRelativeTime(donation.createdAt)}
+                      {donation.status === "pending" && (
+                        <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">
+                          Pending approval
+                        </span>
+                      )}
                     </p>
                     {donation.note && (
                       <p className="text-sm text-gray-600 mt-2 italic">&ldquo;{donation.note}&rdquo;</p>

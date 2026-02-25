@@ -353,11 +353,11 @@ export default function Header() {
               />
             </form>
             <nav className="flex flex-col gap-1">
-              <Link href="/" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100" onClick={closeMobileMenu}>Home</Link>
-              <Link href="/campaigns" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100" onClick={closeMobileMenu}>Campaigns</Link>
-              <Link href="/success-stories" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100" onClick={closeMobileMenu}>Success Stories</Link>
+              <Link href="/" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Home</Link>
+              <Link href="/campaigns" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Campaigns</Link>
+              <Link href="/success-stories" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Success Stories</Link>
               {!isAdminRoute && (
-                <Link href="/how-it-works" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100" onClick={closeMobileMenu}>How It Works</Link>
+                <Link href="/how-it-works" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>How It Works</Link>
               )}
               {user ? (
                 <>
@@ -379,10 +379,10 @@ export default function Header() {
                       </span>
                     )}
                   </Link>
-                  <Link href="/profile" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100" onClick={closeMobileMenu}>My Profile</Link>
-                  <Link href="/my-campaigns" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100" onClick={closeMobileMenu}>My Campaigns</Link>
+                  <Link href="/profile" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>My Profile</Link>
+                  <Link href="/my-campaigns" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>My Campaigns</Link>
                   {isAdmin && (
-                    <Link href="/admin" className="px-4 py-3 rounded-lg text-primary-600 font-medium hover:bg-primary-50" onClick={closeMobileMenu}>Admin</Link>
+                    <Link href="/admin" className="px-4 py-3 rounded-lg text-primary-600 font-medium hover:bg-primary-50 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Admin</Link>
                   )}
                   <Link href="/notifications" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2" onClick={closeMobileMenu}>
                     <Bell className="w-4 h-4" />
@@ -399,8 +399,8 @@ export default function Header() {
                 </>
               ) : (
                 <>
-                  <Link href="/auth/login" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100" onClick={closeMobileMenu}>Sign In</Link>
-                  <Link href="/auth/signup" className="mx-4 mt-2 block text-center bg-success-500 text-white py-3 rounded-full font-medium" onClick={closeMobileMenu}>Sign Up</Link>
+                  <Link href="/auth/login" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Sign In</Link>
+                  <Link href="/auth/signup" className="mx-4 mt-2 block text-center bg-success-500 text-white py-3 rounded-full font-medium hover:bg-success-600 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Sign Up</Link>
                 </>
               )}
             </nav>

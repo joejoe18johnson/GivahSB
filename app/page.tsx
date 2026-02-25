@@ -138,31 +138,33 @@ export default function Home() {
           <div className="absolute bottom-32 right-20 w-32 h-32 rounded-full bg-primary-100/50 -z-10" aria-hidden />
 
           {/* Left: Content - vertically centered */}
-          <div className="order-2 lg:order-1 flex flex-col justify-center mt-14 sm:mt-16 lg:mt-0 min-h-[320px] lg:min-h-[400px]">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 whitespace-nowrap">
-              {siteContent.heroTitle.split(/(Burdens|Together)/).map((part, i) =>
-                part === "Burdens" ? (
-                  <span key={i} className="text-accent-600">Burdens</span>
-                ) : part === "Together" ? (
-                  <span key={i} className="text-verified-600">Together</span>
-                ) : (
-                  <span key={i}>{part}</span>
-                )
-              )}
-            </h1>
+          <div className="order-2 lg:order-1 flex flex-col justify-center mt-14 sm:mt-16 lg:mt-0 min-h-[320px] lg:min-h-[400px] animate-fade-in-up opacity-0 [animation-fill-mode:forwards]">
+            <div className="overflow-x-auto overflow-y-hidden -mx-4 px-4 sm:mx-0 sm:px-0 mb-4">
+              <h1 className="text-lg min-[400px]:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 whitespace-nowrap min-w-max">
+                {siteContent.heroTitle.split(/(Burdens|Together)/).map((part, i) =>
+                  part === "Burdens" ? (
+                    <span key={i} className="text-accent-600">Burdens</span>
+                  ) : part === "Together" ? (
+                    <span key={i} className="text-verified-600">Together</span>
+                  ) : (
+                    <span key={i}>{part}</span>
+                  )
+                )}
+              </h1>
+            </div>
             <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-xl">
               {siteContent.heroSubtitle}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-10">
               <Link
                 href="/campaigns/create"
-                className="inline-flex justify-center bg-primary-600 text-white px-8 py-3 rounded-full font-medium hover:bg-primary-700 transition-colors shadow-lg"
+                className="inline-flex justify-center bg-primary-600 text-white px-8 py-3 rounded-full font-medium hover:bg-primary-700 transition-all duration-300 ease-in-out shadow-lg"
               >
                 Start a Campaign
               </Link>
               <Link
                 href="/campaigns"
-                className="inline-flex justify-center border-2 border-gray-800 text-gray-800 px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition-colors"
+                className="inline-flex justify-center border-2 border-gray-800 text-gray-800 px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition-all duration-300 ease-in-out"
               >
                 Browse Campaigns
               </Link>
@@ -176,21 +178,21 @@ export default function Home() {
               </Link>
             </div>
             <div className="mt-8 flex justify-start">
-              <a href="#community-wins" className="text-gray-400 hover:text-gray-600 transition-colors" aria-label="Scroll down">
+              <a href="#community-wins" className="text-gray-400 hover:text-gray-600 transition-colors duration-300 ease-in-out" aria-label="Scroll down">
                 <ChevronDown className="w-8 h-8" />
               </a>
             </div>
           </div>
 
           {/* Right: Hero with central image + circular photos of happy/grateful community (Hispanic & Black) */}
-          <div className="order-1 lg:order-2 flex justify-center items-start">
+          <div className="order-1 lg:order-2 flex justify-center items-start animate-fade-in-up opacity-0 [animation-delay:0.1s] [animation-fill-mode:forwards]">
             <HeroCommunityVisual />
           </div>
         </section>
         </div>
 
         {/* Communities Share Burdens - visible at bottom of first viewport */}
-        <section id="community-shares-burdens" className="flex-shrink-0 -mt-[40px] pt-4 pb-8 md:pb-12">
+        <section id="community-shares-burdens" className="flex-shrink-0 -mt-[40px] pt-4 pb-8 md:pb-12 animate-fade-in-up opacity-0 [animation-delay:0.2s] [animation-fill-mode:forwards]">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-center break-words max-w-full px-2">
               <span className="text-primary-600">{siteContent.communityHeadingPart1}</span>
@@ -201,7 +203,7 @@ export default function Home() {
       </div>
 
       {/* Top Campaigns */}
-      <section className="mb-12 relative py-8 md:py-12 overflow-hidden bg-white">
+      <section className="mb-12 relative py-8 md:py-12 overflow-hidden bg-white animate-fade-in opacity-0 [animation-delay:0.25s] [animation-fill-mode:forwards]">
         <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0">
@@ -364,7 +366,7 @@ export default function Home() {
             </p>
             <Link
               href="/campaigns/create"
-              className="inline-block bg-white text-success-600 px-8 py-4 rounded-full font-medium hover:bg-white/90 transition-colors shadow-lg text-lg"
+              className="inline-block bg-white text-success-600 px-8 py-4 rounded-full font-medium hover:bg-white/90 transition-all duration-300 ease-in-out shadow-lg text-lg"
             >
               Start Campaign
             </Link>
@@ -467,7 +469,7 @@ export default function Home() {
           <div className="text-center mt-8">
             <Link
               href="/campaigns/create"
-              className="inline-block bg-white text-primary-600 px-6 py-3 rounded-full font-medium hover:bg-white/90 transition-colors shadow-lg"
+              className="inline-block bg-white text-primary-600 px-6 py-3 rounded-full font-medium hover:bg-white/90 transition-all duration-300 ease-in-out shadow-lg"
             >
               Start Your Campaign Today
             </Link>
