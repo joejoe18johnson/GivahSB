@@ -393,6 +393,7 @@ export default function MyCampaignsPage() {
           {myCampaigns.map((campaign) => {
             const progress = Math.min((campaign.raised / campaign.goal) * 100, 100);
             const isStopped = stoppedIds.has(campaign.id);
+            const goalReached = campaign.goal > 0 && campaign.raised >= campaign.goal;
             return (
               <div
                 key={campaign.id}
@@ -499,6 +500,15 @@ export default function MyCampaignsPage() {
                     </div>
 
                     <div className="mt-4 pt-4 border-t border-gray-200 flex flex-wrap items-center gap-2">
+                      {goalReached && !isStopped && (
+                        <Link
+                          href={`/my-campaigns/${campaign.id}/request-payout`}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700 text-sm font-medium transition-colors"
+                        >
+                          <DollarSign className="w-4 h-4" />
+                          Request Payout
+                        </Link>
+                      )}
                       <Link
                         href={`/my-campaigns/${campaign.id}/donations`}
                         className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-verified-500 text-white hover:bg-verified-600 text-sm font-medium transition-colors"

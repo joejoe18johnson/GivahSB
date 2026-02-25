@@ -17,7 +17,7 @@ export async function GET(
   if (!campaignId) return NextResponse.json({ error: "Campaign ID required" }, { status: 400 });
   try {
     const supabase = getSupabaseAdmin()!;
-    const list = await getDonations(supabase, campaignId);
+    const list = await getDonations(supabase, campaignId, { completedOnly: true });
     return NextResponse.json(list);
   } catch {
     return NextResponse.json([], { status: 200 });

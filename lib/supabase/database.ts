@@ -274,11 +274,13 @@ export async function getLiveCampaignsForUser(
 // Donations
 export async function getDonations(
   supabase: SupabaseClient,
-  campaignId?: string
+  campaignId?: string,
+  options?: { completedOnly?: boolean }
 ): Promise<AdminDonation[]> {
   let query = supabase.from("donations").select("*");
   if (campaignId) query = query.eq("campaign_id", campaignId);
-  else query = query.order("created_at", { ascending: false });
+  if (options?.completedOnly) query = query.eq("status", "completed");
+  if (!campaignId) query = query.order("created_at", { ascending: false });
   const { data, error } = await query;
   if (error) throw error;
   const donations = (data || []).map((d: DonationRow) => ({
@@ -699,6 +701,65 @@ export async function deleteNotification(
     .eq("user_id", userId);
   if (error) throw error;
   return true;
+}
+
+// Payout requests
+export interface PayoutRequestRow {
+  id: string;
+  campaign_id: string;
+  user_id: string;
+  bank_name: string;
+  account_type: string;
+  account_number: string;
+  account_holder_name: string;
+  branch: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export async function getPayoutRequestByCampaign(
+  supabase: SupabaseClient,
+  campaignId: string
+): Promise<PayoutRequestRow | null> {
+  const { data, error } = await supabase
+    .from("payout_requests")
+    .select("*")
+    .eq("campaign_id", campaignId)
+    .single();
+  if (error || !data) return null;
+  return data as PayoutRequestRow;
+}
+
+export async function createPayoutRequest(
+  supabase: SupabaseClient,
+  campaignId: string,
+  userId: string,
+  data: {
+    bankName: string;
+    accountType: "savings" | "checking";
+    accountNumber: string;
+    accountHolderName: string;
+    branch?: string;
+  }
+): Promise<string> {
+  const { data: row, error } = await supabase
+    .from("payout_requests")
+    .insert({
+      campaign_id: campaignId,
+      user_id: userId,
+      bank_name: data.bankName,
+      account_type: data.accountType,
+      account_number: data.accountNumber,
+      account_holder_name: data.accountHolderName,
+      branch: data.branch ?? null,
+      status: "pending",
+      updated_at: new Date().toISOString(),
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return row.id;
 }
 
 // Profiles (admin users list)

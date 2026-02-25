@@ -38,7 +38,7 @@ export async function GET(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const donations = await getDonations(supabase, campaignId);
+  const donations = await getDonations(supabase, campaignId, { completedOnly: true });
   const campaign = {
     id: (row as { id: string }).id,
     title: (row as { title: string }).title,
