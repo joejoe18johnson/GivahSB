@@ -237,15 +237,24 @@ const DONOR_POOL: Array<{ name: string; email: string }> = [
 
 const METHODS = ["bank", "digiwallet", "ekyash"] as const;
 
-/** Build donation amounts that sum exactly to `raised` with `backers` count (integers). */
+/** Build random donation amounts that sum exactly to `raised` with `backers` count (positive integers). */
 function donationAmounts(raised: number, backers: number): number[] {
   if (backers <= 0) return [];
   if (backers === 1) return [raised];
-  const base = Math.floor(raised / backers);
-  const remainder = raised - base * backers;
-  const amounts: number[] = [];
-  for (let i = 0; i < backers - remainder; i++) amounts.push(base);
-  for (let i = 0; i < remainder; i++) amounts.push(base + 1);
+  if (raised < backers) {
+    const base = Math.floor(raised / backers);
+    const r = raised - base * backers;
+    return [...Array(backers - r).fill(base), ...Array(r).fill(base + 1)];
+  }
+  // Pick (backers - 1) distinct split points in [1, raised-1]; gaps (+ first/last) give amounts that sum to raised
+  const points = new Set<number>();
+  while (points.size < backers - 1) {
+    points.add(Math.floor(Math.random() * (raised - 1)) + 1);
+  }
+  const sorted = Array.from(points).sort((a, b) => a - b);
+  const amounts: number[] = [sorted[0]];
+  for (let i = 1; i < sorted.length; i++) amounts.push(sorted[i] - sorted[i - 1]);
+  amounts.push(raised - sorted[sorted.length - 1]);
   return amounts;
 }
 
