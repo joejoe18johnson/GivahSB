@@ -39,15 +39,14 @@ export default function NotificationsPage() {
   }, [user, isLoading, router]);
 
   const handleClick = async (n: UserNotification) => {
-    if (!n.read) {
-      try {
-        await fetch(`/api/notifications/${n.id}/read`, { method: "PATCH", credentials: "include" });
-        setNotifications((prev) => prev.map((x) => (x.id === n.id ? { ...x, read: true } : x)));
-      } catch {
-        // ignore
-      }
+    try {
+      await fetch(`/api/notifications/${n.id}`, { method: "DELETE", credentials: "include" });
+      setNotifications((prev) => prev.filter((x) => x.id !== n.id));
+    } catch {
+      // ignore
     }
-    if (n.campaignId) router.push(`/campaigns/${n.campaignId}`);
+    if (n.campaignId && n.type === "donation") router.push(`/my-campaigns/${n.campaignId}/donations`);
+    else if (n.campaignId) router.push(`/campaigns/${n.campaignId}`);
     else router.push("/my-campaigns");
   };
 

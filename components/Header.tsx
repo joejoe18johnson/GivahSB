@@ -67,18 +67,18 @@ export default function Header() {
   }, []);
 
   const handleNotificationClick = async (n: UserNotification) => {
-    if (!n.read) {
-      try {
-        await fetch(`/api/notifications/${n.id}/read`, { method: "PATCH" });
-        setNotifications((prev) => prev.map((x) => (x.id === n.id ? { ...x, read: true } : x)));
-        setUnreadCount((c) => Math.max(0, c - 1));
-      } catch {
-        // ignore
-      }
+    try {
+      await fetch(`/api/notifications/${n.id}`, { method: "DELETE", credentials: "include" });
+      setNotifications((prev) => prev.filter((x) => x.id !== n.id));
+      setTotalNotificationCount((c) => Math.max(0, c - 1));
+      if (!n.read) setUnreadCount((c) => Math.max(0, c - 1));
+    } catch {
+      // ignore
     }
     setShowNotificationDropdown(false);
     setMobileMenuOpen(false);
-    if (n.campaignId) router.push(`/campaigns/${n.campaignId}`);
+    if (n.campaignId && n.type === "donation") router.push(`/my-campaigns/${n.campaignId}/donations`);
+    else if (n.campaignId) router.push(`/campaigns/${n.campaignId}`);
     else router.push("/my-campaigns");
   };
   
