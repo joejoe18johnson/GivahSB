@@ -114,6 +114,9 @@ export default function SignupPage() {
                 setError("");
                 let isRedirecting = false;
                 try {
+                  if (typeof window !== "undefined") {
+                    sessionStorage.setItem("auth_callback_url", "/my-campaigns");
+                  }
                   await loginWithGoogle();
                   // Redirect is handled by useEffect when user and adminCheckDone update (admins → /admin, others → /my-campaigns)
                 } catch (err: unknown) {

@@ -49,6 +49,9 @@ function LoginForm() {
   const handleGoogleSignIn = async () => {
     setError("");
     setGoogleLoading(true);
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("auth_callback_url", callbackUrl);
+    }
     let isRedirecting = false;
     try {
       await loginWithGoogle();
