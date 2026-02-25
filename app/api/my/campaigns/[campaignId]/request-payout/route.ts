@@ -134,20 +134,30 @@ export async function POST(
     const titleForNotif = (row as { title?: string }).title ?? "Campaign";
     const adminEmails = getAdminEmails();
     if (adminEmails.length > 0) {
-      const adminIds = await getAdminUserIds(supabase, adminEmails);
-      for (const adminId of adminIds) {
-        await addNotification(supabase, adminId, {
-          type: "payout_request",
-          title: "Payout requested",
-          body: `Creator requested payout of ${amountStr} for "${titleForNotif}".`,
-          campaignId,
-          read: false,
-        });
+      try {
+        const adminIds = await getAdminUserIds(supabase, adminEmails);
+        for (const adminId of adminIds) {
+          await addNotification(supabase, adminId, {
+            type: "payout_request",
+            title: "Payout requested",
+            body: `Creator requested payout of ${amountStr} for "${titleForNotif}".`,
+            campaignId,
+            read: false,
+          });
+        }
+      } catch (notifyErr) {
+        console.error("[request-payout] Admin notification failed (payout was created):", notifyErr);
       }
     }
     return NextResponse.json({ success: true, id });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Failed to submit payout request.";
+    console.error("[request-payout] POST error:", err);
+    const msg =
+      err instanceof Error
+        ? err.message
+        : typeof (err as { message?: string })?.message === "string"
+          ? (err as { message: string }).message
+          : "Failed to submit payout request.";
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

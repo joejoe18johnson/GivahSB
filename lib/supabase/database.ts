@@ -8,6 +8,17 @@ import type { Campaign } from "@/lib/data";
 import type { AdminDonation } from "@/lib/adminData";
 import { generateShortRef } from "@/lib/utils";
 
+/** Generate a unique campaign reference (e.g. GV-A1234). Used for all donations to that campaign. */
+export async function generateUniqueCampaignReference(supabase: SupabaseClient): Promise<string> {
+  const maxAttempts = 50;
+  for (let i = 0; i < maxAttempts; i++) {
+    const ref = "GV-" + generateShortRef();
+    const { data } = await supabase.from("campaigns").select("id").eq("reference_number", ref).maybeSingle();
+    if (!data) return ref;
+  }
+  throw new Error("Could not generate unique campaign reference");
+}
+
 // Row types (snake_case from DB)
 interface CampaignRow {
   id: string;
@@ -28,6 +39,7 @@ interface CampaignRow {
   status: string;
   verified: boolean;
   admin_backed: boolean;
+  reference_number: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -84,6 +96,7 @@ function toCampaign(r: CampaignRow): Campaign {
     createdAt,
     verified: !!r.verified,
     adminBacked: r.admin_backed ?? undefined,
+    referenceNumber: r.reference_number ?? undefined,
   };
 }
 
