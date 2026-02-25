@@ -382,7 +382,7 @@ export default function ProfileView(props: ProfileViewProps) {
                     value={idDocumentType}
                     onChange={(e) => setIdDocumentType((e.target.value || "") as IdDocumentTypeValue)}
                     disabled={idBlocked}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-500"
+                    className="w-full px-4 py-2 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-500 disabled:border-gray-300"
                   >
                     <option value="">Select ID type</option>
                     <option value="social_security">Social Security Card</option>

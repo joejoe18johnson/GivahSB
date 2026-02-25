@@ -81,13 +81,12 @@ export default function DonorsList({ campaignId }: DonorsListProps) {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortBy)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm bg-white text-gray-900"
-              style={{ color: '#111827' }}
+              className="w-full px-3 py-2 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm bg-primary-50 text-gray-900"
             >
-              <option value="date-desc" style={{ color: '#111827', backgroundColor: '#ffffff' }}>Newest first</option>
-              <option value="date-asc" style={{ color: '#111827', backgroundColor: '#ffffff' }}>Oldest first</option>
-              <option value="amount-desc" style={{ color: '#111827', backgroundColor: '#ffffff' }}>Highest amount</option>
-              <option value="amount-asc" style={{ color: '#111827', backgroundColor: '#ffffff' }}>Lowest amount</option>
+              <option value="date-desc">Newest first</option>
+              <option value="date-asc">Oldest first</option>
+              <option value="amount-desc">Highest amount</option>
+              <option value="amount-asc">Lowest amount</option>
             </select>
           </div>
         </div>

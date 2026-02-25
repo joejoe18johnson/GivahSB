@@ -213,7 +213,7 @@ export default function AdminCreateCampaignPage() {
             value={formData.title}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
             placeholder="Brief title for the campaign"
           />
         </div>
@@ -223,7 +223,7 @@ export default function AdminCreateCampaignPage() {
             name="category"
             value={formData.category}
             onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
           >
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>{c}</option>
@@ -238,7 +238,7 @@ export default function AdminCreateCampaignPage() {
             onChange={handleChange}
             required
             rows={3}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
             placeholder="2–3 sentences"
           />
         </div>
@@ -249,7 +249,7 @@ export default function AdminCreateCampaignPage() {
             value={formData.fullDescription}
             onChange={handleChange}
             rows={6}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
             placeholder="Full campaign story"
           />
         </div>
@@ -264,7 +264,7 @@ export default function AdminCreateCampaignPage() {
               required
               min="1"
               step="0.01"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+              className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
             />
           </div>
           <div>
@@ -273,7 +273,7 @@ export default function AdminCreateCampaignPage() {
               name="daysLeft"
               value={formData.daysLeft}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+              className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
             >
             <option value="30">30 days</option>
             <option value="60">60 days</option>
@@ -289,7 +289,7 @@ export default function AdminCreateCampaignPage() {
             name="creatorType"
             value={formData.creatorType}
             onChange={(e) => setFormData((p) => ({ ...p, creatorType: e.target.value as "individual" | "organization" | "charity" }))}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
           >
             {CREATOR_TYPES.map(({ value, label }) => (
               <option key={value} value={value}>{label}</option>
@@ -303,7 +303,7 @@ export default function AdminCreateCampaignPage() {
             name="location"
             value={formData.location}
             onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
             placeholder="e.g. Belize City, Belize"
           />
         </div>

@@ -475,7 +475,7 @@ export default function CreateCampaignPage() {
             value={formData.creatorType}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
           >
             <option value="">Select type</option>
             <option value="individual">Individual in Need</option>
@@ -495,7 +495,7 @@ export default function CreateCampaignPage() {
             value={formData.title}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
             placeholder="Brief title describing your need"
           />
         </div>
@@ -510,7 +510,7 @@ export default function CreateCampaignPage() {
             value={formData.category}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
           >
             <option value="">Select a category</option>
             <option value="Medical expenses">Medical expenses</option>
@@ -530,7 +530,7 @@ export default function CreateCampaignPage() {
             onChange={handleChange}
             required
             rows={3}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
             placeholder="A brief summary of your campaign (2-3 sentences)"
           />
         </div>
@@ -546,7 +546,7 @@ export default function CreateCampaignPage() {
             onChange={handleChange}
             required
             rows={8}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
             placeholder="Tell your story. What inspired you? What will you do with the funds?"
           />
         </div>
@@ -569,7 +569,7 @@ export default function CreateCampaignPage() {
             required
             min="1"
             max="5000"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
             placeholder="e.g. 2000"
             step="0.01"
             aria-describedby="goal-max-notice"
@@ -590,7 +590,7 @@ export default function CreateCampaignPage() {
             value={formData.location}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
             placeholder="e.g., Belize City, Belize or Orange Walk Town, Belize"
           />
         </div>
@@ -605,7 +605,7 @@ export default function CreateCampaignPage() {
             value={formData.daysLeft}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
           >
             <option value="">Select duration</option>
             <option value="0">Unlimited Time</option>

@@ -369,21 +369,33 @@ export async function approveDonation(
   const campaignId = don.campaign_id;
   const amount = Number(don.amount);
   if (!campaignId || !Number.isFinite(amount) || amount <= 0) throw new Error("Invalid donation data");
-  await supabase
+
+  const { error: donUpdateErr } = await supabase
     .from("donations")
     .update({ status: "completed", updated_at: new Date().toISOString() })
     .eq("id", donationId);
-  const { data: camp } = await supabase.from("campaigns").select("raised, backers").eq("id", campaignId).single();
-  if (camp) {
-    await supabase
-      .from("campaigns")
-      .update({
-        raised: Number(camp.raised) + amount,
-        backers: Number(camp.backers) + 1,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", campaignId);
-  }
+  if (donUpdateErr) throw new Error(`Failed to mark donation completed: ${donUpdateErr.message}`);
+
+  const { data: camp, error: campFetchErr } = await supabase
+    .from("campaigns")
+    .select("raised, backers")
+    .eq("id", campaignId)
+    .single();
+  if (campFetchErr || !camp) throw new Error("Campaign not found or could not be read");
+  const currentRaised = Number(camp.raised) || 0;
+  const currentBackers = Number(camp.backers) || 0;
+  const newRaised = currentRaised + amount;
+  const newBackers = currentBackers + 1;
+
+  const { error: campUpdateErr } = await supabase
+    .from("campaigns")
+    .update({
+      raised: newRaised,
+      backers: newBackers,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", campaignId);
+  if (campUpdateErr) throw new Error(`Failed to update campaign totals: ${campUpdateErr.message}`);
 }
 
 // Campaigns under review

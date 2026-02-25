@@ -13,7 +13,6 @@ A Belizean-based crowdfunding platform for organizations, charities, and individ
 - 📝 **Campaign Creation** - Easy-to-use form with proof document upload
 - 🏥 **Medical Campaigns** - Support for medical expenses and treatments
 - 🎓 **Education Support** - Help students and schools in need
-- 🌪️ **Disaster Relief** - Emergency funding for communities affected by disasters
 - 👥 **Organization Support** - Charities and organizations can create verified campaigns
 - 📱 **Responsive Design** - Works beautifully on all devices
 - 🇧🇿 **Belizean Focus** - Designed specifically for Belizean communities
@@ -122,7 +121,6 @@ crowdfund/
 
 - **Medical** - Medical treatments, surgeries, healthcare expenses
 - **Education** - School supplies, tuition, educational resources
-- **Disaster Relief** - Hurricane, flood, and emergency relief
 - **Community** - Community projects and initiatives
 - **Emergency** - Urgent financial needs
 - **Other** - Other verified needs

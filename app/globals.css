@@ -28,20 +28,21 @@ textarea {
   caret-color: #1f2937 !important;
 }
 
-/* Selection inputs: website theme (primary blue) */
+/* Selection inputs: website theme (primary Bondi blue) */
 select {
   color: #1f2937 !important;
   -webkit-text-fill-color: #1f2937 !important;
   background-color: #e6f0f8 !important; /* primary-50 */
-  border-color: #66a5d5 !important;   /* primary-300 */
+  border: 1px solid #66a5d5 !important; /* primary-300 */
   caret-color: #1f2937 !important;
 }
 select:hover {
-  border-color: #3387c7 !important;     /* primary-400 */
+  border-color: #3387c7 !important; /* primary-400 */
+  background-color: #cce1f1 !important; /* primary-100 */
 }
 select:focus {
   outline: none;
-  border-color: #003F87 !important;       /* primary-500 */
+  border-color: #003F87 !important; /* primary-500 */
   box-shadow: 0 0 0 2px rgba(0, 63, 135, 0.25);
 }
 /* Placeholders: dark gray so they stay visible */
