@@ -149,11 +149,10 @@ export default function Home() {
           {/* Decorative shapes */}
           <div className="absolute top-20 left-10 w-24 h-24 rounded-full bg-success-200/60 -z-10" aria-hidden />
           <div className="absolute bottom-32 right-20 w-32 h-32 rounded-full bg-primary-100/50 -z-10" aria-hidden />
-          <div className="absolute top-1/3 right-1/4 w-16 h-16 rounded-full bg-accent-100/40 -z-10" aria-hidden />
 
           {/* Left: Content - vertically centered */}
           <div className="order-2 lg:order-1 flex flex-col justify-center mt-14 sm:mt-16 lg:mt-0 min-h-[320px] lg:min-h-[400px]">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium text-gray-900 mb-4">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 whitespace-nowrap">
               {siteContent.heroTitle}
             </h1>
             <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-xl">
