@@ -247,10 +247,15 @@ export default function Header() {
                 <div className="relative">
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center gap-2 text-gray-700 hover:text-primary-600 transition-colors"
+                    className="flex items-center gap-2 text-gray-700 hover:text-primary-600 transition-colors relative"
                   >
-                    <div className="w-8 h-8 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium">
+                    <div className="w-8 h-8 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium relative">
                       <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={32} className="w-full h-full" />
+                      {totalNotificationCount > 0 && (
+                        <span className="absolute -top-0.5 -right-0.5 min-w-[1.25rem] h-4 px-1 flex items-center justify-center rounded-full bg-primary-600 text-white text-[10px] font-medium">
+                          {totalNotificationCount > 99 ? "99+" : totalNotificationCount}
+                        </span>
+                      )}
                     </div>
                     <span className="hidden md:inline">{user.name}</span>
                   </button>
@@ -322,10 +327,15 @@ export default function Header() {
             {user && (
               <Link
                 href="/profile"
-                className="w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0"
+                className="relative w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={40} className="w-full h-full" />
+                {totalNotificationCount > 0 && (
+                  <span className="absolute top-0 right-0 min-w-[1.25rem] h-4 px-1 flex items-center justify-center rounded-full bg-primary-600 text-white text-[10px] font-medium">
+                    {totalNotificationCount > 99 ? "99+" : totalNotificationCount}
+                  </span>
+                )}
               </Link>
             )}
             <button
@@ -390,9 +400,9 @@ export default function Header() {
                   <Link href="/notifications" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2" onClick={closeMobileMenu}>
                     <Bell className="w-4 h-4" />
                     Notifications
-                    {unreadCount > 0 && (
+                    {totalNotificationCount > 0 && (
                       <span className="ml-auto bg-primary-600 text-white text-xs font-medium rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
-                        {unreadCount > 99 ? "99+" : unreadCount}
+                        {totalNotificationCount > 99 ? "99+" : totalNotificationCount}
                       </span>
                     )}
                   </Link>

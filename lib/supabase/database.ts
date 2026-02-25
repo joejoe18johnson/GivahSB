@@ -686,6 +686,21 @@ export async function markNotificationRead(
   await supabase.from("notifications").update({ read: true }).eq("id", notificationId);
 }
 
+/** Delete a notification. Only deletes if it belongs to the given user. */
+export async function deleteNotification(
+  supabase: SupabaseClient,
+  notificationId: string,
+  userId: string
+): Promise<boolean> {
+  const { error } = await supabase
+    .from("notifications")
+    .delete()
+    .eq("id", notificationId)
+    .eq("user_id", userId);
+  if (error) throw error;
+  return true;
+}
+
 // Profiles (admin users list)
 export type UserStatus = "active" | "on_hold" | "deleted";
 
