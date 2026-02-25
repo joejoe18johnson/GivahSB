@@ -140,7 +140,15 @@ export default function Home() {
           {/* Left: Content - vertically centered */}
           <div className="order-2 lg:order-1 flex flex-col justify-center mt-14 sm:mt-16 lg:mt-0 min-h-[320px] lg:min-h-[400px]">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 whitespace-nowrap">
-              {siteContent.heroTitle}
+              {siteContent.heroTitle.split(/(Burdens|Together)/).map((part, i) =>
+                part === "Burdens" ? (
+                  <span key={i} className="text-accent-600">Burdens</span>
+                ) : part === "Together" ? (
+                  <span key={i} className="text-success-600">Together</span>
+                ) : (
+                  <span key={i}>{part}</span>
+                )
+              )}
             </h1>
             <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-xl">
               {siteContent.heroSubtitle}
