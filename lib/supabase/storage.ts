@@ -15,12 +15,14 @@ export async function ensureStorageBucket(
   bucketId: string,
   options?: { public?: boolean }
 ): Promise<void> {
+  const { data: existing } = await supabase.storage.getBucket(bucketId);
+  if (existing) return; // bucket already exists
   const { error } = await supabase.storage.createBucket(bucketId, {
     public: options?.public ?? true,
   });
   if (error) {
-    const msg = (error as { message?: string }).message ?? "";
-    if (msg.includes("already exists") || msg.includes("duplicate")) return;
+    const msg = String((error as { message?: string }).message ?? "");
+    if (msg.includes("already exists") || msg.includes("duplicate") || msg.includes("Bucket already exists")) return;
     throw error;
   }
 }
