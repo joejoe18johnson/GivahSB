@@ -147,7 +147,6 @@ export default function Home() {
           {/* Hero Section - Two column layout */}
           <section className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Decorative shapes */}
-          <div className="absolute top-20 left-10 w-24 h-24 rounded-full bg-success-200/60 -z-10" aria-hidden />
           <div className="absolute bottom-32 right-20 w-32 h-32 rounded-full bg-primary-100/50 -z-10" aria-hidden />
 
           {/* Left: Content - vertically centered */}
