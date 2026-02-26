@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Lato } from "next/font/google";
+import { Funnel_Display } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Providers from "@/components/Providers";
@@ -7,7 +7,7 @@ import MainWithPadding from "@/components/MainWithPadding";
 import ConditionalFooter from "@/components/ConditionalFooter";
 import CreateCampaignFab from "@/components/CreateCampaignFab";
 
-const lato = Lato({ weight: ["300", "400", "700"], subsets: ["latin"] });
+const siteFont = Funnel_Display({ weight: ["300", "400", "700"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "GivahBz - Supporting Communities in Need",
@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${lato.className} bg-white`}>
+      <body className={`${siteFont.className} bg-white`}>
         <Providers>
           <Header />
           <MainWithPadding>{children}</MainWithPadding>
