@@ -5,10 +5,10 @@ export function formatCurrency(amount: number): string {
   return `BZ$${amount.toLocaleString()}`;
 }
 
-/** Generate a short reference for donations: one letter (A–Z) + 4 digits (e.g. A1234). */
+/** Generate a short reference for donations: one letter (A–Z) + 5 digits (e.g. A1234). */
 export function generateShortRef(): string {
   const letter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
-  const digits = String(Math.floor(Math.random() * 10000)).padStart(4, "0");
+  const digits = String(Math.floor(Math.random() * 10000)).padStart(5, "0");
   return letter + digits;
 }
 
