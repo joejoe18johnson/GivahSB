@@ -37,7 +37,7 @@ const DEFAULT_HOME_FAQS: HomeFaqItem[] = [
 export const DEFAULT_SITE_CONTENT: SiteContent = {
   siteName: "GivahBz",
   heroTitle: "Sharing Burdens. Together.",
-  heroSubtitle: "Life is either a daring adventure or nothing. Help real people and causes across Belize—verified, transparent, and community-driven.",
+  heroSubtitle: "Help real people and causes across Belize—verified, transparent, and community-driven.",
   communityHeadingPart1: "Communities Share ",
   communityHeadingPart2: "Burdens",
   footerTagline: "Supporting organizations, charities, and individuals in need across Belize. All campaigns are verified with proof of need.",
