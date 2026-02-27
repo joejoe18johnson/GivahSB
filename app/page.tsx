@@ -135,7 +135,7 @@ export default function Home() {
           {/* Hero Section - Two column layout */}
           <section className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Decorative shapes */}
-          <div className="absolute bottom-32 right-20 w-32 h-32 rounded-full bg-primary-100/50 -z-10" aria-hidden />
+       
 
           {/* Left: Content - vertically centered */}
           <div className="order-2 lg:order-1 flex flex-col justify-center mt-14 sm:mt-16 lg:mt-0 min-h-[320px] lg:min-h-[400px] animate-fade-in-up opacity-0 [animation-fill-mode:forwards]">
