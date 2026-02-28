@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import SafeImage from "./SafeImage";
 import ShareCampaign from "./ShareCampaign";
-import { Calendar, Users, CheckCircle2, Heart, Trophy, ShieldCheck } from "lucide-react";
+import { Users, CheckCircle2, Heart, Trophy, ShieldCheck } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { useHearted } from "./HeartedCampaigns";
 import { useAuth } from "@/contexts/AuthContext";
@@ -168,7 +168,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
-                    className="bg-primary-600 h-2 rounded-full transition-all"
+                    className="bg-gradient-to-r from-primary-500 to-verified-500 h-2 rounded-full transition-all"
                     style={{ width: `${progressPercentage}%` }}
                   />
                 </div>
@@ -179,10 +179,9 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
                   <Users className="w-4 h-4" />
                   <span>{campaign.backers} donors</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
-                  <span>{campaign.daysLeft === 0 ? "Unlimited" : `${campaign.daysLeft} days left`}</span>
-                </div>
+                <p className="text-xl font-bold text-primary-600">
+                  {Math.round(progressPercentage)}% Funded
+                </p>
               </div>
             </>
           )}

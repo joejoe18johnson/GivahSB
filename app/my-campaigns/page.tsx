@@ -349,7 +349,7 @@ export default function MyCampaignsPage() {
                         {formatCurrency(campaign.raised)} / {formatCurrency(campaign.goal)}
                       </span>
                       <span>{campaign.backers} donors</span>
-                      <span>{campaign.daysLeft === 0 ? "Unlimited" : `${campaign.daysLeft} days left`}</span>
+                      <span className="text-lg font-bold text-primary-600">{Math.round(progress)}% Funded</span>
                     </div>
                     <div className="mt-2 w-full bg-gray-200 rounded-full h-1.5">
                       <div
@@ -472,10 +472,9 @@ export default function MyCampaignsPage() {
                         <Users className="w-4 h-4" />
                         <span>{campaign.backers} donors</span>
                       </div>
-                      <div className="flex items-center gap-1.5 text-gray-600">
-                        <Calendar className="w-4 h-4" />
-                        <span>{campaign.daysLeft === 0 ? "Unlimited" : `${campaign.daysLeft} days left`}</span>
-                      </div>
+                      <p className="text-xl font-bold text-primary-600">
+                        {Math.round(progress)}% Funded
+                      </p>
                       {campaign.location && (
                         <div className="flex items-center gap-1.5 text-gray-600">
                           <MapPin className="w-4 h-4 flex-shrink-0" />
@@ -499,7 +498,7 @@ export default function MyCampaignsPage() {
                     <div className="mt-3">
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
-                          className="bg-verified-500 h-2 rounded-full transition-all"
+                          className="bg-gradient-to-r from-primary-500 to-verified-500 h-2 rounded-full transition-all"
                           style={{ width: `${progress}%` }}
                         />
                       </div>

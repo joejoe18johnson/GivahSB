@@ -520,7 +520,7 @@ export default function Home() {
                       </h3>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 mt-3">
                         <div
-                          className="bg-verified-500 h-2.5 rounded-full transition-all duration-300 ease-in-out"
+                          className="bg-gradient-to-r from-primary-500 to-verified-500 h-2.5 rounded-full transition-all duration-300 ease-in-out"
                           style={{ width: `${pct}%` }}
                         />
                       </div>

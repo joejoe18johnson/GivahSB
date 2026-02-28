@@ -7,7 +7,7 @@ import { Campaign } from "@/lib/data";
 import { fetchCampaignsFromAPI } from "@/lib/services/campaignService";
 import SafeImage from "./SafeImage";
 import { formatCurrency } from "@/lib/utils";
-import { Users, Calendar, CheckCircle2 } from "lucide-react";
+import { Users, CheckCircle2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSupabase } from "@/lib/supabase/hooks";
 import { getHeartedCampaignIds as getHeartedFromSupabase, toggleHeartCampaign as toggleHeartInSupabase } from "@/lib/supabase/database";
@@ -284,22 +284,21 @@ export default function HeartedCampaigns({ isOpen, onClose }: HeartedCampaignsPr
                               </div>
                               <div className="w-full bg-gray-200 rounded-full h-2">
                                 <div
-                                  className="bg-primary-600 h-2 rounded-full transition-all"
+                                  className="bg-gradient-to-r from-primary-500 to-verified-500 h-2 rounded-full transition-all"
                                   style={{ width: `${progressPercentage}%` }}
                                 />
                               </div>
                             </div>
 
                             {/* Stats */}
-                            <div className="flex items-center justify-between text-sm text-gray-600">
+                            <div className="flex items-center justify-between text-sm text-gray-600 flex-wrap gap-2">
                               <div className="flex items-center gap-1">
                                 <Users className="w-4 h-4" />
                                 <span>{campaign.backers} donors</span>
                               </div>
-                              <div className="flex items-center gap-1">
-                                <Calendar className="w-4 h-4" />
-                                <span>{campaign.daysLeft === 0 ? "Unlimited" : `${campaign.daysLeft} days left`}</span>
-                              </div>
+                              <p className="text-xl font-bold text-primary-600">
+                                {Math.round(progressPercentage)}% Funded
+                              </p>
                               <div className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">
                                 {campaign.category}
                               </div>

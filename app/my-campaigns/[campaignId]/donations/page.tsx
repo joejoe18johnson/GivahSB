@@ -130,7 +130,7 @@ export default function MyCampaignDonationsPage() {
             </div>
             <div className="h-3 bg-gray-200">
               <div
-                className="h-full bg-verified-500 rounded-r transition-all duration-500"
+                className="h-full bg-gradient-to-r from-primary-500 to-verified-500 rounded-r transition-all duration-500"
                 style={{ width: `${progressPct}%` }}
               />
             </div>

@@ -6,7 +6,7 @@ import { Campaign } from "@/lib/data";
 import { fetchCampaign } from "@/lib/services/campaignService";
 import { notFound } from "next/navigation";
 import SafeImage from "@/components/SafeImage";
-import { Calendar, Users, Heart, CheckCircle2, ShieldCheck } from "lucide-react";
+import { Users, Heart, CheckCircle2, ShieldCheck } from "lucide-react";
 import CampaignDonateSection from "@/components/CampaignDonateSection";
 import CampaignUpdates from "@/components/CampaignUpdates";
 import RewardsSection from "@/components/RewardsSection";
@@ -316,7 +316,7 @@ export default function CampaignPage() {
               </div>
               <div className="w-full bg-gray-200 rounded-full h-3 mb-3">
                 <div
-                  className="bg-verified-500 h-3 rounded-full transition-all"
+                  className="bg-gradient-to-r from-primary-500 to-verified-500 h-3 rounded-full transition-all"
                   style={{ width: `${progressPercentage}%` }}
                 />
               </div>
@@ -333,11 +333,8 @@ export default function CampaignPage() {
                 </div>
               </div>
               <div>
-                <div className="text-lg font-medium text-gray-900">{campaign.daysLeft === 0 ? "Unlimited" : campaign.daysLeft}</div>
-                <div className="text-xs text-gray-600 flex items-center gap-1">
-                  <Calendar className="w-3 h-3" />
-                  {campaign.daysLeft === 0 ? "No end date" : "days left"}
-                </div>
+                <div className="text-2xl font-bold text-primary-600">{Math.round(progressPercentage)}% Funded</div>
+                <div className="text-xs text-gray-600">of goal</div>
               </div>
             </div>
             <ShareCampaign

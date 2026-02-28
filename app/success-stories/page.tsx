@@ -117,7 +117,7 @@ export default function SuccessStoriesPage() {
                       </h3>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 mt-3">
                         <div
-                          className="bg-verified-500 h-2.5 rounded-full transition-all"
+                          className="bg-gradient-to-r from-primary-500 to-verified-500 h-2.5 rounded-full transition-all"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
