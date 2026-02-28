@@ -7,7 +7,7 @@ import { useSiteContent } from "@/hooks/useSiteContent";
 export default function Footer() {
   const { content } = useSiteContent();
   return (
-    <footer className="bg-gray-900 text-white mt-16">
+    <footer id="site-footer" className="bg-gray-900 text-white mt-16">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>

@@ -28,6 +28,8 @@ export default function CampaignPage() {
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
   const coverCarouselRef = useRef<HTMLDivElement>(null);
   const scrollRAF = useRef<number | null>(null);
+  const [donateBoxNearFooter, setDonateBoxNearFooter] = useState(false);
+  const [donateBoxBottomOffset, setDonateBoxBottomOffset] = useState<number | null>(null);
   const { user } = useAuth();
   const { isCampaignHearted, toggleHeart } = useHearted();
   const isHearted = campaign ? isCampaignHearted(campaign.id) : false;
@@ -57,6 +59,33 @@ export default function CampaignPage() {
   useEffect(() => {
     return () => {
       if (scrollRAF.current != null) cancelAnimationFrame(scrollRAF.current);
+    };
+  }, []);
+
+  // When scrolling near the footer (~60px away), move the fixed donate box up so it doesn't overlap
+  useEffect(() => {
+    function checkNearFooter() {
+      const footer = document.getElementById("site-footer");
+      if (!footer) return;
+      const rect = footer.getBoundingClientRect();
+      const threshold = 100;
+      const near = rect.top <= window.innerHeight + threshold;
+      setDonateBoxNearFooter(near);
+      setDonateBoxBottomOffset(near ? window.innerHeight - rect.top + threshold : null);
+    }
+    function onScrollOrResize() {
+      if (scrollRAF.current != null) return;
+      scrollRAF.current = requestAnimationFrame(() => {
+        checkNearFooter();
+        scrollRAF.current = null;
+      });
+    }
+    checkNearFooter();
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+    return () => {
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
     };
   }, []);
 
@@ -308,7 +337,14 @@ export default function CampaignPage() {
         {/* Donation box: right column; fixed on lg so it stays in place when scrolling */}
         <div className="order-3 lg:order-2 w-full lg:row-span-2 lg:self-start">
           <div className="hidden lg:block w-80 min-h-[50vh] shrink-0" aria-hidden="true" />
-          <div className="bg-white rounded-xl gradient-border-1 shadow-sm p-5 sticky top-16 lg:fixed lg:top-[calc(4rem+28px)] lg:right-[max(1rem,calc((100vw-min(1280px,100vw))/2+1rem))] lg:w-80 lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto lg:z-10">
+          <div
+            className="bg-white rounded-xl gradient-border-1 shadow-sm p-5 sticky top-16 lg:fixed lg:top-[calc(4rem+28px)] lg:right-[max(1rem,calc((100vw-min(1280px,100vw))/2+1rem))] lg:w-80 lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto lg:z-10"
+            style={
+              donateBoxNearFooter && donateBoxBottomOffset != null
+                ? { top: "auto", bottom: donateBoxBottomOffset }
+                : undefined
+            }
+          >
             <div className="mb-5">
               <div className="flex justify-between text-sm mb-2">
                 <span className="font-medium text-verified-600">
