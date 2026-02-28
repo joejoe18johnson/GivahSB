@@ -31,7 +31,7 @@ export default function ProofDocuments({ documents }: ProofDocumentsProps) {
         {documents.map((doc) => (
           <div
             key={doc.id}
-            className="bg-white rounded-lg p-4 border border-gray-200 flex items-center justify-between hover:shadow-md transition-shadow"
+            className="bg-white rounded-lg p-4 gradient-border-1 flex items-center justify-between hover:shadow-md transition-shadow"
           >
             <div className="flex items-center gap-3">
               <div className="bg-blue-100 p-2 rounded-lg">

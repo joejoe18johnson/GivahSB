@@ -13,7 +13,7 @@ export default function RewardsSection({ rewards }: RewardsSectionProps) {
         {rewards.map((reward) => (
           <div
             key={reward.id}
-            className="border border-gray-200 rounded-lg p-4 hover:border-primary-500 transition-colors"
+            className="gradient-border-1 rounded-lg p-4 transition-colors"
           >
             <div className="flex justify-between items-start mb-2">
               <div>

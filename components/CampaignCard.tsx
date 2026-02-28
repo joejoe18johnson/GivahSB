@@ -60,7 +60,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
 
   return (
     <Link href={`/campaigns/${campaign.id}`} className="group h-full flex transition-transform duration-300 ease-in-out hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified-500 focus-visible:ring-offset-2 rounded-lg">
-      <div className={`bg-white rounded-lg border border-gray-200 group-hover:border-verified-500 overflow-hidden transition-all duration-300 ease-in-out cursor-pointer flex flex-col w-full h-full min-w-0 ${goalReached ? "opacity-80" : ""}`}>
+      <div className={`bg-white rounded-lg gradient-border-1 overflow-hidden transition-all duration-300 ease-in-out cursor-pointer flex flex-col w-full h-full min-w-0 ${goalReached ? "opacity-80" : ""}`}>
         {/* Image - fixed aspect ratio so all cards show the same size image area */}
         <div className={`relative w-full aspect-[16/10] bg-gray-200 overflow-hidden shrink-0 ${goalReached ? "grayscale" : ""}`}>
           {campaign.image ? (

@@ -38,7 +38,7 @@ function ShareModalContent({
         onClick={onClose}
       />
       <div
-        className="fixed left-1/2 top-1/2 z-[101] w-full max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-xl border border-gray-200 bg-white p-5 shadow-xl"
+        className="fixed left-1/2 top-1/2 z-[101] w-full max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-xl gradient-border-1 bg-white p-5 shadow-xl"
         role="dialog"
         aria-modal="true"
         aria-label="Share campaign"

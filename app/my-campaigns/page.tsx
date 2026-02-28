@@ -308,7 +308,7 @@ export default function MyCampaignsPage() {
               return (
                 <div
                   key={campaign.id}
-                  className="bg-gray-50 border border-gray-200 rounded-xl p-5 md:p-6 flex flex-col sm:flex-row sm:items-center gap-4 cursor-default select-none"
+                  className="bg-gray-50 gradient-border-1 rounded-xl p-5 md:p-6 flex flex-col sm:flex-row sm:items-center gap-4 cursor-default select-none"
                   style={{ pointerEvents: "none" }}
                 >
                   <div className="relative w-full sm:w-48 h-36 sm:h-28 flex-shrink-0 rounded-lg overflow-hidden bg-gray-200">
@@ -396,7 +396,7 @@ export default function MyCampaignsPage() {
             return (
               <div
                 key={campaign.id}
-                className="group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-lg hover:border-primary-200 transition-all"
+                className="group bg-white rounded-xl gradient-border-1 shadow-sm overflow-hidden hover:shadow-lg transition-all"
               >
                 <div className="flex flex-col md:flex-row">
                   <Link

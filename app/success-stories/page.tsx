@@ -58,7 +58,7 @@ export default function SuccessStoriesPage() {
       )}
 
       {!isLoading && !error && campaigns.length === 0 && (
-        <div className="rounded-xl bg-gray-50 border border-gray-200 p-12 text-center">
+        <div className="rounded-xl bg-gray-50 gradient-border-1 p-12 text-center">
           <Trophy className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-xl font-medium text-gray-900 mb-2">No success stories yet</h2>
           <p className="text-gray-600 mb-6 max-w-md mx-auto">
@@ -85,7 +85,7 @@ export default function SuccessStoriesPage() {
                 <li key={campaign.id}>
                   <Link
                     href={`/campaigns/${campaign.id}`}
-                    className="flex flex-row rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm hover:border-verified-500 hover:shadow-md transition-all"
+                    className="flex flex-row rounded-xl gradient-border-1 bg-white overflow-hidden shadow-sm hover:shadow-md transition-all"
                   >
                     <div className="relative w-32 sm:w-40 flex-shrink-0 aspect-square bg-gray-200">
                       {campaign.image ? (

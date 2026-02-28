@@ -87,7 +87,7 @@ export default function NotificationsPage() {
               <div className="animate-spin rounded-full h-10 w-10 border-2 border-primary-600 border-t-transparent" />
             </div>
           ) : notifications.length === 0 ? (
-            <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+            <div className="bg-white rounded-xl gradient-border-1 p-12 text-center">
               <Bell className="w-12 h-12 text-gray-300 mx-auto mb-4" />
               <p className="text-gray-600 font-medium">No notifications yet</p>
               <p className="text-gray-500 text-sm mt-1">When your campaign is approved or you get updates, they’ll show here.</p>
@@ -105,7 +105,7 @@ export default function NotificationsPage() {
                   <button
                     type="button"
                     onClick={() => handleClick(n)}
-                    className={`w-full text-left bg-white rounded-xl border p-4 transition-colors hover:border-primary-200 hover:bg-primary-50/30 ${!n.read ? "border-primary-200 bg-primary-50/30" : "border-gray-200"}`}
+                    className={`w-full text-left bg-white rounded-xl gradient-border-1 p-4 transition-colors hover:bg-primary-50/30 ${!n.read ? "bg-primary-50/30" : ""}`}
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex-shrink-0 w-10 h-10 rounded-full bg-success-100 flex items-center justify-center text-success-600">

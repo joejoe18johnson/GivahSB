@@ -90,6 +90,23 @@ input[type="datetime-local"] {
 }
 
 @layer utilities {
+  /* 1px blue-to-green gradient border for cards; card must have position relative + rounded-* */
+  .gradient-border-1 {
+    position: relative;
+  }
+  .gradient-border-1::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(to right, #003F87, #16ac4b);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
   .text-balance {
     text-wrap: balance;
   }

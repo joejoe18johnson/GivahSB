@@ -142,7 +142,7 @@ export default function HowItWorksPage() {
             {steps.map((step, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg border border-gray-200 p-8 md:p-10 flex flex-col md:flex-row gap-8 items-start"
+                className="bg-white rounded-lg gradient-border-1 p-8 md:p-10 flex flex-col md:flex-row gap-8 items-start"
               >
                 <div className="flex-shrink-0">
                   <div className="w-20 h-20 bg-success-500 rounded-full flex items-center justify-center text-white">
@@ -178,7 +178,7 @@ export default function HowItWorksPage() {
             {benefits.map((benefit, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg p-6 border border-gray-200 transition-shadow"
+                className="bg-white rounded-lg p-6 gradient-border-1 transition-shadow"
               >
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0 w-12 h-12 bg-success-500 rounded-full flex items-center justify-center text-white">

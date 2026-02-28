@@ -73,12 +73,12 @@ export default function LikedCampaignsPage() {
 
       {/* Content */}
       {isLoading ? (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center">
+        <div className="bg-white rounded-xl gradient-border-1 shadow-sm p-12 text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading campaigns...</p>
         </div>
       ) : heartedCampaigns.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center">
+        <div className="bg-white rounded-xl gradient-border-1 shadow-sm p-12 text-center">
           <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-600 text-lg mb-2">No liked campaigns yet</p>
           <p className="text-gray-500 text-sm mb-6">Start exploring campaigns and heart the ones you love!</p>

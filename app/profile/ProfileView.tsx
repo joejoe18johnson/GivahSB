@@ -165,7 +165,7 @@ export default function ProfileView(props: ProfileViewProps) {
 
       <h1 className="text-2xl md:text-3xl font-medium text-gray-900 mb-8">Account</h1>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
+      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
         <div className="px-6 py-4 border-b border-gray-200">
           <h2 className="text-lg font-medium text-gray-900">Profile Photo</h2>
         </div>
@@ -223,7 +223,7 @@ export default function ProfileView(props: ProfileViewProps) {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
+      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <h2 className="text-lg font-medium text-gray-900">Name</h2>
           {!editingName && (
@@ -271,7 +271,7 @@ export default function ProfileView(props: ProfileViewProps) {
       </h2>
       <p className="text-gray-600 text-sm mb-4">Verify your phone, ID, and address to create campaigns. All three must be approved by our team.</p>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
+      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Phone className="w-5 h-5 text-gray-600" />
@@ -337,7 +337,7 @@ export default function ProfileView(props: ProfileViewProps) {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
+      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Shield className="w-5 h-5 text-gray-600" />
@@ -447,7 +447,7 @@ export default function ProfileView(props: ProfileViewProps) {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
+      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Shield className="w-5 h-5 text-gray-600" />
@@ -544,7 +544,7 @@ export default function ProfileView(props: ProfileViewProps) {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
+      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
         <div className="px-6 py-4 border-b border-gray-200">
           <h2 className="text-lg font-medium text-gray-900">Connected app permissions</h2>
         </div>
@@ -553,7 +553,7 @@ export default function ProfileView(props: ProfileViewProps) {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
+      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
         <div className="px-6 py-4 border-b border-gray-200 flex items-center gap-3">
           <Mail className="w-5 h-5 text-gray-600" />
           <h2 className="text-lg font-medium text-gray-900">Email address</h2>
@@ -563,7 +563,7 @@ export default function ProfileView(props: ProfileViewProps) {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
+      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Calendar className="w-5 h-5 text-gray-600" />
@@ -593,7 +593,7 @@ export default function ProfileView(props: ProfileViewProps) {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
+      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Lock className="w-5 h-5 text-gray-600" />

@@ -217,7 +217,7 @@ export default function HeartedCampaigns({ isOpen, onClose }: HeartedCampaignsPr
                       onClick={onClose}
                       className="block"
                     >
-                      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-verified-500 hover:shadow-md transition-all flex flex-row h-40">
+                      <div className="bg-white gradient-border-1 rounded-lg overflow-hidden hover:shadow-md transition-all flex flex-row h-40">
                         {/* Image */}
                         <div className="relative w-64 h-full bg-gray-200 flex-shrink-0">
                           {campaign.image ? (

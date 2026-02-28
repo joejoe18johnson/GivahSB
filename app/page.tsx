@@ -270,7 +270,7 @@ export default function Home() {
                   key={campaign.id}
                   className="flex-shrink-0 w-[85vw] max-w-[340px] min-h-[580px] snap-center snap-always"
                 >
-                  <div className="min-h-[580px] h-full rounded-lg border border-gray-200 hover:border-verified-500 active:scale-[0.98] transition-all duration-300 ease-in-out overflow-hidden bg-white flex flex-col">
+                  <div className="min-h-[580px] h-full rounded-lg gradient-border-1 active:scale-[0.98] transition-all duration-300 ease-in-out overflow-hidden bg-white flex flex-col">
                     <CampaignCard campaign={campaign} />
                   </div>
                 </div>
@@ -313,7 +313,7 @@ export default function Home() {
               {allTrendingCampaigns.map((campaign) => (
                 <div
                   key={campaign.id}
-                  className="flex-shrink-0 w-[280px] h-[500px] snap-start rounded-lg border border-gray-200 hover:border-verified-500 hover:shadow-[rgba(17,12,46,0.15)_0px_48px_100px_0px] hover:scale-[1.02] transition-all duration-300 ease-in-out overflow-hidden bg-white"
+                  className="flex-shrink-0 w-[280px] h-[500px] snap-start rounded-lg gradient-border-1 hover:shadow-[rgba(17,12,46,0.15)_0px_48px_100px_0px] hover:scale-[1.02] transition-all duration-300 ease-in-out overflow-hidden bg-white"
                 >
                   <CampaignCard campaign={campaign} />
                 </div>
@@ -556,7 +556,7 @@ export default function Home() {
             {siteContent.homeFaqs.map((faq, index) => (
               <div
                 key={index}
-                className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:border-primary-200 transition-colors duration-300 ease-in-out"
+                className="bg-white gradient-border-1 rounded-xl overflow-hidden shadow-sm transition-colors duration-300 ease-in-out"
               >
                 <button
                   type="button"

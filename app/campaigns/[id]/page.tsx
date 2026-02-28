@@ -304,7 +304,7 @@ export default function CampaignPage() {
         {/* Stats, Share, Donate - fixed and anchored on the right on desktop; below content on mobile */}
         <div className="order-3 lg:order-2 w-full lg:row-span-2 lg:self-start lg:relative">
           <div className="hidden lg:block absolute top-0 left-0 w-80 min-h-[calc(100vh-6rem)] pointer-events-none" aria-hidden="true" />
-          <div className="bg-white rounded-xl border-2 border-verified-500 shadow-sm p-5 sticky top-24 lg:fixed lg:top-24 lg:w-80 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:z-10 lg:right-[max(1rem,calc((100vw-1280px)/2+1rem))]">
+          <div className="bg-white rounded-xl gradient-border-1 shadow-sm p-5 sticky top-24 lg:fixed lg:top-24 lg:w-80 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:z-10 lg:right-[max(1rem,calc((100vw-1280px)/2+1rem))]">
             <div className="mb-5">
               <div className="flex justify-between text-sm mb-2">
                 <span className="font-medium text-verified-600">
