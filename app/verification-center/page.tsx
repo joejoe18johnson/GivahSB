@@ -59,6 +59,16 @@ export default function VerificationCenterPage() {
       setPhoneNumber(raw);
       setEditingPhone(false);
       setPhoneInput("");
+      try {
+        await fetch("/api/notifications/verification-uploaded", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ type: "phone" }),
+        });
+      } catch {
+        // non-blocking
+      }
     } catch (error) {
       console.error("Error saving phone:", error);
       alert("Failed to save phone number. Please try again.", { variant: "error" });
@@ -138,6 +148,16 @@ export default function VerificationCenterPage() {
       }
       setIdDocumentFile(null);
       if (idFileInputRef.current) idFileInputRef.current.value = "";
+      try {
+        await fetch("/api/notifications/verification-uploaded", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ type: "id" }),
+        });
+      } catch {
+        // non-blocking
+      }
       alert("ID document uploaded successfully. It will be reviewed by an admin.", { variant: "success" });
     } catch (error: unknown) {
       console.error("Error uploading ID document:", error);
@@ -203,6 +223,16 @@ export default function VerificationCenterPage() {
       }
       setAddressDocumentFile(null);
       if (addressFileInputRef.current) addressFileInputRef.current.value = "";
+      try {
+        await fetch("/api/notifications/verification-uploaded", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ type: "address" }),
+        });
+      } catch {
+        // non-blocking
+      }
       alert("Address document uploaded successfully. It will be reviewed by an admin.", { variant: "success" });
     } catch (error: unknown) {
       console.error("Error uploading address document:", error);
