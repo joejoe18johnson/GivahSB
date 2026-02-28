@@ -12,6 +12,7 @@ const siteFont = Funnel_Display({ weight: ["300", "400", "700"], subsets: ["lati
 export const metadata: Metadata = {
   title: "GivahBz - Supporting Communities in Need",
   description: "A Belizean crowdfunding platform helping organizations, charities, and individuals in need. Verified campaigns with proof of need.",
+  icons: { icon: "/icon.png" },
 };
 
 export const viewport = {
