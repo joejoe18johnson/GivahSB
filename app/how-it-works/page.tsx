@@ -206,7 +206,7 @@ export default function HowItWorksPage() {
             {useCases.map((useCase, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg border border-gray-200 overflow-hidden transition-shadow group"
+                className="bg-white rounded-lg gradient-border-1 overflow-hidden transition-shadow group"
               >
                 <div className="relative h-48 w-full overflow-hidden">
                   <div className="absolute inset-0">
