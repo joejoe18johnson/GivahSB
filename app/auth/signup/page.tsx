@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useThemedModal } from "@/components/ThemedModal";
 
-export default function SignupPage() {
+function SignupContent() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -249,5 +249,20 @@ export default function SignupPage() {
           </form>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
+        <div className="max-w-2xl w-full bg-white rounded-lg shadow-xl p-8 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <SignupContent />
+    </Suspense>
   );
 }
