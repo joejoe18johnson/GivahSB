@@ -153,7 +153,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
                   <span>{campaign.backers} donors</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
+                  <CheckCircle2 className="w-4 h-4" />
                   <span>Goal met</span>
                 </div>
               </div>
