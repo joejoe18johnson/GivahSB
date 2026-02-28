@@ -518,7 +518,10 @@ export default function Home() {
                       <h3 className="font-semibold text-gray-900 line-clamp-2 mt-1">
                         {campaign.title}
                       </h3>
-                      <div className="w-full bg-gray-200 rounded-full h-2.5 mt-3">
+                      <p className="text-xl font-bold text-primary-600 mt-1">
+                        {Math.round(pct)}% Funded
+                      </p>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
                         <div
                           className="bg-gradient-to-r from-primary-500 to-verified-500 h-2.5 rounded-full transition-all duration-300 ease-in-out"
                           style={{ width: `${pct}%` }}
