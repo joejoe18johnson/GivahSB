@@ -163,14 +163,6 @@ export default function Home() {
                 Browse Campaigns
               </Link>
             </div>
-            <div className="mt-6">
-              <Link
-                href="/how-it-works"
-                className="text-primary-600 hover:text-primary-700 text-sm font-medium underline"
-              >
-                Learn how it works →
-              </Link>
-            </div>
           </div>
 
           {/* Right: Hero with central image + circular photos of happy/grateful community (Hispanic & Black) */}
