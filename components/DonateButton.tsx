@@ -18,7 +18,7 @@ export default function DonateButton({ campaignId, campaignTitle = "Campaign", c
   const [showDonationModal, setShowDonationModal] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<number | null>(null);
 
-  const presetAmounts = [1, 5, 10, 20, 50];
+  const presetAmounts = [1, 5, 10, 20, 50, 100];
 
   const handlePresetClick = (presetAmount: number) => {
     setAmount(presetAmount.toString());
