@@ -26,21 +26,25 @@ export default function Footer() {
             </p>
           </div>
           <div>
-            <h4 className="font-medium mb-4">About Campaigns</h4>
+            <h4 className="font-medium mb-4">Start Fundraising</h4>
             <ul className="space-y-2 text-gray-400">
-              <li><Link href="/about" className="hover:text-white">About Campaigns</Link></li>
-              <li><Link href="/campaigns" className="hover:text-white">Campaigns</Link></li>
-              <li><Link href="/success-stories" className="hover:text-white">Success Stories</Link></li>
-              <li><Link href="/how-it-works" className="hover:text-white">How it works</Link></li>
+              <li><Link href="/how-it-works" className="hover:text-white">How It Works</Link></li>
+              <li><Link href="/fees-payouts" className="hover:text-white">Fees & Payouts</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-medium mb-4">Support</h4>
             <ul className="space-y-2 text-gray-400">
               <li><Link href="/campaigns" className="hover:text-white">Browse Campaigns</Link></li>
-              <li><Link href="/fees-payouts" className="hover:text-white">Fees & Payouts</Link></li>
               <li><Link href="/faq" className="hover:text-white">FAQ</Link></li>
               <li><Link href="/contact" className="hover:text-white">Contact Us</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-medium mb-4">About</h4>
+            <ul className="space-y-2 text-gray-400">
+              <li><Link href="/about" className="hover:text-white">About Us</Link></li>
+              <li><Link href="/how-it-works" className="hover:text-white">How {content.siteName} Works</Link></li>
             </ul>
           </div>
         </div>
