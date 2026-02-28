@@ -194,7 +194,7 @@ export default function Header() {
                     )}
                   </button>
                   {showNotificationDropdown && (
-                    <div className="absolute right-0 top-full mt-1 w-80 max-h-[20rem] overflow-y-auto bg-white rounded-xl border border-gray-200 shadow-lg py-2 z-50">
+                    <div className="absolute right-0 top-full mt-1 w-80 max-h-[20rem] overflow-y-auto bg-white rounded-xl gradient-border-1 shadow-lg py-2 z-50">
                       <div className="px-4 py-2 border-b border-gray-100">
                         <h3 className="font-medium text-gray-900">Notifications</h3>
                       </div>
@@ -261,7 +261,7 @@ export default function Header() {
                     <span className="hidden md:inline">{user.name}</span>
                   </button>
                   {showUserMenu && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2">
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg gradient-border-1 py-2">
                       <div className="px-4 py-2 border-b border-gray-200 flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0">
                           <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={40} className="w-full h-full" />

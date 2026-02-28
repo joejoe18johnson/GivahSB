@@ -191,7 +191,7 @@ export default function RequestPayoutPage() {
               </Link>
             </div>
           ) : payoutRequest || submitSuccess ? (
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 md:p-8">
+            <div className="bg-white rounded-xl gradient-border-1 shadow-sm p-6 md:p-8">
               <div className="flex items-center gap-3 text-verified-600 mb-4">
                 <Building2 className="w-8 h-8" />
                 <h2 className="text-xl font-semibold">Payout request submitted</h2>
@@ -224,7 +224,7 @@ export default function RequestPayoutPage() {
               </Link>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <form onSubmit={handleSubmit} className="bg-white rounded-xl gradient-border-1 shadow-sm overflow-hidden">
               <div className="px-5 py-4 border-b border-gray-200">
                 <h2 className="text-lg font-semibold text-gray-900">Where to deposit the money</h2>
                 <p className="text-sm text-gray-600 mt-1">Select your bank in Belize and enter the account details.</p>

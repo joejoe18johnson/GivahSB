@@ -120,13 +120,13 @@ export default function AdminUnderReviewPage() {
       </div>
 
       {list.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+        <div className="bg-white rounded-xl gradient-border-1 p-12 text-center">
           <Clock className="w-12 h-12 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-600 font-medium">No campaigns under review</p>
           <p className="text-gray-500 text-sm mt-1">New submissions will appear here when creators submit from the campaign creation form.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 min-w-0">
+        <div className="bg-white rounded-xl gradient-border-1 min-w-0">
           <p className="px-5 py-2 text-xs text-gray-500 border-b border-gray-100 md:sr-only" aria-hidden="true">Scroll horizontally to view all columns.</p>
           <div className="overflow-x-auto min-w-0 w-full" style={{ WebkitOverflowScrolling: "touch" }}>
             <table className="w-full text-sm min-w-[800px]">
@@ -199,7 +199,7 @@ export default function AdminUnderReviewPage() {
           aria-labelledby="campaign-detail-title"
         >
           <div
-            className="bg-white rounded-xl shadow-xl border border-gray-200 max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+            className="bg-white rounded-xl shadow-xl gradient-border-1 max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 shrink-0">
@@ -254,7 +254,7 @@ export default function AdminUnderReviewPage() {
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {selectedCampaign.image ? (
-                    <div className="rounded-lg border border-gray-200 overflow-hidden bg-gray-50 aspect-video relative">
+                    <div className="rounded-lg gradient-border-1 overflow-hidden bg-gray-50 aspect-video relative">
                       <SafeImage
                         src={selectedCampaign.image}
                         alt={`${selectedCampaign.title} - Image 1`}
@@ -268,12 +268,12 @@ export default function AdminUnderReviewPage() {
                       />
                     </div>
                   ) : (
-                    <div className="rounded-lg border border-gray-200 aspect-video bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
+                    <div className="rounded-lg gradient-border-1 aspect-video bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
                       No image 1
                     </div>
                   )}
                   {selectedCampaign.image2 ? (
-                    <div className="rounded-lg border border-gray-200 overflow-hidden bg-gray-50 aspect-video relative">
+                    <div className="rounded-lg gradient-border-1 overflow-hidden bg-gray-50 aspect-video relative">
                       <SafeImage
                         src={selectedCampaign.image2}
                         alt={`${selectedCampaign.title} - Image 2`}
@@ -287,7 +287,7 @@ export default function AdminUnderReviewPage() {
                       />
                     </div>
                   ) : (
-                    <div className="rounded-lg border border-gray-200 aspect-video bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
+                    <div className="rounded-lg gradient-border-1 aspect-video bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
                       No image 2
                     </div>
                   )}

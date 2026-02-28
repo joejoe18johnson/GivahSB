@@ -126,7 +126,7 @@ export default function AdminSiteInfoPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl gradient-border-1 shadow-sm overflow-hidden">
         <div className="p-6 space-y-6">
           {FIELDS.map(({ key, label, placeholder, multiline }) => (
             <div key={key}>
@@ -169,7 +169,7 @@ export default function AdminSiteInfoPage() {
             </p>
             <div className="space-y-4">
               {form.homeFaqs.map((faq, index) => (
-                <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-200 space-y-3">
+                <div key={index} className="bg-gray-50 rounded-lg p-4 gradient-border-1 space-y-3">
                   <div className="flex justify-between items-start gap-2">
                     <span className="text-xs font-medium text-gray-500">#{index + 1}</span>
                     <button

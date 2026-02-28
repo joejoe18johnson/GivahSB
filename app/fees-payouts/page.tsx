@@ -80,14 +80,14 @@ export default function FeesPayoutsPage() {
             <div className="mb-12">
               <h2 className="text-3xl font-medium mb-6">Payout Schedule</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="bg-white gradient-border-1 rounded-lg p-6">
                   <Clock className="w-10 h-10 text-primary-600 mb-4" />
                   <h3 className="text-xl font-medium mb-3">Monthly Payouts</h3>
                   <p className="text-gray-700">
                     Funds are transferred to your account on a monthly basis. Payouts are processed around the 15th of each month for all donations received in the previous month.
                   </p>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="bg-white gradient-border-1 rounded-lg p-6">
                   <DollarSign className="w-10 h-10 text-primary-600 mb-4" />
                   <h3 className="text-xl font-medium mb-3">Minimum Payout</h3>
                   <p className="text-gray-700">

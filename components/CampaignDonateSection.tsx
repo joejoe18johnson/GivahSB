@@ -47,7 +47,7 @@ export default function CampaignDonateSection({
 
   if (isFullyFunded) {
     return (
-      <div className="mb-6 p-5 rounded-xl bg-verified-50 border border-verified-200">
+      <div className="mb-6 p-5 rounded-xl bg-verified-50 gradient-border-1">
         <p className="text-verified-800 font-semibold flex items-center gap-2">
           <Trophy className="w-5 h-5 flex-shrink-0 text-verified-600" />
           Campaign has been fully funded

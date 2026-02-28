@@ -368,7 +368,7 @@ export default function MyCampaignsPage() {
       <section>
         <h2 className="text-xl font-medium text-gray-900 mb-4">Live campaigns</h2>
       {myCampaigns.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 md:p-12 text-center">
+        <div className="bg-white rounded-2xl gradient-border-1 shadow-sm p-8 md:p-12 text-center">
           <div className="max-w-md mx-auto">
             <div className="w-16 h-16 rounded-full bg-primary-100 flex items-center justify-center mx-auto mb-4">
               <DollarSign className="w-8 h-8 text-primary-600" />

@@ -108,13 +108,13 @@ export default function AdminCompletedCampaignsPage() {
       </div>
 
       {campaigns.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center">
+        <div className="bg-white rounded-xl gradient-border-1 shadow-sm p-12 text-center">
           <Trophy className="w-12 h-12 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-600 font-medium">No completed campaigns yet</p>
           <p className="text-gray-500 text-sm mt-1">Fully funded campaigns will appear here.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm min-w-0">
+        <div className="bg-white rounded-xl gradient-border-1 shadow-sm min-w-0">
           <p className="px-5 py-2 text-xs text-gray-500 border-b border-gray-100 md:sr-only" aria-hidden="true">Scroll horizontally to view all columns.</p>
           <div className="overflow-x-auto min-w-0 w-full" style={{ WebkitOverflowScrolling: "touch" }}>
             <table className="w-full text-sm min-w-[800px]">

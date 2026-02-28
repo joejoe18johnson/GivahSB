@@ -64,7 +64,7 @@ export default function CreateCampaignPage() {
   if (status === "deleted") {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
+        <div className="max-w-md w-full bg-white rounded-2xl gradient-border-1 shadow-sm p-8 text-center">
           <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-red-600" />
           </div>
@@ -86,7 +86,7 @@ export default function CreateCampaignPage() {
   if (status === "on_hold") {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
+        <div className="max-w-md w-full bg-white rounded-2xl gradient-border-1 shadow-sm p-8 text-center">
           <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-amber-600" />
           </div>
@@ -132,7 +132,7 @@ export default function CreateCampaignPage() {
 
     return (
       <div className="min-h-screen flex items-center justify-center px-4 py-8">
-        <div className="max-w-lg w-full bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
+        <div className="max-w-lg w-full bg-white rounded-2xl gradient-border-1 shadow-sm p-8 text-center">
           <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-amber-600" />
           </div>
@@ -572,7 +572,7 @@ export default function CreateCampaignPage() {
             step="0.01"
             aria-describedby="goal-max-notice"
           />
-          <p id="goal-max-notice" className="text-sm text-gray-600 mt-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+          <p id="goal-max-notice" className="text-sm text-gray-600 mt-2 bg-gray-50 gradient-border-1 rounded-lg px-3 py-2">
             You can ask for up to <strong>BZ$5,000</strong> per campaign. This is the maximum total funding goal allowed.
           </p>
         </div>
@@ -722,7 +722,7 @@ export default function CreateCampaignPage() {
               {proofFiles.map((file, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200"
+                  className="flex items-center justify-between bg-white p-3 rounded-lg gradient-border-1"
                 >
                   <div className="flex items-center gap-2">
                     <FileText className="w-4 h-4 text-gray-500" />

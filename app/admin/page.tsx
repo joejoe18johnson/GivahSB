@@ -191,7 +191,7 @@ export default function AdminDashboardPage() {
 
       {/* Stats - 4 cards in one row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+        <div className="bg-white rounded-xl gradient-border-1 p-5 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center">
               <Megaphone className="w-5 h-5 text-primary-600" />
@@ -202,7 +202,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+        <div className="bg-white rounded-xl gradient-border-1 p-5 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-verified-100 flex items-center justify-center">
               <DollarSign className="w-5 h-5 text-verified-600" />
@@ -213,7 +213,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+        <div className="bg-white rounded-xl gradient-border-1 p-5 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-accent-100 flex items-center justify-center">
               <Users className="w-5 h-5 text-accent-600" />
@@ -224,7 +224,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+        <div className="bg-white rounded-xl gradient-border-1 p-5 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
               <Heart className="w-5 h-5 text-yellow-700" />
@@ -241,7 +241,7 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Link
           href="/admin/under-review"
-          className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm block hover:border-primary-200 transition-colors"
+          className="bg-white rounded-xl gradient-border-1 p-5 shadow-sm block hover:border-primary-200 transition-colors"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
@@ -255,7 +255,7 @@ export default function AdminDashboardPage() {
         </Link>
         <Link
           href="/admin/users"
-          className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm block hover:border-primary-200 transition-colors"
+          className="bg-white rounded-xl gradient-border-1 p-5 shadow-sm block hover:border-primary-200 transition-colors"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
@@ -269,7 +269,7 @@ export default function AdminDashboardPage() {
         </Link>
         <Link
           href="/admin/users"
-          className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm block hover:border-primary-200 transition-colors"
+          className="bg-white rounded-xl gradient-border-1 p-5 shadow-sm block hover:border-primary-200 transition-colors"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
@@ -283,7 +283,7 @@ export default function AdminDashboardPage() {
         </Link>
         <Link
           href="/admin/users"
-          className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm block hover:border-primary-200 transition-colors"
+          className="bg-white rounded-xl gradient-border-1 p-5 shadow-sm block hover:border-primary-200 transition-colors"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center">
@@ -299,7 +299,7 @@ export default function AdminDashboardPage() {
 
       {/* Recent data sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm min-w-0">
+        <div className="bg-white rounded-xl gradient-border-1 shadow-sm min-w-0">
           <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
             <h2 className="font-semibold text-gray-900">Recent Campaigns</h2>
             <Link href="/admin/campaigns" className="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
@@ -332,7 +332,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl gradient-border-1 shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
             <h2 className="font-semibold text-gray-900">Recent Users</h2>
             <Link href="/admin/users" className="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
@@ -472,7 +472,7 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm min-w-0">
+      <div className="bg-white rounded-xl gradient-border-1 shadow-sm min-w-0">
         <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
           <h2 className="font-semibold text-gray-900">Recent Donations</h2>
           <Link href="/admin/donations" className="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">

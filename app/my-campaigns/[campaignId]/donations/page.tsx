@@ -107,7 +107,7 @@ export default function MyCampaignDonationsPage() {
           <p className="text-gray-600 mb-8">{campaign.title}</p>
 
           {/* Status bar: raised / goal, how much to go */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-8">
+          <div className="bg-white rounded-xl gradient-border-1 shadow-sm overflow-hidden mb-8">
             <div className="px-5 py-4 border-b border-gray-200 flex flex-wrap items-center gap-6">
               <div className="flex items-center gap-2">
                 <DollarSign className="w-5 h-5 text-verified-600" />
@@ -137,7 +137,7 @@ export default function MyCampaignDonationsPage() {
           </div>
 
           {/* Donors list */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-xl gradient-border-1 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-gray-200 flex items-center gap-2">
               <Users className="w-5 h-5 text-gray-600" />
               <h2 className="text-xl font-semibold bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">Donors</h2>
