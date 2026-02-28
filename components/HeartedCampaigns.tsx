@@ -61,7 +61,7 @@ export function HeartedProvider({ children }: { children: ReactNode }) {
         setHeartedIds(newIds);
         try {
           const isHearted = await toggleHeartInSupabase(supabase, user.id, campaignId);
-          await refreshHeartedIds();
+          // Keep optimistic state; don't refetch so the heart count and liked list don't get overwritten by a stale/empty response
           window.dispatchEvent(new Event("heartedCampaignsChanged"));
           return isHearted;
         } catch (err) {
@@ -79,7 +79,7 @@ export function HeartedProvider({ children }: { children: ReactNode }) {
       window.dispatchEvent(new Event("heartedCampaignsChanged"));
       return index === -1;
     },
-    [user?.id, supabase, refreshHeartedIds, heartedIds]
+    [user?.id, supabase, heartedIds]
   );
 
   const isCampaignHearted = useCallback(

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Heart, LogOut, Menu, X, Bell } from "lucide-react";
+import { Search, Heart, LogOut, Menu, X, Bell, Shield } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
@@ -30,6 +30,7 @@ export default function Header() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [totalNotificationCount, setTotalNotificationCount] = useState(0);
   const notificationDropdownRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const { user, isAdmin, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -58,8 +59,12 @@ export default function Header() {
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (notificationDropdownRef.current && !notificationDropdownRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (notificationDropdownRef.current && !notificationDropdownRef.current.contains(target)) {
         setShowNotificationDropdown(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(target)) {
+        setShowUserMenu(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -172,7 +177,7 @@ export default function Header() {
             )}
             {user ? (
               <>
-                <div className="relative" ref={notificationDropdownRef}>
+                <div className="relative flex items-center" ref={notificationDropdownRef}>
                   <button
                     type="button"
                     onClick={() => setShowNotificationDropdown((v) => !v)}
@@ -187,42 +192,44 @@ export default function Header() {
                     )}
                   </button>
                   {showNotificationDropdown && (
-                    <div className="absolute right-0 top-full mt-1 w-80 max-h-[20rem] overflow-y-auto bg-white rounded-xl gradient-border-1 shadow-lg py-2 z-50">
-                      <div className="px-4 py-2 border-b border-gray-100">
-                        <h3 className="font-medium text-gray-900">Notifications</h3>
+                    <div className="absolute right-0 top-full mt-1 w-80 z-[100]">
+                      <div className="max-h-[20rem] overflow-y-auto bg-white rounded-xl shadow-lg py-2 gradient-border-1 w-full">
+                        <div className="px-4 py-2 border-b border-gray-100">
+                          <h3 className="font-medium text-gray-900">Notifications</h3>
+                        </div>
+                        {notifications.length === 0 ? (
+                          <p className="px-4 py-6 text-sm text-gray-500 text-center">No notifications yet</p>
+                        ) : (
+                          <ul className="py-2">
+                            {notifications.map((n) => (
+                              <li key={n.id}>
+                                <button
+                                  type="button"
+                                  onClick={() => handleNotificationClick(n)}
+                                  className={`w-full text-left px-4 py-3 hover:bg-gray-50 ${!n.read ? "bg-primary-50/50" : ""}`}
+                                >
+                                  <div className="flex items-start justify-between gap-2">
+                                    <p className="text-sm font-medium text-gray-900 flex-1 min-w-0">{n.title}</p>
+                                    {!n.read && (
+                                      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-primary-600 bg-primary-100 px-1.5 py-0.5 rounded">
+                                        New
+                                      </span>
+                                    )}
+                                  </div>
+                                  <p className="text-xs text-gray-600 line-clamp-2 mt-0.5">{n.body}</p>
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        <Link
+                          href="/notifications"
+                          onClick={() => setShowNotificationDropdown(false)}
+                          className="block px-4 py-2 text-center text-sm text-primary-600 font-medium hover:bg-gray-50 border-t border-gray-100"
+                        >
+                          View all notifications
+                        </Link>
                       </div>
-                      {notifications.length === 0 ? (
-                        <p className="px-4 py-6 text-sm text-gray-500 text-center">No notifications yet</p>
-                      ) : (
-                        <ul className="py-2">
-                          {notifications.map((n) => (
-                            <li key={n.id}>
-                              <button
-                                type="button"
-                                onClick={() => handleNotificationClick(n)}
-                                className={`w-full text-left px-4 py-3 hover:bg-gray-50 ${!n.read ? "bg-primary-50/50" : ""}`}
-                              >
-                                <div className="flex items-start justify-between gap-2">
-                                  <p className="text-sm font-medium text-gray-900 flex-1 min-w-0">{n.title}</p>
-                                  {!n.read && (
-                                    <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-primary-600 bg-primary-100 px-1.5 py-0.5 rounded">
-                                      New
-                                    </span>
-                                  )}
-                                </div>
-                                <p className="text-xs text-gray-600 line-clamp-2 mt-0.5">{n.body}</p>
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                      <Link
-                        href="/notifications"
-                        onClick={() => setShowNotificationDropdown(false)}
-                        className="block px-4 py-2 text-center text-sm text-primary-600 font-medium hover:bg-gray-50 border-t border-gray-100"
-                      >
-                        View all notifications
-                      </Link>
                     </div>
                   )}
                 </div>
@@ -238,7 +245,7 @@ export default function Header() {
                     </span>
                   )}
                 </Link>
-                <div className="relative">
+                <div className="relative flex items-center" ref={userMenuRef}>
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
                     className="flex items-center gap-2 text-gray-700 hover:text-primary-600 transition-colors relative"
@@ -254,7 +261,8 @@ export default function Header() {
                     <span className="hidden md:inline">{user.name}</span>
                   </button>
                   {showUserMenu && (
-                    <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg gradient-border-1 py-2 z-50">
+                    <div className="absolute right-0 top-full mt-2 w-48 z-[100]">
+                      <div className="bg-white rounded-lg shadow-lg gradient-border-1 py-2 w-full">
                       <div className="px-4 py-2 border-b border-gray-200 flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0">
                           <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={40} className="w-full h-full" />
@@ -270,6 +278,14 @@ export default function Header() {
                         onClick={() => setShowUserMenu(false)}
                       >
                         My Profile
+                      </Link>
+                      <Link
+                        href="/verification-center"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        <Shield className="w-4 h-4" />
+                        Verification Center
                       </Link>
                       <Link
                         href="/my-campaigns"
@@ -294,6 +310,7 @@ export default function Header() {
                         <LogOut className="w-4 h-4" />
                         Sign Out
                       </button>
+                      </div>
                     </div>
                   )}
                 </div>
