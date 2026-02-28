@@ -190,12 +190,6 @@ export default function AboutPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/campaigns"
-                className="bg-success-500 text-white px-8 py-4 rounded-full font-medium hover:bg-success-600 transition-colors text-lg shadow-lg"
-              >
-                Browse Campaigns
-              </Link>
-              <Link
-                href="/campaigns"
                 className="border-2 border-primary-600 text-primary-600 px-8 py-4 rounded-full font-medium hover:bg-primary-50 transition-colors text-lg"
               >
                 Support a Campaign

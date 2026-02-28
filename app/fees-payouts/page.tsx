@@ -181,10 +181,10 @@ export default function FeesPayoutsPage() {
                 Create your campaign today and start receiving support with zero platform fees.
               </p>
               <Link
-                href="/campaigns"
+                href="/campaigns/create"
                 className="inline-block bg-success-500 text-white px-8 py-4 rounded-full font-medium hover:bg-success-600 transition-colors text-lg shadow-lg"
               >
-                Browse Campaigns
+                Start Your Campaign
               </Link>
             </div>
           </div>
