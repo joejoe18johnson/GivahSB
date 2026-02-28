@@ -205,7 +205,7 @@ export default function Home() {
         <section id="community-shares-burdens" className="flex-shrink-0 -mt-[40px] pt-4 pb-8 md:pb-12 animate-fade-in-up opacity-0 [animation-delay:0.2s] [animation-fill-mode:forwards]">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-center break-words max-w-full px-2">
-              <span className="text-primary-600">{siteContent.communityHeadingPart1}</span>
+              <span className="bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">{siteContent.communityHeadingPart1}</span>
               <span className={`text-success-600 ${permanentMarker.className}`}>{siteContent.communityHeadingPart2}</span>
             </h2>
           </div>
