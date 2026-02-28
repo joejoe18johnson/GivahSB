@@ -199,10 +199,16 @@ export async function updateUserProfileSupabase(
   const row: Record<string, unknown> = { updated_at: new Date().toISOString() };
   if (updates.name !== undefined) row.name = updates.name;
   if (updates.phoneNumber !== undefined) row.phone_number = updates.phoneNumber;
+  if (updates.phoneVerified !== undefined) row.phone_verified = updates.phoneVerified;
+  if (updates.phonePending !== undefined) row.phone_pending = updates.phonePending;
   if (updates.profilePhoto !== undefined) row.profile_photo = updates.profilePhoto;
   if (updates.idDocument !== undefined) row.id_document = updates.idDocument;
   if (updates.idDocumentType !== undefined) row.id_document_type = updates.idDocumentType;
+  if (updates.idVerified !== undefined) row.id_verified = updates.idVerified;
+  if (updates.idPending !== undefined) row.id_pending = updates.idPending;
   if (updates.addressDocument !== undefined) row.address_document = updates.addressDocument;
+  if (updates.addressVerified !== undefined) row.address_verified = updates.addressVerified;
+  if (updates.addressPending !== undefined) row.address_pending = updates.addressPending;
   if (Object.keys(row).length <= 1) return;
   await supabase.from("profiles").update(row).eq("id", userId);
 }
