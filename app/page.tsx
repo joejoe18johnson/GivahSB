@@ -400,10 +400,10 @@ export default function Home() {
 
         <div className="text-center mt-6">
           <Link
-            href="/campaigns?filter=trending"
+            href="/campaigns"
             className="inline-block bg-success-500 text-white px-8 py-3 rounded-full font-medium hover:bg-success-600 transition-colors duration-300 ease-in-out shadow-md"
           >
-            View All Top Campaigns →
+            View All Campaigns →
           </Link>
         </div>
         </div>
