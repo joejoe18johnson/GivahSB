@@ -1,31 +1,23 @@
 "use client";
 
-import { useEffect, useState, useRef, Suspense } from "react";
+import { useEffect, useState, useRef, useCallback, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const AUTH_CALLBACK_URL_KEY = "auth_callback_url";
-const EXCHANGE_TIMEOUT_MS = 15000;
+const EXCHANGE_TIMEOUT_MS = 20000;
 
 function AuthCallbackContent() {
   const [status, setStatus] = useState<"exchanging" | "redirecting" | "error">("exchanging");
   const exchangeStarted = useRef(false);
+  const codeRef = useRef<string | null>(null);
 
-  useEffect(() => {
-    // Read code from the URL directly so we don't depend on useSearchParams() being
-    // populated on first render (avoids false "no code" → redirect to login with error)
-    const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-    const code = params?.get("code") ?? null;
-    const nextParam = params?.get("next") ?? null;
-
+  const runExchange = useCallback(() => {
+    const code = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("code") : null;
     if (!code) {
       window.location.replace("/auth/login?error=auth_callback");
       return;
     }
-
-    // Run exchange only once (avoids double run from React Strict Mode or re-renders)
-    if (exchangeStarted.current) return;
-    exchangeStarted.current = true;
-
+    codeRef.current = code;
     const supabase = createClient();
     let done = false;
 
@@ -34,21 +26,16 @@ function AuthCallbackContent() {
       done = true;
       setStatus("redirecting");
       const next =
-        nextParam ||
-        (typeof window !== "undefined" ? sessionStorage.getItem(AUTH_CALLBACK_URL_KEY) : null) ||
-        "/";
+        (typeof window !== "undefined" ? sessionStorage.getItem(AUTH_CALLBACK_URL_KEY) : null) || "/my-campaigns";
       if (typeof window !== "undefined") sessionStorage.removeItem(AUTH_CALLBACK_URL_KEY);
       const path = next.startsWith("http") ? new URL(next).pathname : next.startsWith("/") ? next : `/${next}`;
-      window.location.replace(path || "/");
+      window.location.replace(path || "/my-campaigns");
     };
 
     const fail = () => {
       if (done) return;
       done = true;
       setStatus("error");
-      setTimeout(() => {
-        window.location.replace("/auth/login?error=auth_callback");
-      }, 2000);
     };
 
     const timeoutId = setTimeout(() => {
@@ -76,10 +63,50 @@ function AuthCallbackContent() {
       });
   }, []);
 
+  useEffect(() => {
+    if (exchangeStarted.current) return;
+    exchangeStarted.current = true;
+    const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    const code = params?.get("code") ?? null;
+    if (!code) {
+      window.location.replace("/auth/login?error=auth_callback");
+      return;
+    }
+    runExchange();
+  }, [runExchange]);
+
+  const handleRetry = () => {
+    setStatus("exchanging");
+    exchangeStarted.current = false;
+    runExchange();
+  };
+
+  const handleGoToLogin = () => {
+    window.location.replace("/auth/login?error=auth_callback");
+  };
+
   if (status === "error") {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <p className="text-red-600">Sign-in failed. Redirecting to login…</p>
+        <div className="text-center max-w-sm">
+          <p className="text-red-600 mb-4">Sign-in could not be completed.</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button
+              type="button"
+              onClick={handleRetry}
+              className="px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700"
+            >
+              Try again
+            </button>
+            <button
+              type="button"
+              onClick={handleGoToLogin}
+              className="px-4 py-2 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Back to sign in
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

@@ -19,6 +19,14 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || searchParams.get("redirect") || "/my-campaigns";
 
+  // Show error from URL (e.g. after failed OAuth callback)
+  useEffect(() => {
+    const err = searchParams.get("error");
+    if (err === "auth_callback") {
+      setError("Sign-in could not be completed. Please try again.");
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     if (authLoading) return;
     if (!user) return;
@@ -33,17 +41,31 @@ function LoginForm() {
     }
   }, [user, isAdmin, authLoading, adminCheckDone, callbackUrl, router]);
 
+  function getLoginErrorMessage(err: unknown): string {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (/invalid login credentials|invalid_credentials/i.test(msg)) return "Invalid email or password. Please try again.";
+    if (/email not confirmed|email_not_confirmed/i.test(msg)) return "Please confirm your email address. Check your inbox for the confirmation link.";
+    if (/too many requests|rate limit/i.test(msg)) return "Too many attempts. Please try again in a few minutes.";
+    if (msg && msg !== "object") return "Sign-in failed. Please try again.";
+    return "Invalid email or password. Please try again.";
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-    const success = await login(email, password);
-    if (success) {
-      // Redirect is handled by useEffect when user/isAdmin updates
-      return;
+    try {
+      const success = await login(email, password);
+      if (success) {
+        // Redirect is handled by useEffect when user/isAdmin updates
+        return;
+      }
+      setError("Invalid email or password. Please try again.");
+    } catch (err) {
+      setError(getLoginErrorMessage(err));
+    } finally {
+      setIsLoading(false);
     }
-    setError("Invalid email or password. Please try again.");
-    setIsLoading(false);
   };
 
   const handleGoogleSignIn = async () => {

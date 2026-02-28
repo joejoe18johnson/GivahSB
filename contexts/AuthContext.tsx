@@ -11,6 +11,7 @@ import {
   signOutSupabase,
   updateUserProfileSupabase,
   supabaseUserToProfile,
+  resetPasswordSupabase,
   UserProfile,
 } from "@/lib/supabase/auth";
 
@@ -42,6 +43,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   loginWithGoogle: () => Promise<void>;
   signup: (email: string, password: string, name: string, phoneNumber?: string) => Promise<boolean>;
+  requestPasswordReset: (email: string) => Promise<void>;
   updateUser: (updates: Partial<User>) => Promise<void>;
   logout: () => Promise<void>;
   isLoading: boolean;
@@ -151,15 +153,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user?.id]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    try {
-      const supabase = createClient();
-      const profile = await signInWithEmailSupabase(supabase, email, password);
-      setUser(profileToUser(profile));
-      return true;
-    } catch (e) {
-      console.error("Login error:", e);
-      return false;
-    }
+    const supabase = createClient();
+    const profile = await signInWithEmailSupabase(supabase, email, password);
+    setUser(profileToUser(profile));
+    return true;
   };
 
   const loginWithGoogle = async () => {
@@ -182,6 +179,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Signup error:", e);
       return false;
     }
+  };
+
+  const requestPasswordReset = async (email: string): Promise<void> => {
+    const supabase = createClient();
+    await resetPasswordSupabase(supabase, email);
   };
 
   const updateUser = useCallback(async (updates: Partial<User>) => {
@@ -219,6 +221,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         loginWithGoogle,
         signup,
+        requestPasswordReset,
         updateUser,
         logout,
         isLoading,
