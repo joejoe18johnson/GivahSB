@@ -23,8 +23,11 @@ export default function Home() {
   const [siteStats, setSiteStats] = useState<{ totalRaisedFormatted: string; campaignCount: number; totalSupporters: number } | null>(null);
   const [faqOpenIndex, setFaqOpenIndex] = useState<number | null>(null);
   const trendingScrollRef = useRef<HTMLDivElement>(null);
+  const trendingMobileScrollRef = useRef<HTMLDivElement>(null);
   const [trendingCanScrollLeft, setTrendingCanScrollLeft] = useState(false);
   const [trendingCanScrollRight, setTrendingCanScrollRight] = useState(false);
+  const [currentMobileIndex, setCurrentMobileIndex] = useState(0);
+  const trendingMobileScrollRaf = useRef<number | null>(null);
 
   const updateTrendingScrollState = () => {
     const el = trendingScrollRef.current;
@@ -125,6 +128,25 @@ export default function Home() {
     if (!el) return;
     const step = el.clientWidth;
     el.scrollBy({ left: direction === "left" ? -step : step, behavior: "smooth" });
+  };
+
+  const updateTrendingMobileIndex = () => {
+    const el = trendingMobileScrollRef.current;
+    if (!el || !el.firstElementChild) return;
+    const card = el.firstElementChild as HTMLElement;
+    const cardWidth = card.offsetWidth + 16; // gap
+    const index = Math.round(el.scrollLeft / cardWidth);
+    const clamped = Math.max(0, Math.min(index, allTrendingCampaigns.length - 1));
+    setCurrentMobileIndex(clamped);
+  };
+
+  const scrollTrendingMobileToIndex = (index: number) => {
+    const el = trendingMobileScrollRef.current;
+    if (!el?.firstElementChild) return;
+    const card = el.firstElementChild as HTMLElement;
+    const cardWidth = card.offsetWidth + 16;
+    el.scrollTo({ left: index * cardWidth, behavior: "smooth" });
+    setCurrentMobileIndex(index);
   };
 
   return (
@@ -250,7 +272,18 @@ export default function Home() {
         {/* Mobile: horizontal carousel, equal-height cards */}
         {!isLoading && allTrendingCampaigns.length > 0 && (
         <div className="md:hidden -mx-4 px-4 mb-8">
-          <div className="overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory scrollbar-hide pb-4">
+          <div
+            ref={trendingMobileScrollRef}
+            className="overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory scrollbar-hide pb-2"
+            style={{ WebkitOverflowScrolling: "touch" }}
+            onScroll={() => {
+              if (trendingMobileScrollRaf.current != null) cancelAnimationFrame(trendingMobileScrollRaf.current);
+              trendingMobileScrollRaf.current = requestAnimationFrame(() => {
+                trendingMobileScrollRaf.current = null;
+                updateTrendingMobileIndex();
+              });
+            }}
+          >
             <div className="flex gap-4">
               {allTrendingCampaigns.map((campaign) => (
                 <div
@@ -264,6 +297,22 @@ export default function Home() {
               ))}
             </div>
           </div>
+          {/* Nav dots - show carousel is swipeable/navigable */}
+          {allTrendingCampaigns.length > 1 && (
+            <div className="flex justify-center gap-2 pt-3 pb-1">
+              {allTrendingCampaigns.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => scrollTrendingMobileToIndex(i)}
+                  aria-label={`Go to slide ${i + 1}`}
+                  className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
+                    currentMobileIndex === i ? "bg-primary-600 scale-110" : "bg-gray-300 hover:bg-gray-400"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </div>
         )}
 
