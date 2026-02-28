@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { compressImageForUpload } from "@/lib/compressImage";
 import Link from "next/link";
@@ -25,8 +26,13 @@ import type { IdDocumentTypeValue, InputChangeEvent } from "./types";
 import ProfileView from "./ProfileView";
 
 export default function ProfilePage() {
+  const searchParams = useSearchParams();
   const { user, isLoading, updateUser, logout } = useAuth();
   const { alert } = useThemedModal();
+  const [showVerifyBanner, setShowVerifyBanner] = useState(false);
+  useEffect(() => {
+    if (searchParams.get("verify") === "1") setShowVerifyBanner(true);
+  }, [searchParams]);
   const [editingName, setEditingName] = useState(false);
   const [editingBirthday, setEditingBirthday] = useState(false);
   const [editingPassword, setEditingPassword] = useState(false);
@@ -447,7 +453,26 @@ export default function ProfilePage() {
   };
 
   return (
-    <ProfileView
+    <>
+      {showVerifyBanner && user && (
+        <div className="mb-6 rounded-xl border border-primary-200 bg-primary-50 px-5 py-4 flex items-center justify-between gap-4">
+          <p className="text-primary-800 text-sm md:text-base">
+            <strong>Verify to create campaigns.</strong> Add and verify your phone number, ID document, and address below. Once approved, you can start a campaign.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setShowVerifyBanner(false);
+              window.history.replaceState(null, "", "/profile");
+            }}
+            className="shrink-0 p-2 text-primary-600 hover:text-primary-800 rounded-lg hover:bg-primary-100 transition-colors"
+            aria-label="Dismiss"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      )}
+      <ProfileView
       user={user}
       showSavedPopup={showSavedPopup}
       showErrorPopup={showErrorPopup}
@@ -505,5 +530,6 @@ export default function ProfilePage() {
       onDeactivateOpen={handleDeactivateOpen}
       onDeactivateCancel={handleDeactivateCancel}
     />
+    </>
   );
 }

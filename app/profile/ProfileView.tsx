@@ -265,6 +265,12 @@ export default function ProfileView(props: ProfileViewProps) {
         </div>
       </div>
 
+      <h2 id="verification" className="text-xl font-semibold text-gray-900 mt-8 mb-3 flex items-center gap-2">
+        <Shield className="w-5 h-5 text-primary-600" />
+        Verification center
+      </h2>
+      <p className="text-gray-600 text-sm mb-4">Verify your phone, ID, and address to create campaigns. All three must be approved by our team.</p>
+
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-6">
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <div className="flex items-center gap-3">
