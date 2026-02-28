@@ -6,12 +6,14 @@ function campaignsApiQuery(filters?: {
   trending?: boolean;
   limitCount?: number;
   onlyFullyFunded?: boolean;
+  excludeFullyFunded?: boolean;
 }): string {
   const params = new URLSearchParams();
   if (filters?.trending) params.set("trending", "true");
   if (filters?.category && filters.category !== "All") params.set("category", filters.category);
   if (filters?.limitCount && filters.limitCount > 0) params.set("limitCount", String(filters.limitCount));
   if (filters?.onlyFullyFunded) params.set("onlyFullyFunded", "true");
+  if (filters?.excludeFullyFunded && !filters?.onlyFullyFunded) params.set("excludeFullyFunded", "true");
   const q = params.toString();
   return q ? `?${q}` : "";
 }
@@ -27,6 +29,7 @@ export async function fetchCampaignsFromAPI(filters?: {
   trending?: boolean;
   limitCount?: number;
   onlyFullyFunded?: boolean;
+  excludeFullyFunded?: boolean;
 }): Promise<Campaign[]> {
   const url = `/api/campaigns${campaignsApiQuery(filters)}`;
   const controller = new AbortController();

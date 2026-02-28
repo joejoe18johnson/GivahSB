@@ -35,7 +35,9 @@ function CampaignsContent() {
       try {
         setError(null);
         const trending = filterParam === "trending";
-        const fetchedCampaigns = await fetchCampaignsFromAPI(trending ? { trending: true } : undefined);
+        const fetchedCampaigns = await fetchCampaignsFromAPI(
+          trending ? { trending: true } : { excludeFullyFunded: true }
+        );
         setCampaigns(fetchedCampaigns);
       } catch (err) {
         console.error("Error loading campaigns:", err);

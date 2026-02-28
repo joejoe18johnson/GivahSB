@@ -40,7 +40,7 @@ export default function Home() {
       setCampaignsError(null);
       try {
         // Fetch all campaigns; we'll show trending (60–99%) in Top Campaigns, or recent if none trending
-        const fetchedCampaigns = await fetchCampaignsFromAPI();
+        const fetchedCampaigns = await fetchCampaignsFromAPI({ excludeFullyFunded: true });
         setCampaigns(fetchedCampaigns);
       } catch (error) {
         console.error("Error loading campaigns:", error);
@@ -140,7 +140,7 @@ export default function Home() {
           {/* Left: Content - vertically centered */}
           <div className="order-2 lg:order-1 flex flex-col justify-center mt-14 sm:mt-16 lg:mt-0 min-h-[320px] lg:min-h-[400px] animate-fade-in-up opacity-0 [animation-fill-mode:forwards]">
             <div className="mb-4 w-full max-w-xl md:max-w-none md:w-max pb-1 flex justify-center md:justify-start overflow-x-auto md:overflow-visible">
-              <h1 className="font-bold text-gray-900 whitespace-nowrap min-w-max text-center md:text-left text-[clamp(2.2rem,(100vw - 2rem) / 7.5,5rem)] md:text-4xl lg:text-5xl xl:text-6xl pb-[0.2em]">
+              <h1 className="font-bold text-gray-900 whitespace-nowrap min-w-max text-center md:text-left text-5xl sm:text-5xl md:text-4xl lg:text-3xl xl:text-4xl pb-[0.2em]">
                 {siteContent.heroTitle.split(/(Burdens|Together)/).map((part, i) =>
                   part === "Burdens" ? (
                     <span key={i} className="text-accent-600">Burdens</span>

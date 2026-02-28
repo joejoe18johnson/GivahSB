@@ -121,6 +121,7 @@ export type GetCampaignsFilters = {
   trending?: boolean;
   limitCount?: number;
   onlyFullyFunded?: boolean;
+  excludeFullyFunded?: boolean;
   forStats?: boolean;
 };
 
@@ -142,8 +143,9 @@ export async function getCampaigns(
   if (!filters?.forStats) {
     if (filters?.onlyFullyFunded === true) {
       campaigns = campaigns.filter((c) => goal(c) > 0 && raised(c) >= goal(c));
+    } else if (filters?.excludeFullyFunded === true) {
+      campaigns = campaigns.filter((c) => goal(c) <= 0 || raised(c) < goal(c));
     }
-    // Default: show all campaigns (in progress + fully funded). No filter.
   }
   if (filters?.trending) {
     // Trending = at least 60% funded and not fully funded yet

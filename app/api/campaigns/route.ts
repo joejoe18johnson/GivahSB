@@ -20,7 +20,7 @@ function withTimeout<T>(p: Promise<T>, ms: number, message: string): Promise<T> 
 /**
  * GET /api/campaigns
  * Returns live campaigns from Supabase.
- * Query params: trending=true | category=... | limitCount=6 | onlyFullyFunded=true
+ * Query params: trending=true | category=... | limitCount=6 | onlyFullyFunded=true | excludeFullyFunded=true
  */
 export async function GET(request: NextRequest) {
   if (!isSupabaseConfigured()) {
@@ -43,12 +43,14 @@ export async function GET(request: NextRequest) {
     ? Math.min(100, parseInt(limitParam, 10) || 0)
     : undefined;
   const onlyFullyFunded = searchParams.get("onlyFullyFunded") === "true";
+  const excludeFullyFunded = searchParams.get("excludeFullyFunded") === "true";
 
   const filters = {
     ...(trending && { trending: true }),
     ...(category && category !== "All" && { category }),
     ...(limitCount && limitCount > 0 && { limitCount }),
     ...(onlyFullyFunded && { onlyFullyFunded: true }),
+    ...(excludeFullyFunded && !onlyFullyFunded && { excludeFullyFunded: true }),
   };
 
   try {

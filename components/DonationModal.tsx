@@ -270,59 +270,59 @@ export default function DonationModal({
                   <button
                     type="button"
                     onClick={() => { setSelectedMethod("bank"); setPaymentReference(campaignReferenceNumber || generateShortRef()); }}
-                    className={`min-h-[56px] sm:min-h-0 p-4 border-2 rounded-xl sm:rounded-full transition-all ${
+                    className={`min-h-[56px] sm:min-h-0 p-2 border-2 rounded-xl sm:rounded-full transition-all ${
                       selectedMethod === "bank"
                         ? "border-primary-600 bg-primary-50"
                         : "border-gray-200 hover:border-primary-300"
                     }`}
                   >
-                    <Building2 className="w-8 h-8 mx-auto mb-2 text-primary-600" />
+                    <Building2 className="w-8 h-8 mx-auto text-primary-600" />
                     <p className="font-medium">Bank Deposit</p>
-                    <p className="text-xs text-gray-600 mt-1">Direct bank transfer</p>
+                    <p className="text-xs text-gray-600">Direct bank transfer</p>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => { setSelectedMethod("digiwallet"); setPaymentReference(campaignReferenceNumber || generateShortRef()); }}
-                    className={`min-h-[56px] sm:min-h-0 p-4 border-2 rounded-xl sm:rounded-full transition-all ${
+                    className={`min-h-[56px] sm:min-h-0 p-2 border-2 rounded-xl sm:rounded-full transition-all ${
                       selectedMethod === "digiwallet"
                         ? "border-primary-600 bg-primary-50"
                         : "border-gray-200 hover:border-primary-300"
                     }`}
                   >
-                    <span className="relative w-10 h-10 mx-auto mb-2 block">
+                    <span className="relative w-32 h-32 mx-auto block p-[5px] box-border">
                       <Image
                         src="https://www.digiwallet.bz/wp-content/uploads/2021/11/DWL-web-logo.png"
                         alt="Digi Wallet"
-                        width={40}
-                        height={40}
-                        className="object-contain"
+                        width={128}
+                        height={128}
+                        className="object-contain w-full h-full"
                       />
                     </span>
                     <p className="font-medium">Digi Wallet</p>
-                    <p className="text-xs text-gray-600 mt-1">Mobile wallet</p>
+                    <p className="text-xs text-gray-600">Mobile wallet</p>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => { setSelectedMethod("ekyash"); setPaymentReference(campaignReferenceNumber || generateShortRef()); }}
-                    className={`min-h-[56px] sm:min-h-0 p-4 border-2 rounded-xl sm:rounded-full transition-all ${
+                    className={`min-h-[56px] sm:min-h-0 p-2 border-2 rounded-xl sm:rounded-full transition-all ${
                       selectedMethod === "ekyash"
                         ? "border-primary-600 bg-primary-50"
                         : "border-gray-200 hover:border-primary-300"
                     }`}
                   >
-                    <span className="relative w-10 h-10 mx-auto mb-2 block">
+                    <span className="relative w-32 h-32 mx-auto block p-[5px] box-border">
                       <Image
                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTvpM-CtfXjjUgsq68dcfYkTzk88ke86G-5A&s"
                         alt="E-Kyash"
-                        width={40}
-                        height={40}
-                        className="object-contain"
+                        width={128}
+                        height={128}
+                        className="object-contain w-full h-full"
                       />
                     </span>
                     <p className="font-medium">E-Kyash</p>
-                    <p className="text-xs text-gray-600 mt-1">Mobile payments</p>
+                    <p className="text-xs text-gray-600">Mobile payments</p>
                   </button>
                 </div>
               </div>
