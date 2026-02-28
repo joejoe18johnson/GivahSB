@@ -285,13 +285,8 @@ export default function Header() {
                     onClick={() => setShowUserMenu(!showUserMenu)}
                     className="flex items-center gap-2 text-gray-700 hover:text-primary-600 transition-colors relative"
                   >
-                    <div className="w-8 h-8 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium relative">
+                    <div className="w-8 h-8 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium">
                       <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={32} className="w-full h-full" />
-                      {totalNotificationCount > 0 && (
-                        <span className="absolute -top-0.5 -right-0.5 min-w-[1.25rem] h-4 px-1 flex items-center justify-center rounded-full bg-primary-600 text-white text-[10px] font-medium">
-                          {totalNotificationCount > 99 ? "99+" : totalNotificationCount}
-                        </span>
-                      )}
                     </div>
                     <span className="hidden md:inline">{user.name}</span>
                   </button>
@@ -376,15 +371,10 @@ export default function Header() {
             {user && (
               <Link
                 href="/profile"
-                className="relative w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0"
+                className="w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={40} className="w-full h-full" />
-                {totalNotificationCount > 0 && (
-                  <span className="absolute top-0 right-0 min-w-[1.25rem] h-4 px-1 flex items-center justify-center rounded-full bg-primary-600 text-white text-[10px] font-medium">
-                    {totalNotificationCount > 99 ? "99+" : totalNotificationCount}
-                  </span>
-                )}
               </Link>
             )}
             <button
