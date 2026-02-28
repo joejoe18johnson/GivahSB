@@ -333,7 +333,7 @@ export default function CampaignPage() {
                 </div>
               </div>
               <div>
-                <div className="text-lg font-bold text-primary-600">{Math.round(progressPercentage)}% Funded</div>
+                <div className="text-lg font-bold bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">{Math.round(progressPercentage)}% Funded</div>
                 <div className="text-xs text-gray-600">of goal</div>
               </div>
             </div>

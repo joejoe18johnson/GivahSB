@@ -518,7 +518,7 @@ export default function Home() {
                       <h3 className="font-semibold text-gray-900 line-clamp-2 mt-1">
                         {campaign.title}
                       </h3>
-                      <p className="text-base font-bold text-primary-600 mt-1">
+                      <p className="text-base font-bold bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent mt-1">
                         {Math.round(pct)}% Funded
                       </p>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
