@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +10,7 @@ const AUTH_REDIRECT_COOKIE = "auth_redirect_path";
  * Server-side OAuth callback. Exchanges the auth code for a session (avoids client timeout).
  * Redirect URL is read from cookie auth_redirect_path, or default /my-campaigns.
  */
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
 

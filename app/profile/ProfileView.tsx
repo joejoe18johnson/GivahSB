@@ -11,6 +11,7 @@ import {
   Upload,
   Trash2,
   AlertTriangle,
+  CheckCircle2,
 } from "lucide-react";
 import type { RefObject } from "react";
 import type { InputChangeEvent } from "./types";

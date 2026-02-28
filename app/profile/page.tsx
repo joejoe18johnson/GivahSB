@@ -123,7 +123,7 @@ export default function ProfilePage() {
     }
   };
 
-  const handlePhotoUpload = async (e: InputChangeEvent) => {
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
     if (!file.type.startsWith("image/")) {
