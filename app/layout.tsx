@@ -6,6 +6,7 @@ import Providers from "@/components/Providers";
 import MainWithPadding from "@/components/MainWithPadding";
 import ConditionalFooter from "@/components/ConditionalFooter";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import CookieConsent from "@/components/CookieConsent";
 const siteFont = Funnel_Display({ weight: ["300", "400", "700"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -33,6 +34,7 @@ export default function RootLayout({
           <MainWithPadding>{children}</MainWithPadding>
           <ConditionalFooter />
           <WhatsAppButton />
+          <CookieConsent />
         </Providers>
       </body>
     </html>

@@ -187,6 +187,7 @@ export default function AdminCampaignsPage() {
           <table className="w-full text-sm min-w-[1100px]">
             <thead>
               <tr className="bg-gray-50 text-left text-gray-500">
+                <th className="px-5 py-3 font-medium">Ref #</th>
                 <th className="px-5 py-3 font-medium">Title</th>
                 <th className="px-5 py-3 font-medium">Creator</th>
                 <th className="px-5 py-3 font-medium">Type</th>
@@ -204,11 +205,14 @@ export default function AdminCampaignsPage() {
             <tbody>
               {campaigns.length === 0 ? (
                 <tr>
-                  <td colSpan={12} className="px-5 py-12 text-center text-gray-500">No campaigns yet</td>
+                  <td colSpan={13} className="px-5 py-12 text-center text-gray-500">No campaigns yet</td>
                 </tr>
               ) : (
                 paginatedCampaigns.map((c) => (
                 <tr key={c.id} className="border-t border-gray-100 hover:bg-gray-50">
+                  <td className="px-5 py-3 font-mono text-gray-700 whitespace-nowrap" title={c.referenceNumber ?? undefined}>
+                    {c.referenceNumber ?? "—"}
+                  </td>
                   <td className="px-5 py-3">
                     <Link href={`/campaigns/${c.id}`} className="text-primary-600 hover:underline max-w-[200px] truncate block" title={c.title}>
                       {c.title}

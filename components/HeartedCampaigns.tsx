@@ -10,7 +10,7 @@ import { formatCurrency } from "@/lib/utils";
 import { Users, CheckCircle2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSupabase } from "@/lib/supabase/hooks";
-import { getHeartedCampaignIds as getHeartedFromSupabase, toggleHeartCampaign as toggleHeartInSupabase } from "@/lib/supabase/database";
+import { getHeartedCampaignIds as getHeartedFromSupabase } from "@/lib/supabase/database";
 
 interface HeartedCampaignsProps {
   isOpen: boolean;
@@ -60,10 +60,19 @@ export function HeartedProvider({ children }: { children: ReactNode }) {
           : [...heartedIds, campaignId];
         setHeartedIds(newIds);
         try {
-          const isHearted = await toggleHeartInSupabase(supabase, user.id, campaignId);
-          // Keep optimistic state; don't refetch so the heart count and liked list don't get overwritten by a stale/empty response
+          const res = await fetch("/api/hearted", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ campaignId }),
+          });
+          if (!res.ok) {
+            const errBody = await res.json().catch(() => ({}));
+            throw new Error((errBody as { error?: string }).error || `Request failed: ${res.status}`);
+          }
+          const data = (await res.json()) as { isHearted: boolean };
           window.dispatchEvent(new Event("heartedCampaignsChanged"));
-          return isHearted;
+          return data.isHearted;
         } catch (err) {
           setHeartedIds(heartedIds);
           window.dispatchEvent(new Event("heartedCampaignsChanged"));
