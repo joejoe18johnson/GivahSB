@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useParams } from "next/navigation";
 import { Campaign } from "@/lib/data";
 import { fetchCampaign } from "@/lib/services/campaignService";
 import { notFound } from "next/navigation";
@@ -18,13 +19,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useThemedModal } from "@/components/ThemedModal";
 import { useToast } from "@/components/Toast";
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function CampaignPage({ params }: PageProps) {
+export default function CampaignPage() {
+  const params = useParams();
+  const id = typeof params?.id === "string" ? params.id : "";
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [coverIndex, setCoverIndex] = useState(0);
@@ -38,9 +35,13 @@ export default function CampaignPage({ params }: PageProps) {
   const toast = useToast();
 
   useEffect(() => {
+    if (!id) {
+      setIsLoading(false);
+      return;
+    }
     async function loadCampaign() {
       try {
-        const fetchedCampaign = await fetchCampaign(params.id);
+        const fetchedCampaign = await fetchCampaign(id);
         if (fetchedCampaign) {
           setCampaign(fetchedCampaign);
         }
@@ -51,7 +52,7 @@ export default function CampaignPage({ params }: PageProps) {
       }
     }
     loadCampaign();
-  }, [params.id]);
+  }, [id]);
 
   useEffect(() => {
     return () => {
