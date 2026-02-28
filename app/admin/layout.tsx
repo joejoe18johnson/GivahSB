@@ -410,7 +410,7 @@ export default function AdminLayout({
           </div>
           
           {/* Profile Section at Bottom */}
-          <div className="p-4 border-t border-gray-200 bg-white md:absolute md:bottom-0 md:left-0 md:right-0">
+          <div className="p-4 pt-[60px] md:pt-[60px] border-t border-gray-200 bg-white md:absolute md:bottom-0 md:left-0 md:right-0">
             {user && (
               <div className="space-y-3">
                 <div className="flex items-center gap-3 px-2">
