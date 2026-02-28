@@ -500,6 +500,14 @@ export default function Home() {
             </div>
           </div>
 
+          <div className="mt-8 flex justify-center">
+            <Link
+              href="/campaigns/create"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-verified-500 text-white font-semibold shadow-lg hover:bg-verified-600 transition-colors"
+            >
+              Start A Campaign
+            </Link>
+          </div>
           </div>
 
         {/* Campaigns Needing Support - horizontal cards (same layout as Success Stories) */}
