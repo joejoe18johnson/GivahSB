@@ -162,6 +162,12 @@ export default function Home() {
               >
                 Browse Campaigns
               </Link>
+              <Link
+                href="/how-it-works"
+                className="inline-flex justify-center border-2 border-primary-600 text-primary-600 px-8 py-3 rounded-full font-medium hover:bg-primary-50 transition-all duration-300 ease-in-out"
+              >
+                Learn how it works →
+              </Link>
             </div>
           </div>
 
