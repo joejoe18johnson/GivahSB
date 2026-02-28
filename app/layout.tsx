@@ -8,6 +8,7 @@ import ConditionalFooter from "@/components/ConditionalFooter";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import CookieConsent from "@/components/CookieConsent";
 import WelcomePopup from "@/components/WelcomePopup";
+import VerifyAccountBanner from "@/components/VerifyAccountBanner";
 const siteFont = Funnel_Display({ weight: ["300", "400", "700"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -32,7 +33,10 @@ export default function RootLayout({
       <body className={`${siteFont.className} bg-white`}>
         <Providers>
           <Header />
-          <MainWithPadding>{children}</MainWithPadding>
+          <MainWithPadding>
+            <VerifyAccountBanner />
+            {children}
+          </MainWithPadding>
           <ConditionalFooter />
           <WhatsAppButton />
           <CookieConsent />
