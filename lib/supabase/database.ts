@@ -1158,10 +1158,14 @@ export async function toggleHeartCampaign(
     newIds = [...ids, campaignId];
     isHearted = true;
   }
+  const updatedAt = new Date().toISOString();
+  // Upsert so we create the profile row if it doesn't exist (e.g. OAuth user who never had one)
   const { error } = await supabase
     .from("profiles")
-    .update({ hearted_campaigns: newIds, updated_at: new Date().toISOString() })
-    .eq("id", userId);
+    .upsert(
+      { id: userId, hearted_campaigns: newIds, updated_at: updatedAt },
+      { onConflict: "id" }
+    );
   if (error) throw error;
   return isHearted;
 }
