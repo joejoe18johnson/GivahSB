@@ -357,25 +357,41 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Pagination numbers (desktop only) */}
+          {/* Pagination: dots + page numbers (desktop) */}
           {totalPages > 1 && (
-            <div className="flex justify-center gap-2 mt-6">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  type="button"
-                  onClick={() => scrollTrendingToPage(page)}
-                  className={`w-10 h-10 flex items-center justify-center rounded-full font-medium transition-colors duration-300 ease-in-out ${
-                    currentPage === page
-                      ? "bg-success-500 text-white"
-                      : "border border-gray-300 text-gray-700 hover:bg-gray-100"
-                  }`}
-                  aria-label={`Go to page ${page}`}
-                  aria-current={currentPage === page ? "true" : undefined}
-                >
-                  {page}
-                </button>
-              ))}
+            <div className="flex flex-col items-center gap-3 mt-6">
+              <div className="flex justify-center gap-2" role="tablist" aria-label="Carousel pages">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    type="button"
+                    onClick={() => scrollTrendingToPage(page)}
+                    aria-label={`Go to page ${page}`}
+                    aria-current={currentPage === page ? "true" : undefined}
+                    className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
+                      currentPage === page ? "bg-success-600 scale-110" : "bg-gray-300 hover:bg-gray-400"
+                    }`}
+                  />
+                ))}
+              </div>
+              <div className="flex justify-center gap-2">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    type="button"
+                    onClick={() => scrollTrendingToPage(page)}
+                    className={`w-10 h-10 flex items-center justify-center rounded-full font-medium text-sm transition-colors duration-300 ease-in-out ${
+                      currentPage === page
+                        ? "bg-success-500 text-white"
+                        : "border border-gray-300 text-gray-700 hover:bg-gray-100"
+                    }`}
+                    aria-label={`Go to page ${page}`}
+                    aria-current={currentPage === page ? "true" : undefined}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -486,7 +502,7 @@ export default function Home() {
           </div>
 
         {/* Campaigns Needing Support - horizontal cards (same layout as Success Stories) */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 md:p-8 shadow-lg flex flex-col">
+        <div className="bg-white rounded-2xl gradient-border-1 p-6 md:p-8 flex flex-col">
           <h2 className="text-3xl md:text-4xl font-medium mb-6 bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">Campaigns Needing Support</h2>
           <ul className="flex flex-col gap-4 list-none p-0 m-0">
             {campaigns.slice(0, 3).map((campaign) => {

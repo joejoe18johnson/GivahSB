@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Heart, ArrowLeft } from "lucide-react";
 import { Campaign } from "@/lib/data";
@@ -13,6 +13,9 @@ export default function LikedCampaignsPage() {
   const [heartedIds, setHeartedIds] = useState<string[]>([]);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentLikedIndex, setCurrentLikedIndex] = useState(0);
+  const likedScrollRef = useRef<HTMLDivElement>(null);
+  const likedScrollRaf = useRef<number | null>(null);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -91,10 +94,26 @@ export default function LikedCampaignsPage() {
         </div>
       ) : (
         <>
-          {/* Mobile: horizontal carousel */}
+          {/* Mobile: horizontal carousel with nav dots */}
           <div className="md:hidden -mx-4 px-4 mb-6">
-            <div className="overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory scrollbar-hide">
-              <div className="flex gap-4 pb-2">
+            <div
+              ref={likedScrollRef}
+              className="overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory scrollbar-hide pb-2"
+              style={{ WebkitOverflowScrolling: "touch" }}
+              onScroll={() => {
+                if (likedScrollRaf.current != null) cancelAnimationFrame(likedScrollRaf.current);
+                likedScrollRaf.current = requestAnimationFrame(() => {
+                  likedScrollRaf.current = null;
+                  const el = likedScrollRef.current;
+                  if (!el?.firstElementChild || heartedCampaigns.length === 0) return;
+                  const card = el.firstElementChild as HTMLElement;
+                  const cardWidth = card.offsetWidth + 16;
+                  const index = Math.round(el.scrollLeft / cardWidth);
+                  setCurrentLikedIndex(Math.max(0, Math.min(index, heartedCampaigns.length - 1)));
+                });
+              }}
+            >
+              <div className="flex gap-4">
                 {heartedCampaigns.map((campaign) => (
                   <div
                     key={campaign.id}
@@ -105,6 +124,28 @@ export default function LikedCampaignsPage() {
                 ))}
               </div>
             </div>
+            {heartedCampaigns.length > 1 && (
+              <div className="flex justify-center gap-2 pt-3 pb-1" role="tablist" aria-label="Carousel slides">
+                {heartedCampaigns.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => {
+                      const el = likedScrollRef.current;
+                      if (!el?.firstElementChild) return;
+                      const card = el.firstElementChild as HTMLElement;
+                      const cardWidth = card.offsetWidth + 16;
+                      el.scrollTo({ left: i * cardWidth, behavior: "smooth" });
+                      setCurrentLikedIndex(i);
+                    }}
+                    aria-label={`Go to slide ${i + 1}`}
+                    className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
+                      currentLikedIndex === i ? "bg-primary-600 scale-110" : "bg-gray-300 hover:bg-gray-400"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Desktop: grid */}
