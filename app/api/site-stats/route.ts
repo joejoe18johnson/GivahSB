@@ -20,16 +20,20 @@ export async function GET() {
     const supabase = getSupabaseAdmin()!;
     const campaigns = await getCampaigns(supabase, { forStats: true });
     const totalRaised = campaigns.reduce((sum, c) => sum + (Number(c.raised) || 0), 0);
-    const supporters = campaigns.reduce((sum, c) => sum + (Number(c.backers) || 0), 0);
+    const roundedRaised = Math.round(totalRaised * 100) / 100;
+    const totalSupporters = campaigns.reduce((sum, c) => sum + (Number(c.backers) || 0), 0);
+    const totalRaisedFormatted = `BZ$${roundedRaised.toLocaleString()}`;
     return NextResponse.json({
-      totalRaised: Math.round(totalRaised * 100) / 100,
+      totalRaised: roundedRaised,
+      totalRaisedFormatted,
       campaignCount: campaigns.length,
-      supporters,
+      supporters: totalSupporters,
+      totalSupporters,
     });
   } catch (e) {
     console.error("site-stats:", e);
     return NextResponse.json(
-      { totalRaised: 0, campaignCount: 0, supporters: 0 },
+      { totalRaised: 0, totalRaisedFormatted: "BZ$0", campaignCount: 0, supporters: 0, totalSupporters: 0 },
       { status: 200 }
     );
   }

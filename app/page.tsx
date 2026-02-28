@@ -64,9 +64,9 @@ export default function Home() {
         const data = await res.json();
         if (!cancelled && res.ok && data)
           setSiteStats({
-            totalRaisedFormatted: data.totalRaisedFormatted ?? "BZ$0",
+            totalRaisedFormatted: data.totalRaisedFormatted ?? (typeof data.totalRaised === "number" ? `BZ$${data.totalRaised.toLocaleString()}` : "BZ$0"),
             campaignCount: typeof data.campaignCount === "number" ? data.campaignCount : 0,
-            totalSupporters: typeof data.totalSupporters === "number" ? data.totalSupporters : 0,
+            totalSupporters: typeof data.totalSupporters === "number" ? data.totalSupporters : (typeof data.supporters === "number" ? data.supporters : 0),
           });
       } catch {
         if (!cancelled) setSiteStats({ totalRaisedFormatted: "BZ$0", campaignCount: 0, totalSupporters: 0 });
