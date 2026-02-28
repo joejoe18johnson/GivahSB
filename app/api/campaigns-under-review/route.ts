@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
   const creatorName = typeof body.creatorName === "string" ? body.creatorName.trim() : (user.user_metadata?.name as string) ?? "User";
   const image = typeof body.image === "string" ? body.image : "";
   const image2 = typeof body.image2 === "string" ? body.image2 : image;
-  const daysLeft = body.daysLeft != null && Number.isFinite(Number(body.daysLeft)) ? Number(body.daysLeft) : 30;
+  const daysLeft = body.daysLeft != null && Number.isFinite(Number(body.daysLeft)) ? Number(body.daysLeft) : 0;
   if (!title || !description) {
     return NextResponse.json({ error: "Title and description are required." }, { status: 400 });
   }

@@ -491,7 +491,7 @@ export async function addCampaignUnderReview(
       creator_id: data.creatorId,
       image: data.image,
       image2: data.image2,
-      days_left: data.daysLeft ?? 30,
+      days_left: data.daysLeft ?? 0,
       status: "pending",
     })
     .select("id")
@@ -579,7 +579,7 @@ export async function approveAndPublishCampaign(
       goal: underReview.goal,
       raised: 0,
       backers: 0,
-      days_left: underReview.daysLeft ?? 30,
+      days_left: underReview.daysLeft ?? 0,
       category: underReview.category,
       image: underReview.image || defaultImage,
       image2: underReview.image2 || underReview.image || defaultImage,
@@ -1091,7 +1091,7 @@ export async function adminCreateCampaign(
       goal: Number(payload.goal) || 0,
       raised: 0,
       backers: 0,
-      days_left: payload.daysLeft != null && Number.isFinite(Number(payload.daysLeft)) ? Number(payload.daysLeft) : 30,
+      days_left: payload.daysLeft != null && Number.isFinite(Number(payload.daysLeft)) ? Number(payload.daysLeft) : 0,
       category: (payload.category || "Other").trim(),
       image: payload.image,
       image2: payload.image2 ?? payload.image,

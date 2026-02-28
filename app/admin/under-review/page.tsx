@@ -7,7 +7,7 @@ import type { CampaignUnderReviewDoc } from "@/lib/supabase/database";
 import { formatCurrency } from "@/lib/utils";
 import { useThemedModal } from "@/components/ThemedModal";
 import SafeImage from "@/components/SafeImage";
-import { Clock, CheckCircle2, XCircle, X, FileText, User, Calendar, DollarSign, Image as ImageIcon } from "lucide-react";
+import { Clock, CheckCircle2, XCircle, X, FileText, User, DollarSign, Image as ImageIcon } from "lucide-react";
 
 export default function AdminUnderReviewPage() {
   const [list, setList] = useState<CampaignUnderReviewDoc[]>([]);
@@ -233,10 +233,6 @@ export default function AdminUnderReviewPage() {
                 <div className="flex items-center gap-2 text-gray-700">
                   <DollarSign className="w-4 h-4 text-gray-400 shrink-0" />
                   <span><strong>Goal:</strong> {formatCurrency(selectedCampaign.goal)}</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-700">
-                  <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
-                  <span><strong>Duration:</strong> {selectedCampaign.daysLeft === 0 ? "Unlimited" : `${selectedCampaign.daysLeft} days`}</span>
                 </div>
               </div>
 

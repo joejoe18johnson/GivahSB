@@ -26,7 +26,6 @@ export default function AdminCreateCampaignPage() {
     goal: "",
     category: "Other",
     location: "",
-    daysLeft: "30",
     creatorType: "organization" as "individual" | "organization" | "charity",
   });
   const [imageFiles, setImageFiles] = useState<[File | null, File | null]>([null, null]);
@@ -147,7 +146,6 @@ export default function AdminCreateCampaignPage() {
           goal: goalNum,
           category: formData.category,
           location: formData.location.trim() || undefined,
-          daysLeft: formData.daysLeft === "" ? 30 : (parseInt(formData.daysLeft, 10) ?? 30),
           creatorType: formData.creatorType,
           image: imageUrl1,
           image2: imageUrl2,
@@ -266,21 +264,6 @@ export default function AdminCreateCampaignPage() {
               step="0.01"
               className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">Duration (days)</label>
-            <select
-              name="daysLeft"
-              value={formData.daysLeft}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
-            >
-            <option value="30">30 days</option>
-            <option value="60">60 days</option>
-            <option value="90">90 days</option>
-            <option value="120">120 days</option>
-            <option value="0">Unlimited Time</option>
-            </select>
           </div>
         </div>
         <div>

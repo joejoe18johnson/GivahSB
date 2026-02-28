@@ -201,7 +201,6 @@ export default function AdminCampaignsPage() {
                 <th className="px-5 py-3 font-medium">Goal</th>
                 <th className="px-5 py-3 font-medium">Raised</th>
                 <th className="px-5 py-3 font-medium">Donors</th>
-                <th className="px-5 py-3 font-medium">Days left</th>
                 <th className="px-5 py-3 font-medium">Created</th>
                 <th className="px-5 py-3 font-medium">Status</th>
                 <th className="px-5 py-3 font-medium">Verified</th>
@@ -212,7 +211,7 @@ export default function AdminCampaignsPage() {
             <tbody>
               {campaigns.length === 0 ? (
                 <tr>
-                  <td colSpan={13} className="px-5 py-12 text-center text-gray-500">No campaigns yet</td>
+                  <td colSpan={12} className="px-5 py-12 text-center text-gray-500">No campaigns yet</td>
                 </tr>
               ) : (
                 paginatedCampaigns.map((c) => (
@@ -228,7 +227,6 @@ export default function AdminCampaignsPage() {
                   <td className="px-5 py-3 font-medium">{formatCurrency(c.goal)}</td>
                   <td className="px-5 py-3 font-medium text-verified-600">{formatCurrency(c.raised)}</td>
                   <td className="px-5 py-3">{c.backers}</td>
-                  <td className="px-5 py-3">{c.daysLeft === 0 ? "Unlimited" : c.daysLeft}</td>
                   <td className="px-5 py-3 text-gray-600">{c.createdAt}</td>
                   <td className="px-5 py-3">
                     {c.status === "on_hold" ? (

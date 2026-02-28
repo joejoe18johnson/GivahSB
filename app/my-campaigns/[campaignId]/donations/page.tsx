@@ -140,7 +140,7 @@ export default function MyCampaignDonationsPage() {
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-gray-200 flex items-center gap-2">
               <Users className="w-5 h-5 text-gray-600" />
-              <h2 className="text-xl font-semibold text-gray-900">Donors</h2>
+              <h2 className="text-xl font-semibold bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">Donors</h2>
               <span className="text-gray-500 text-sm">({donations.length})</span>
             </div>
             <div className="divide-y divide-gray-100">

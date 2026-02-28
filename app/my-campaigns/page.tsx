@@ -348,7 +348,7 @@ export default function MyCampaignsPage() {
                         {formatCurrency(campaign.raised)} / {formatCurrency(campaign.goal)}
                       </span>
                       <span>{campaign.backers} donors</span>
-                      <span className="text-lg font-bold text-primary-600">{Math.round(progress)}% Funded</span>
+                      <span className="text-base font-bold text-primary-600">{Math.round(progress)}% Funded</span>
                     </div>
                     <div className="mt-2 w-full bg-gray-200 rounded-full h-1.5">
                       <div
@@ -471,7 +471,7 @@ export default function MyCampaignsPage() {
                         <Users className="w-4 h-4" />
                         <span>{campaign.backers} donors</span>
                       </div>
-                      <p className="text-xl font-bold text-primary-600">
+                      <p className="text-base font-bold text-primary-600">
                         {Math.round(progress)}% Funded
                       </p>
                       {campaign.location && (

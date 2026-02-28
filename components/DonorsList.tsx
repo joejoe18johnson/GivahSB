@@ -60,7 +60,7 @@ export default function DonorsList({ campaignId }: DonorsListProps) {
   return (
     <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900">Donors</h2>
+        <h2 className="text-xl font-semibold bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">Donors</h2>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowFilters(!showFilters)}

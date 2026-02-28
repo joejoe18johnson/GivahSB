@@ -296,7 +296,7 @@ export default function HeartedCampaigns({ isOpen, onClose }: HeartedCampaignsPr
                                 <Users className="w-4 h-4" />
                                 <span>{campaign.backers} donors</span>
                               </div>
-                              <p className="text-xl font-bold text-primary-600">
+                              <p className="text-base font-bold text-primary-600">
                                 {Math.round(progressPercentage)}% Funded
                               </p>
                               <div className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">

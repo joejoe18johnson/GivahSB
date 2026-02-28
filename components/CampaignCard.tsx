@@ -179,7 +179,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
                   <Users className="w-4 h-4" />
                   <span>{campaign.backers} donors</span>
                 </div>
-                <p className="text-xl font-bold text-primary-600">
+                <p className="text-base font-bold text-primary-600">
                   {Math.round(progressPercentage)}% Funded
                 </p>
               </div>

@@ -22,7 +22,6 @@ export default function CreateCampaignPage() {
     goal: "",
     category: "",
     location: "",
-    daysLeft: "",
     creatorType: "",
   });
 
@@ -327,7 +326,6 @@ export default function CreateCampaignPage() {
           creatorName,
           image: imageUrl1,
           image2: imageUrl2,
-          daysLeft: formData.daysLeft === "" ? 30 : parseInt(formData.daysLeft, 10),
         }),
       });
       if (!res.ok) {
@@ -593,27 +591,6 @@ export default function CreateCampaignPage() {
             className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
             placeholder="e.g., Belize City, Belize or Orange Walk Town, Belize"
           />
-        </div>
-
-        {/* Campaign Duration */}
-        <div>
-          <label className="block text-sm font-medium mb-2">
-            Campaign Duration *
-          </label>
-          <select
-            name="daysLeft"
-            value={formData.daysLeft}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-primary-50 text-gray-900"
-          >
-            <option value="">Select duration</option>
-            <option value="0">Unlimited Time</option>
-            <option value="30">30 days</option>
-            <option value="60">60 days</option>
-            <option value="90">90 days</option>
-            <option value="120">120 days</option>
-          </select>
         </div>
 
         {/* Campaign images — upload 2 */}
