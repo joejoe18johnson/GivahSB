@@ -150,6 +150,12 @@ export default function Header() {
               Home
             </Link>
             <Link
+              href="/about"
+              className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
+            >
+              About Campaigns
+            </Link>
+            <Link
               href="/campaigns"
               className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
             >
@@ -166,7 +172,7 @@ export default function Header() {
                 href="/how-it-works"
                 className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
               >
-                How It Works
+                How it works
               </Link>
             )}
             {user ? (
@@ -360,10 +366,11 @@ export default function Header() {
             </form>
             <nav className="flex flex-col gap-1">
               <Link href="/" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Home</Link>
+              <Link href="/about" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>About Campaigns</Link>
               <Link href="/campaigns" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Campaigns</Link>
               <Link href="/success-stories" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Success Stories</Link>
               {!isAdminRoute && (
-                <Link href="/how-it-works" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>How It Works</Link>
+                <Link href="/how-it-works" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>How it works</Link>
               )}
               {user ? (
                 <>
