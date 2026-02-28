@@ -662,13 +662,18 @@ export async function addNotification(
 
 export async function getUserNotifications(
   supabase: SupabaseClient,
-  userId: string
+  userId: string,
+  options?: { limit?: number }
 ): Promise<UserNotification[]> {
-  const { data, error } = await supabase
+  let query = supabase
     .from("notifications")
     .select("*")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
+  if (options?.limit != null && options.limit > 0) {
+    query = query.limit(options.limit);
+  }
+  const { data, error } = await query;
   if (error) throw error;
   return (data || []).map((r: Record<string, unknown>) => ({
     id: r.id as string,
@@ -712,6 +717,20 @@ export async function markNotificationRead(
   notificationId: string
 ): Promise<void> {
   await supabase.from("notifications").update({ read: true }).eq("id", notificationId);
+}
+
+/** Mark a notification as read; only updates if it belongs to the given user. */
+export async function markNotificationReadForUser(
+  supabase: SupabaseClient,
+  notificationId: string,
+  userId: string
+): Promise<void> {
+  const { error } = await supabase
+    .from("notifications")
+    .update({ read: true })
+    .eq("id", notificationId)
+    .eq("user_id", userId);
+  if (error) throw error;
 }
 
 /** Delete a notification. Only deletes if it belongs to the given user. */
