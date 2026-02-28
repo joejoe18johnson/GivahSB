@@ -129,8 +129,8 @@ export default function CampaignPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Single grid: on mobile = image, then content, then sidebar. On desktop = image+content left, sidebar right */}
+    <div className="container mx-auto px-4 py-8 lg:max-w-[min(1280px,calc(100vw-22rem))]">
+      {/* Single grid: on mobile = image, then content, then sidebar. On desktop = image+content left, sidebar right. Max-width leaves 20rem box + 2rem gap so fixed box never overlaps. */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_20rem] gap-4 lg:gap-6">
         {/* Cover section: title, media, creator — image height matches sidebar (~same as right card) */}
         <div className="min-w-0 flex flex-col gap-4">
@@ -334,11 +334,10 @@ export default function CampaignPage() {
           </div>
         </div>
 
-        {/* Donation box: right column; fixed on lg so it stays in place when scrolling */}
+        {/* Donation box: right column; sticky on lg so it stays in its column and never overlaps images */}
         <div className="order-3 lg:order-2 w-full lg:row-span-2 lg:self-start">
-          <div className="hidden lg:block w-80 min-h-[50vh] shrink-0" aria-hidden="true" />
           <div
-            className="bg-white rounded-xl gradient-border-1 shadow-sm p-5 sticky top-16 lg:fixed lg:top-[calc(4rem+28px)] lg:right-[max(1rem,calc((100vw-min(1280px,100vw))/2+1rem))] lg:w-80 lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto lg:z-10"
+            className="bg-white rounded-xl gradient-border-1 shadow-sm p-5 sticky top-16 lg:top-[calc(4rem+0.5rem)] lg:w-80 lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto lg:z-10"
             style={
               donateBoxNearFooter && donateBoxBottomOffset != null
                 ? { top: "auto", bottom: donateBoxBottomOffset }
