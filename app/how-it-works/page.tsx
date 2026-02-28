@@ -118,12 +118,6 @@ export default function HowItWorksPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/campaigns/create"
-                className="bg-white text-primary-600 px-8 py-3 rounded-full font-medium hover:bg-primary-50 transition-colors"
-              >
-                Start Your Campaign
-              </Link>
-              <Link
                 href="/campaigns"
                 className="border-2 border-white text-white px-8 py-3 rounded-full font-medium hover:bg-white/10 transition-colors"
               >
@@ -284,12 +278,6 @@ export default function HowItWorksPage() {
               Create your campaign today and start receiving support from the Belizean community
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/campaigns/create"
-                className="bg-success-500 text-white px-8 py-4 rounded-full font-medium hover:bg-success-600 transition-colors text-lg"
-              >
-                Create Your Campaign
-              </Link>
               <Link
                 href="/campaigns"
                 className="border-2 border-primary-600 text-primary-600 px-8 py-4 rounded-full font-medium hover:bg-primary-50 transition-colors text-lg"
