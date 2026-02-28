@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Heart, LogOut, Menu, X, Bell, Shield, User, FolderOpen, Settings, ChevronDown, Megaphone, Trophy } from "lucide-react";
+import { Search, Heart, LogOut, Menu, X, Bell, Shield, User, FolderOpen, Settings, ChevronDown, Megaphone, Trophy, BookOpen } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
@@ -165,7 +165,7 @@ export default function Header() {
               <button
                 type="button"
                 onClick={() => setShowCampaignsDropdown((v) => !v)}
-                className={`flex items-center gap-1 text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out ${pathname?.startsWith("/campaigns") || pathname?.startsWith("/success-stories") ? "text-primary-600 font-medium" : ""}`}
+                className={`flex items-center gap-1 text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out ${pathname?.startsWith("/campaigns") || pathname?.startsWith("/success-stories") || pathname?.startsWith("/how-it-works") ? "text-primary-600 font-medium" : ""}`}
               >
                 Campaigns
                 <ChevronDown className={`w-4 h-4 transition-transform ${showCampaignsDropdown ? "rotate-180" : ""}`} />
@@ -192,18 +192,18 @@ export default function Header() {
                       <Trophy className="w-4 h-4 text-primary-600 shrink-0" />
                       Success Stories
                     </Link>
+                    <Link
+                      href="/how-it-works"
+                      onClick={() => setShowCampaignsDropdown(false)}
+                      className="block px-4 py-3 hover:bg-gray-50 flex items-center gap-2 text-gray-700 text-sm"
+                    >
+                      <BookOpen className="w-4 h-4 text-primary-600 shrink-0" />
+                      How It Works
+                    </Link>
                   </div>
                 </div>
               )}
             </div>
-            {!isAdminRoute && (
-              <Link
-                href="/how-it-works"
-                className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
-              >
-                How It Works
-              </Link>
-            )}
             <Link
               href="/campaigns/create"
               className="bg-gradient-to-r from-primary-500 to-verified-500 text-white px-4 py-2 rounded-full font-medium hover:opacity-90 transition-opacity duration-300 ease-in-out shadow-sm"
@@ -431,16 +431,17 @@ export default function Header() {
                       <Megaphone className="w-4 h-4 text-primary-600 shrink-0" />
                       View All Campaigns
                     </Link>
-                    <Link href="/success-stories" className="flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-50" onClick={closeMobileMenu}>
+                    <Link href="/success-stories" className="flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-50 border-b border-gray-100" onClick={closeMobileMenu}>
                       <Trophy className="w-4 h-4 text-primary-600 shrink-0" />
                       Success Stories
+                    </Link>
+                    <Link href="/how-it-works" className="flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-50" onClick={closeMobileMenu}>
+                      <BookOpen className="w-4 h-4 text-primary-600 shrink-0" />
+                      How It Works
                     </Link>
                   </div>
                 )}
               </div>
-              {!isAdminRoute && (
-                <Link href="/how-it-works" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>How It Works</Link>
-              )}
               <Link href="/campaigns/create" className="mx-4 flex justify-center items-center bg-gradient-to-r from-primary-500 to-verified-500 text-white px-4 py-3 rounded-full font-medium hover:opacity-90 transition-opacity duration-300 ease-in-out shadow-sm" onClick={closeMobileMenu}>
                 Create A Campaign
               </Link>
