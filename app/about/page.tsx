@@ -189,10 +189,10 @@ export default function AboutPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/campaigns/create"
+                href="/campaigns"
                 className="bg-success-500 text-white px-8 py-4 rounded-full font-medium hover:bg-success-600 transition-colors text-lg shadow-lg"
               >
-                Start a Campaign
+                Browse Campaigns
               </Link>
               <Link
                 href="/campaigns"

@@ -217,11 +217,11 @@ export default function MyCampaignsPage() {
           </p>
         </div>
         <Link
-          href="/campaigns/create"
+          href="/campaigns"
           className="inline-flex items-center justify-center gap-2 bg-success-500 text-white px-6 py-3 rounded-full font-medium hover:bg-success-600 transition-colors shadow-md"
         >
           <Plus className="w-5 h-5" />
-          Start a campaign
+          Browse campaigns
         </Link>
       </div>
 
@@ -375,15 +375,14 @@ export default function MyCampaignsPage() {
             </div>
             <h2 className="text-xl font-medium text-gray-900 mb-2">No campaigns yet</h2>
             <p className="text-gray-600 mb-6">
-              Create your first campaign to share your cause and start receiving support from the
-              community.
+              Browse campaigns to support causes and connect with the community.
             </p>
             <Link
-              href="/campaigns/create"
+              href="/campaigns"
               className="inline-flex items-center gap-2 bg-success-500 text-white px-6 py-3 rounded-full font-medium hover:bg-success-600 transition-colors"
             >
               <Plus className="w-5 h-5" />
-              Create your first campaign
+              Browse campaigns
             </Link>
           </div>
         </div>
