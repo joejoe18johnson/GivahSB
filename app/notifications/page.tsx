@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { Bell, CheckCircle2 } from "lucide-react";
+
 interface UserNotification {
   id: string;
   userId: string;
@@ -14,7 +16,8 @@ interface UserNotification {
   read: boolean;
   createdAt: string;
 }
-import { Bell, CheckCircle2 } from "lucide-react";
+
+const NOTIFICATIONS_PAGE_LIMIT = 200;
 
 export default function NotificationsPage() {
   const { user, isLoading } = useAuth();
@@ -29,7 +32,7 @@ export default function NotificationsPage() {
     }
     if (!user?.id) return;
     let cancelled = false;
-    fetch("/api/notifications", { credentials: "include" })
+    fetch(`/api/notifications?limit=${NOTIFICATIONS_PAGE_LIMIT}`, { credentials: "include" })
       .then((res) => res.ok ? res.json() : { notifications: [] })
       .then((data) => {
         if (!cancelled) setNotifications(data.notifications ?? []);
@@ -39,11 +42,13 @@ export default function NotificationsPage() {
   }, [user, isLoading, router]);
 
   const handleClick = async (n: UserNotification) => {
-    try {
-      await fetch(`/api/notifications/${n.id}`, { method: "DELETE", credentials: "include" });
-      setNotifications((prev) => prev.filter((x) => x.id !== n.id));
-    } catch {
-      // ignore
+    if (!n.read) {
+      try {
+        await fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" });
+        setNotifications((prev) => prev.map((x) => (x.id === n.id ? { ...x, read: true } : x)));
+      } catch {
+        // ignore
+      }
     }
     if (n.campaignId && n.type === "donation") router.push(`/my-campaigns/${n.campaignId}/donations`);
     else if (n.campaignId && n.type === "payout_completed") router.push("/my-campaigns");
@@ -75,12 +80,13 @@ export default function NotificationsPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8 pt-24">
         <div className="max-w-2xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-2">
             <h1 className="text-2xl font-semibold text-gray-900">Notifications</h1>
             <Link href="/my-campaigns" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
               My Campaigns
             </Link>
           </div>
+          <p className="text-gray-500 text-sm mb-6">Your notification history. Newest first.</p>
 
           {loading ? (
             <div className="flex justify-center py-12">
@@ -105,7 +111,7 @@ export default function NotificationsPage() {
                   <button
                     type="button"
                     onClick={() => handleClick(n)}
-                    className={`w-full text-left bg-white rounded-xl gradient-border-1 p-4 transition-colors hover:bg-primary-50/30 ${!n.read ? "bg-primary-50/30" : ""}`}
+                    className={`w-full text-left bg-white rounded-xl border border-gray-200 p-4 transition-colors hover:bg-primary-50/30 hover:border-primary-200 ${!n.read ? "border-primary-200 bg-primary-50/20" : ""}`}
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex-shrink-0 w-10 h-10 rounded-full bg-success-100 flex items-center justify-center text-success-600">

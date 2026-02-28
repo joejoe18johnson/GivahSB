@@ -67,13 +67,14 @@ export default function Header() {
   }, []);
 
   const handleNotificationClick = async (n: UserNotification) => {
-    try {
-      await fetch(`/api/notifications/${n.id}`, { method: "DELETE", credentials: "include" });
-      setNotifications((prev) => prev.filter((x) => x.id !== n.id));
-      setTotalNotificationCount((c) => Math.max(0, c - 1));
-      if (!n.read) setUnreadCount((c) => Math.max(0, c - 1));
-    } catch {
-      // ignore
+    if (!n.read) {
+      try {
+        await fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" });
+        setNotifications((prev) => prev.map((x) => (x.id === n.id ? { ...x, read: true } : x)));
+        setUnreadCount((c) => Math.max(0, c - 1));
+      } catch {
+        // ignore
+      }
     }
     setShowNotificationDropdown(false);
     setMobileMenuOpen(false);
@@ -216,11 +217,11 @@ export default function Header() {
                         </ul>
                       )}
                       <Link
-                        href="/my-campaigns"
+                        href="/notifications"
                         onClick={() => setShowNotificationDropdown(false)}
-                        className="block px-4 py-2 text-center text-sm text-primary-600 font-medium hover:bg-gray-50"
+                        className="block px-4 py-2 text-center text-sm text-primary-600 font-medium hover:bg-gray-50 border-t border-gray-100"
                       >
-                        My Campaigns
+                        View all notifications
                       </Link>
                     </div>
                   )}
@@ -253,7 +254,7 @@ export default function Header() {
                     <span className="hidden md:inline">{user.name}</span>
                   </button>
                   {showUserMenu && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg gradient-border-1 py-2">
+                    <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg gradient-border-1 py-2 z-50">
                       <div className="px-4 py-2 border-b border-gray-200 flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0">
                           <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={40} className="w-full h-full" />

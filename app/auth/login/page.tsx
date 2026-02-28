@@ -75,11 +75,15 @@ function LoginForm() {
     }
   };
 
+  const AUTH_REDIRECT_COOKIE = "auth_redirect_path";
+
   const handleGoogleSignIn = async () => {
     setError("");
     setGoogleLoading(true);
     if (typeof window !== "undefined") {
       sessionStorage.setItem("auth_callback_url", callbackUrl);
+      // So server-side callback can redirect after exchange
+      document.cookie = `${AUTH_REDIRECT_COOKIE}=${encodeURIComponent(callbackUrl)}; path=/; max-age=600; SameSite=Lax`;
     }
     let isRedirecting = false;
     try {

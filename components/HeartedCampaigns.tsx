@@ -53,10 +53,22 @@ export function HeartedProvider({ children }: { children: ReactNode }) {
   const toggleHeart = useCallback(
     async (campaignId: string): Promise<boolean> => {
       if (user?.id && supabase) {
-        const isHearted = await toggleHeartInSupabase(supabase, user.id, campaignId);
-        await refreshHeartedIds();
-        window.dispatchEvent(new Event("heartedCampaignsChanged"));
-        return isHearted;
+        // Optimistic update: toggle in UI immediately so heart turns red
+        const currentlyHearted = heartedIds.includes(campaignId);
+        const newIds = currentlyHearted
+          ? heartedIds.filter((id) => id !== campaignId)
+          : [...heartedIds, campaignId];
+        setHeartedIds(newIds);
+        try {
+          const isHearted = await toggleHeartInSupabase(supabase, user.id, campaignId);
+          await refreshHeartedIds();
+          window.dispatchEvent(new Event("heartedCampaignsChanged"));
+          return isHearted;
+        } catch (err) {
+          setHeartedIds(heartedIds);
+          window.dispatchEvent(new Event("heartedCampaignsChanged"));
+          throw err;
+        }
       }
       const hearted = getHeartedFromStorage();
       const index = hearted.indexOf(campaignId);
@@ -67,7 +79,7 @@ export function HeartedProvider({ children }: { children: ReactNode }) {
       window.dispatchEvent(new Event("heartedCampaignsChanged"));
       return index === -1;
     },
-    [user?.id, supabase, refreshHeartedIds]
+    [user?.id, supabase, refreshHeartedIds, heartedIds]
   );
 
   const isCampaignHearted = useCallback(

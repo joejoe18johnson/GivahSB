@@ -54,8 +54,12 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
       });
       return;
     }
-    const newState = await toggleHeart(campaign.id);
-    if (newState) toast.show("Campaign Saved to Favorites");
+    try {
+      const newState = await toggleHeart(campaign.id);
+      if (newState) toast.show("Campaign Saved to Favorites");
+    } catch {
+      toast.show("Could not save to favorites. Try again.");
+    }
   };
 
   return (

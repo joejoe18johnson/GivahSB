@@ -1158,9 +1158,10 @@ export async function toggleHeartCampaign(
     newIds = [...ids, campaignId];
     isHearted = true;
   }
-  await supabase
+  const { error } = await supabase
     .from("profiles")
     .update({ hearted_campaigns: newIds, updated_at: new Date().toISOString() })
     .eq("id", userId);
+  if (error) throw error;
   return isHearted;
 }
