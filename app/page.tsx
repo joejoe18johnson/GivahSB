@@ -157,14 +157,8 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-10">
               <Link
-                href="/campaigns/create"
-                className="inline-flex justify-center bg-primary-600 text-white px-8 py-3 rounded-full font-medium hover:bg-primary-700 transition-all duration-300 ease-in-out shadow-lg"
-              >
-                Start a Campaign
-              </Link>
-              <Link
                 href="/campaigns"
-                className="inline-flex justify-center border-2 border-gray-800 text-gray-800 px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition-all duration-300 ease-in-out"
+                className="inline-flex justify-center bg-primary-600 text-white px-8 py-3 rounded-full font-medium hover:bg-primary-700 transition-all duration-300 ease-in-out shadow-lg"
               >
                 Browse Campaigns
               </Link>
@@ -356,24 +350,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Banner */}
-      <div className="container mx-auto px-4 mb-12">
-        <section className="bg-gradient-to-r from-success-500 to-success-600 rounded-2xl border border-gray-200 py-12 md:py-16 shadow-lg">
-          <div className="text-center px-6">
-            <h2 className="text-3xl md:text-4xl font-medium text-white mb-6">Ready to Start A Campaign?</h2>
-            <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
-              Join thousands of Belizeans making a difference. Create your campaign today and start receiving support from your community.
-            </p>
-            <Link
-              href="/campaigns/create"
-              className="inline-block bg-white text-success-600 px-8 py-4 rounded-full font-medium hover:bg-white/90 transition-all duration-300 ease-in-out shadow-lg text-lg"
-            >
-              Start Campaign
-            </Link>
-          </div>
-        </section>
-      </div>
-
       <div className="container mx-auto px-4 py-8">
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -465,16 +441,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* CTA */}
-          <div className="text-center mt-8">
-            <Link
-              href="/campaigns/create"
-              className="inline-block bg-white text-primary-600 px-6 py-3 rounded-full font-medium hover:bg-white/90 transition-all duration-300 ease-in-out shadow-lg"
-            >
-              Start Your Campaign Today
-            </Link>
           </div>
-        </div>
 
         {/* Campaigns Needing Support - horizontal cards (same layout as Success Stories) */}
         <div className="bg-gradient-to-br from-success-500 to-success-600 rounded-2xl border border-gray-200 p-6 md:p-8 shadow-lg flex flex-col">

@@ -28,7 +28,6 @@ export default function Footer() {
           <div>
             <h4 className="font-medium mb-4">Start Fundraising</h4>
             <ul className="space-y-2 text-gray-400">
-              <li><Link href="/campaigns/create" className="hover:text-white">Create a Campaign</Link></li>
               <li><Link href="/how-it-works" className="hover:text-white">How It Works</Link></li>
               <li><Link href="/fees-payouts" className="hover:text-white">Fees & Payouts</Link></li>
             </ul>

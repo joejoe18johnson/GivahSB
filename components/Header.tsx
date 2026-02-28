@@ -171,14 +171,6 @@ export default function Header() {
             )}
             {user ? (
               <>
-                {!isAdminRoute && (
-                  <Link
-                    href="/campaigns/create"
-                    className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
-                  >
-                    Start Fundraising
-                  </Link>
-                )}
                 <div className="relative" ref={notificationDropdownRef}>
                   <button
                     type="button"
@@ -375,15 +367,6 @@ export default function Header() {
               )}
               {user ? (
                 <>
-                  {!isAdminRoute && (
-                    <Link
-                      href="/campaigns/create"
-                      className="px-4 py-3 rounded-lg bg-success-500 text-white font-medium hover:bg-success-600 text-center"
-                      onClick={closeMobileMenu}
-                    >
-                      Create Campaign
-                    </Link>
-                  )}
                   <Link href="/liked-campaigns" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2" onClick={closeMobileMenu}>
                     <Heart className="w-4 h-4" />
                     Liked Campaigns
