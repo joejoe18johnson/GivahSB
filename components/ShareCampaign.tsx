@@ -38,12 +38,13 @@ function ShareModalContent({
         onClick={onClose}
       />
       <div
-        className="fixed left-1/2 top-1/2 z-[101] w-full max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-xl gradient-border-1 bg-white p-5 shadow-xl"
+        className="fixed left-1/2 top-1/2 z-[101] w-full max-w-sm -translate-x-1/2 -translate-y-1/2 px-4"
         role="dialog"
         aria-modal="true"
         aria-label="Share campaign"
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="rounded-xl gradient-border-1 bg-white p-5 shadow-xl">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-lg font-semibold text-gray-900">Share this campaign</h3>
           <button
@@ -88,6 +89,7 @@ function ShareModalContent({
             <Send className="w-5 h-5 flex-shrink-0 text-gray-500" />
             <span className="font-medium">Messenger</span>
           </button>
+        </div>
         </div>
       </div>
     </>

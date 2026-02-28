@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Heart, LogOut, Menu, X, Bell, Shield } from "lucide-react";
+import { Search, Heart, LogOut, Menu, X, Bell, Shield, User, FolderOpen, Settings } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
@@ -274,9 +274,10 @@ export default function Header() {
                       </div>
                       <Link
                         href="/profile"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                         onClick={() => setShowUserMenu(false)}
                       >
+                        <User className="w-4 h-4" />
                         My Profile
                       </Link>
                       <Link
@@ -289,17 +290,19 @@ export default function Header() {
                       </Link>
                       <Link
                         href="/my-campaigns"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                         onClick={() => setShowUserMenu(false)}
                       >
+                        <FolderOpen className="w-4 h-4" />
                         My Campaigns
                       </Link>
                       {isAdmin && (
                         <Link
                           href="/admin"
-                          className="block px-4 py-2 text-sm text-primary-600 font-medium hover:bg-primary-50"
+                          className="block px-4 py-2 text-sm text-primary-600 font-medium hover:bg-primary-50 flex items-center gap-2"
                           onClick={() => setShowUserMenu(false)}
                         >
+                          <Settings className="w-4 h-4" />
                           Admin
                         </Link>
                       )}
@@ -394,14 +397,23 @@ export default function Header() {
                       </span>
                     )}
                   </Link>
-                  <Link href="/profile" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>My Profile</Link>
+                  <Link href="/profile" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
+                    <User className="w-4 h-4" />
+                    My Profile
+                  </Link>
                   <Link href="/verification-center" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2" onClick={closeMobileMenu}>
                     <Shield className="w-4 h-4" />
                     Verification Center
                   </Link>
-                  <Link href="/my-campaigns" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>My Campaigns</Link>
+                  <Link href="/my-campaigns" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
+                    <FolderOpen className="w-4 h-4" />
+                    My Campaigns
+                  </Link>
                   {isAdmin && (
-                    <Link href="/admin" className="px-4 py-3 rounded-lg text-primary-600 font-medium hover:bg-primary-50 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Admin</Link>
+                    <Link href="/admin" className="px-4 py-3 rounded-lg text-primary-600 font-medium hover:bg-primary-50 flex items-center gap-2 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
+                      <Settings className="w-4 h-4" />
+                      Admin
+                    </Link>
                   )}
                   <Link href="/notifications" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2" onClick={closeMobileMenu}>
                     <Bell className="w-4 h-4" />
