@@ -13,7 +13,6 @@ export default function SignupPage() {
     email: "",
     password: "",
     confirmPassword: "",
-    phoneNumber: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -27,6 +26,11 @@ export default function SignupPage() {
   useEffect(() => {
     if (!user) return;
     if (!adminCheckDone) return;
+    if (typeof window !== "undefined" && sessionStorage.getItem("signup_redirect_profile") === "1") {
+      sessionStorage.removeItem("signup_redirect_profile");
+      router.replace("/profile?verify=1");
+      return;
+    }
     router.replace(isAdmin ? "/admin" : "/my-campaigns");
   }, [user, isAdmin, adminCheckDone, router]);
 
@@ -41,8 +45,8 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.email || !formData.password || !formData.phoneNumber?.trim()) {
-      setError("Please fill in all fields including phone number.");
+    if (!formData.name || !formData.email || !formData.password) {
+      setError("Please fill in all fields.");
       return;
     }
     
@@ -56,36 +60,22 @@ export default function SignupPage() {
       return;
     }
     
-    const phone = formData.phoneNumber.trim();
-    // Only allow digits and hyphens
-    if (!/^[\d-]+$/.test(phone)) {
-      setError("Phone number can only contain numbers and hyphens (e.g. 501-123-4567 or 5011234567).");
-      return;
-    }
-    const digitsOnly = phone.replace(/\D/g, "");
-    if (digitsOnly.length < 7) {
-      setError("Please enter a valid phone number with at least 7 digits (e.g. 501-123-4567 or 5011234567).");
-      return;
-    }
-    
     const success = await signup(
       formData.email,
       formData.password,
-      formData.name,
-      phone
+      formData.name
     );
     
     if (success) {
-      // Redirect is handled by useEffect when user (and isAdmin) updates
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("signup_redirect_profile", "1");
+      }
       setTimeout(() => {
         alert(
-          "Account created successfully! To create campaigns, please verify your identity in your profile settings. Your phone number, ID document, and address document need to be approved by an admin.",
-          { 
-            title: "Account Created", 
-            variant: "info" 
-          }
+          "Account created! To create campaigns you need to verify your phone number, ID document, and address. Go to your Profile to complete verification.",
+          { title: "Verify to create campaigns", variant: "info" }
         );
-      }, 500);
+      }, 300);
     } else {
       setError("Account creation failed. Please try again.");
     }
@@ -234,24 +224,6 @@ export default function SignupPage() {
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Phone Number *
-              </label>
-              <input
-                type="tel"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 placeholder:text-gray-500"
-                placeholder="e.g. 501-123-4567 or 5011234567"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Your phone must be approved before you can create campaigns. We&apos;ll notify you once it&apos;s verified.
-              </p>
             </div>
 
             <button
