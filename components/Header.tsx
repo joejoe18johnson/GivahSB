@@ -395,6 +395,10 @@ export default function Header() {
                     )}
                   </Link>
                   <Link href="/profile" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>My Profile</Link>
+                  <Link href="/verification-center" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2" onClick={closeMobileMenu}>
+                    <Shield className="w-4 h-4" />
+                    Verification Center
+                  </Link>
                   <Link href="/my-campaigns" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>My Campaigns</Link>
                   {isAdmin && (
                     <Link href="/admin" className="px-4 py-3 rounded-lg text-primary-600 font-medium hover:bg-primary-50 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Admin</Link>
