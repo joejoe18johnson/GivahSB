@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { compressImageForUpload } from "@/lib/compressImage";
 import Link from "next/link";
@@ -26,13 +25,14 @@ import type { IdDocumentTypeValue, InputChangeEvent } from "./types";
 import ProfileView from "./ProfileView";
 
 export default function ProfilePage() {
-  const searchParams = useSearchParams();
   const { user, isLoading, updateUser, logout } = useAuth();
   const { alert } = useThemedModal();
   const [showVerifyBanner, setShowVerifyBanner] = useState(false);
   useEffect(() => {
-    if (searchParams.get("verify") === "1") setShowVerifyBanner(true);
-  }, [searchParams]);
+    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("verify") === "1") {
+      setShowVerifyBanner(true);
+    }
+  }, []);
   const [editingName, setEditingName] = useState(false);
   const [editingBirthday, setEditingBirthday] = useState(false);
   const [editingPassword, setEditingPassword] = useState(false);

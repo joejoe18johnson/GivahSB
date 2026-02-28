@@ -6,7 +6,7 @@ import SafeImage from "@/components/SafeImage";
 /** Main hero image (center) */
 const HERO_MAIN = { src: "/hero-right.png", alt: "Community connection and support" };
 
-/** Circular images: Black, Mayan, and Latin American people — happy and grateful community. */
+/** Circular images: children and community — happy and grateful. */
 const HERO_CIRCLES: Array<{
   src: string;
   alt: string;
@@ -15,26 +15,26 @@ const HERO_CIRCLES: Array<{
   onTop?: boolean;
 }> = [
   {
-    src: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&h=200&fit=crop",
-    alt: "Happy Black community member",
+    src: "/hero-circle-1.png",
+    alt: "Child with globe — community and hope",
     borderColor: "ring-4 ring-green-500",
     position: "top-[8%] left-[0%] w-20 h-20 sm:w-24 sm:h-24",
   },
   {
-    src: "https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=200&h=200&fit=crop",
-    alt: "Grateful Latin American community member",
+    src: "/hero-circle-2.png",
+    alt: "Children embracing — support and friendship",
     borderColor: "ring-4 ring-pink-400",
     position: "top-[5%] right-[5%] w-20 h-20 sm:w-24 sm:h-24",
   },
   {
-    src: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=200&h=200&fit=crop",
-    alt: "Happy Latin American man",
+    src: "/hero-circle-3.png",
+    alt: "Smiling siblings — family and joy",
     borderColor: "ring-4 ring-green-500",
     position: "bottom-[18%] right-[12%] w-14 h-14 sm:w-20 sm:h-20",
   },
   {
-    src: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
-    alt: "Latin American community member",
+    src: "/hero-circle-4.png",
+    alt: "Community together — surprise and joy",
     borderColor: "ring-4 ring-primary-400",
     position: "bottom-[8%] left-[15%] w-14 h-14 sm:w-20 sm:h-20",
   },
