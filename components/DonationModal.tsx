@@ -263,34 +263,34 @@ export default function DonationModal({
                 </div>
               </div>
 
-              {/* Payment Method Selection - touch-friendly on mobile */}
+              {/* Payment Method Selection - card style */}
               <div className="mb-6">
                 <h3 className="text-lg font-medium mb-4">Select Payment Method</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <button
                     type="button"
                     onClick={() => { setSelectedMethod("bank"); setPaymentReference(campaignReferenceNumber || generateShortRef()); }}
-                    className={`min-h-[56px] sm:min-h-0 p-2 border-2 rounded-xl sm:rounded-full transition-all ${
+                    className={`flex flex-col items-center justify-center text-center min-h-[56px] sm:min-h-0 p-4 rounded-xl border transition-all bg-white ${
                       selectedMethod === "bank"
-                        ? "border-primary-600 bg-primary-50"
-                        : "border-gray-200 hover:border-primary-300"
+                        ? "border-primary-500 border-2 bg-primary-50/50 shadow-sm"
+                        : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
-                    <Building2 className="w-8 h-8 mx-auto text-primary-600" />
-                    <p className="font-medium">Bank Deposit</p>
-                    <p className="text-xs text-gray-600">Direct bank transfer</p>
+                    <Building2 className="w-8 h-8 text-primary-600 flex-shrink-0" />
+                    <p className="font-medium text-gray-900 mt-0">Bank Deposit</p>
+                    <p className="text-xs text-gray-500">Direct bank transfer</p>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => { setSelectedMethod("digiwallet"); setPaymentReference(campaignReferenceNumber || generateShortRef()); }}
-                    className={`min-h-[56px] sm:min-h-0 p-2 border-2 rounded-xl sm:rounded-full transition-all ${
+                    className={`flex flex-col items-center justify-center text-center min-h-[56px] sm:min-h-0 p-4 rounded-xl border transition-all bg-white ${
                       selectedMethod === "digiwallet"
-                        ? "border-primary-600 bg-primary-50"
-                        : "border-gray-200 hover:border-primary-300"
+                        ? "border-primary-500 border-2 bg-primary-50/50 shadow-sm"
+                        : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
-                    <span className="relative w-32 h-32 mx-auto block p-[5px] box-border">
+                    <span className="relative w-32 h-32 flex-shrink-0 block p-[5px] box-border">
                       <Image
                         src="https://www.digiwallet.bz/wp-content/uploads/2021/11/DWL-web-logo.png"
                         alt="Digi Wallet"
@@ -299,20 +299,20 @@ export default function DonationModal({
                         className="object-contain w-full h-full"
                       />
                     </span>
-                    <p className="font-medium">Digi Wallet</p>
-                    <p className="text-xs text-gray-600">Mobile wallet</p>
+                    <p className="font-medium text-gray-900 mt-0">Digi Wallet</p>
+                    <p className="text-xs text-gray-500">Mobile wallet</p>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => { setSelectedMethod("ekyash"); setPaymentReference(campaignReferenceNumber || generateShortRef()); }}
-                    className={`min-h-[56px] sm:min-h-0 p-2 border-2 rounded-xl sm:rounded-full transition-all ${
+                    className={`flex flex-col items-center justify-center text-center min-h-[56px] sm:min-h-0 p-4 rounded-xl border transition-all bg-white ${
                       selectedMethod === "ekyash"
-                        ? "border-primary-600 bg-primary-50"
-                        : "border-gray-200 hover:border-primary-300"
+                        ? "border-primary-500 border-2 bg-primary-50/50 shadow-sm"
+                        : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
-                    <span className="relative w-32 h-32 mx-auto block p-[5px] box-border">
+                    <span className="relative w-32 h-32 flex-shrink-0 block p-[5px] box-border">
                       <Image
                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTvpM-CtfXjjUgsq68dcfYkTzk88ke86G-5A&s"
                         alt="E-Kyash"
@@ -321,9 +321,14 @@ export default function DonationModal({
                         className="object-contain w-full h-full"
                       />
                     </span>
-                    <p className="font-medium">E-Kyash</p>
-                    <p className="text-xs text-gray-600">Mobile payments</p>
+                    <p className="font-medium text-gray-900 mt-0">E-Kyash</p>
+                    <p className="text-xs text-gray-500">Mobile payments</p>
                   </button>
+                </div>
+                <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-center">
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium">PayPal and credit card processing</span> coming soon!
+                  </p>
                 </div>
               </div>
 

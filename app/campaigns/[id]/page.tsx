@@ -304,7 +304,7 @@ export default function CampaignPage() {
         {/* Donation box: right column; fixed on lg so it stays in place when scrolling */}
         <div className="order-3 lg:order-2 w-full lg:row-span-2 lg:self-start">
           <div className="hidden lg:block w-80 min-h-[50vh] shrink-0" aria-hidden="true" />
-          <div className="bg-white rounded-xl gradient-border-1 shadow-sm p-5 sticky top-16 lg:fixed lg:top-16 lg:right-[max(1rem,calc((100vw-min(1280px,100vw))/2+1rem))] lg:w-80 lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto lg:z-10">
+          <div className="bg-white rounded-xl gradient-border-1 shadow-sm p-5 sticky top-16 lg:fixed lg:top-[calc(4rem+28px)] lg:right-[max(1rem,calc((100vw-min(1280px,100vw))/2+1rem))] lg:w-80 lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto lg:z-10">
             <div className="mb-5">
               <div className="flex justify-between text-sm mb-2">
                 <span className="font-medium text-verified-600">
