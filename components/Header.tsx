@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Heart, LogOut, Menu, X, Bell, Shield, User, FolderOpen, Settings } from "lucide-react";
+import { Search, Heart, LogOut, Menu, X, Bell, Shield, User, FolderOpen, Settings, ChevronDown, Megaphone, Trophy } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
@@ -30,7 +30,10 @@ export default function Header() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [totalNotificationCount, setTotalNotificationCount] = useState(0);
   const notificationDropdownRef = useRef<HTMLDivElement>(null);
+  const campaignsDropdownRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const [showCampaignsDropdown, setShowCampaignsDropdown] = useState(false);
+  const [mobileCampaignsOpen, setMobileCampaignsOpen] = useState(false);
   const { user, isAdmin, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -62,6 +65,9 @@ export default function Header() {
       const target = e.target as Node;
       if (notificationDropdownRef.current && !notificationDropdownRef.current.contains(target)) {
         setShowNotificationDropdown(false);
+      }
+      if (campaignsDropdownRef.current && !campaignsDropdownRef.current.contains(target)) {
+        setShowCampaignsDropdown(false);
       }
       if (userMenuRef.current && !userMenuRef.current.contains(target)) {
         setShowUserMenu(false);
@@ -155,18 +161,41 @@ export default function Header() {
             >
               Home
             </Link>
-            <Link
-              href="/campaigns"
-              className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
-            >
-              Campaigns
-            </Link>
-            <Link
-              href="/success-stories"
-              className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
-            >
-              Success Stories
-            </Link>
+            <div className="relative flex items-center" ref={campaignsDropdownRef}>
+              <button
+                type="button"
+                onClick={() => setShowCampaignsDropdown((v) => !v)}
+                className={`flex items-center gap-1 text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out ${pathname?.startsWith("/campaigns") || pathname?.startsWith("/success-stories") ? "text-primary-600 font-medium" : ""}`}
+              >
+                Campaigns
+                <ChevronDown className={`w-4 h-4 transition-transform ${showCampaignsDropdown ? "rotate-180" : ""}`} />
+              </button>
+              {showCampaignsDropdown && (
+                <div className="absolute left-0 top-full mt-1 w-56 z-[100]">
+                  <div className="bg-white rounded-xl shadow-lg py-2 gradient-border-1 w-full overflow-hidden">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <h3 className="font-medium text-gray-900">Campaigns</h3>
+                    </div>
+                    <Link
+                      href="/campaigns"
+                      onClick={() => setShowCampaignsDropdown(false)}
+                      className="block px-4 py-3 hover:bg-gray-50 flex items-center gap-2 text-gray-700 text-sm"
+                    >
+                      <Megaphone className="w-4 h-4 text-primary-600 shrink-0" />
+                      View All Campaigns
+                    </Link>
+                    <Link
+                      href="/success-stories"
+                      onClick={() => setShowCampaignsDropdown(false)}
+                      className="block px-4 py-3 hover:bg-gray-50 flex items-center gap-2 text-gray-700 text-sm"
+                    >
+                      <Trophy className="w-4 h-4 text-primary-600 shrink-0" />
+                      Success Stories
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
             {!isAdminRoute && (
               <Link
                 href="/how-it-works"
@@ -381,8 +410,28 @@ export default function Header() {
             </form>
             <nav className="flex flex-col gap-1">
               <Link href="/" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Home</Link>
-              <Link href="/campaigns" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Campaigns</Link>
-              <Link href="/success-stories" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Success Stories</Link>
+              <div className="rounded-lg overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setMobileCampaignsOpen((v) => !v)}
+                  className="w-full px-4 py-3 text-left flex items-center justify-between text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out"
+                >
+                  Campaigns
+                  <ChevronDown className={`w-4 h-4 transition-transform ${mobileCampaignsOpen ? "rotate-180" : ""}`} />
+                </button>
+                {mobileCampaignsOpen && (
+                  <div className="bg-white/50 rounded-lg mt-1 mx-2 border border-gray-200 shadow-sm overflow-hidden">
+                    <Link href="/campaigns" className="flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-50 border-b border-gray-100" onClick={closeMobileMenu}>
+                      <Megaphone className="w-4 h-4 text-primary-600 shrink-0" />
+                      View All Campaigns
+                    </Link>
+                    <Link href="/success-stories" className="flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-50" onClick={closeMobileMenu}>
+                      <Trophy className="w-4 h-4 text-primary-600 shrink-0" />
+                      Success Stories
+                    </Link>
+                  </div>
+                )}
+              </div>
               {!isAdminRoute && (
                 <Link href="/how-it-works" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>How It Works</Link>
               )}
