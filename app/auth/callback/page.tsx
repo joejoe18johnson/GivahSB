@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useCallback, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const AUTH_CALLBACK_URL_KEY = "auth_callback_url";
-const EXCHANGE_TIMEOUT_MS = 20000;
+const EXCHANGE_TIMEOUT_MS = 45000;
 
 function AuthCallbackContent() {
   const [status, setStatus] = useState<"exchanging" | "redirecting" | "error">("exchanging");
@@ -51,6 +51,7 @@ function AuthCallbackContent() {
       .exchangeCodeForSession(code)
       .then(({ error }) => {
         clearTimeout(timeoutId);
+        if (done) return;
         if (error) {
           console.error("Auth code exchange failed:", error);
           fail();
@@ -60,6 +61,7 @@ function AuthCallbackContent() {
       })
       .catch((err) => {
         clearTimeout(timeoutId);
+        if (done) return;
         console.error("Auth code exchange error:", err);
         fail();
       });
@@ -89,23 +91,26 @@ function AuthCallbackContent() {
 
   if (status === "error") {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="text-center max-w-sm">
-          <p className="text-red-600 mb-4">Sign-in could not be completed.</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button
-              type="button"
-              onClick={handleRetry}
-              className="px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700"
-            >
-              Try again
-            </button>
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary-50 to-primary-100">
+        <div className="text-center max-w-md bg-white rounded-xl shadow-lg p-8">
+          <h1 className="text-xl font-semibold text-gray-900 mb-2">Sign-in could not be completed</h1>
+          <p className="text-gray-600 mb-4">
+            The sign-in link may have expired or the connection timed out. Go back to the sign-in page and choose &quot;Sign in with Google&quot; again to try with a fresh link.
+          </p>
+          <div className="flex flex-col gap-3">
             <button
               type="button"
               onClick={handleGoToLogin}
-              className="px-4 py-2 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50"
+              className="w-full px-5 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
             >
               Back to sign in
+            </button>
+            <button
+              type="button"
+              onClick={handleRetry}
+              className="w-full px-5 py-2.5 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors text-sm"
+            >
+              Try again with same link
             </button>
           </div>
         </div>
@@ -114,10 +119,11 @@ function AuthCallbackContent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary-50 to-primary-100">
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4" />
-        <p className="text-gray-600">Completing sign-in…</p>
+        <p className="text-gray-700 font-medium">Completing sign-in…</p>
+        <p className="text-sm text-gray-500 mt-2">This may take a few seconds</p>
       </div>
     </div>
   );
