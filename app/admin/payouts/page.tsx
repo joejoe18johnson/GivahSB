@@ -186,10 +186,8 @@ export default function AdminPayoutsPage() {
     win.document.write(html);
     win.document.close();
     win.focus();
-    setTimeout(() => {
-      win.print();
-      win.close();
-    }, 500);
+    win.print();
+    // User can save as PDF from the print dialog, then close the tab
   }
 
   async function handleComplete(id: string, e: React.MouseEvent) {
@@ -336,6 +334,91 @@ export default function AdminPayoutsPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Payout detail modal */}
+      {selectedPayout && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setSelectedPayout(null)}>
+          <div
+            className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">Payout details</h2>
+              <button
+                type="button"
+                onClick={() => setSelectedPayout(null)}
+                className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                aria-label="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="overflow-y-auto flex-1 p-4 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                <p><span className="font-medium text-gray-500">Campaign</span><br />{selectedPayout.campaignTitle || "—"}</p>
+                <p><span className="font-medium text-gray-500">Amount</span><br />{formatAmount(selectedPayout.raised)}</p>
+                <p><span className="font-medium text-gray-500">Creator</span><br />{selectedPayout.creatorName || "—"} · {selectedPayout.creatorEmail || ""}</p>
+                <p><span className="font-medium text-gray-500">Status</span><br /><span className="capitalize">{selectedPayout.status}</span></p>
+                <p><span className="font-medium text-gray-500">Bank</span><br />{selectedPayout.bankName} · {selectedPayout.accountType}</p>
+                <p><span className="font-medium text-gray-500">Account holder</span><br />{selectedPayout.accountHolderName}</p>
+                <p><span className="font-medium text-gray-500">Account number</span><br />{selectedPayout.accountNumber}{selectedPayout.branch ? ` · ${selectedPayout.branch}` : ""}</p>
+                <p><span className="font-medium text-gray-500">Request date</span><br />{formatDate(selectedPayout.createdAt)}</p>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">Payments made (donations)</h3>
+                {loadingDonations ? (
+                  <div className="flex items-center gap-2 text-gray-500 py-4">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Loading…
+                  </div>
+                ) : payoutDonations.length === 0 ? (
+                  <p className="text-sm text-gray-500 py-2">No donations found for this campaign.</p>
+                ) : (
+                  <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-3 py-2 text-left font-medium text-gray-600">Date</th>
+                          <th className="px-3 py-2 text-left font-medium text-gray-600">Donor</th>
+                          <th className="px-3 py-2 text-right font-medium text-gray-600">Amount</th>
+                          <th className="px-3 py-2 text-left font-medium text-gray-600">Method</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {payoutDonations.filter((d) => d.status === "completed").map((d) => (
+                          <tr key={d.id}>
+                            <td className="px-3 py-2 text-gray-600">{formatDate(d.createdAt)}</td>
+                            <td className="px-3 py-2">{d.anonymous ? "Anonymous" : (d.donorName || d.donorEmail || "—")}</td>
+                            <td className="px-3 py-2 text-right font-medium">{formatAmount(d.amount)}</td>
+                            <td className="px-3 py-2 text-gray-600">{d.method || "—"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center justify-end gap-2 px-4 py-3 border-t border-gray-200 bg-gray-50">
+              <button
+                type="button"
+                onClick={downloadPayoutLetter}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700"
+              >
+                <Download className="w-4 h-4" />
+                Download as letter (PDF)
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedPayout(null)}
+                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

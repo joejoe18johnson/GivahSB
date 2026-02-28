@@ -172,7 +172,7 @@ export default function AdminLayout({
   if (!isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <div className="max-w-md text-center bg-white rounded-xl gradient-border-1 p-8 shadow-sm">
+        <div className="max-w-md text-center bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
           <h1 className="text-xl font-semibold text-gray-900 mb-2">Access denied</h1>
           <p className="text-gray-600 mb-4">
             Your account does not have admin access. You must set <code className="text-sm bg-gray-100 px-1 rounded">NEXT_PUBLIC_ADMIN_EMAILS</code> (comma-separated) in your <code className="text-sm bg-gray-100 px-1 rounded">.env</code> and in Vercel Environment Variables, then <strong>redeploy</strong> so the client gets the list. After that, sign out and sign in again.
@@ -227,7 +227,7 @@ export default function AdminLayout({
                 )}
               </button>
               {showNotificationDropdown && (
-                <div className="absolute left-0 top-full mt-1 w-72 max-h-[20rem] overflow-y-auto bg-white rounded-xl gradient-border-1 shadow-lg py-2 z-50">
+                <div className="absolute left-0 top-full mt-1 w-72 max-h-[20rem] overflow-y-auto bg-white rounded-xl border border-gray-200 shadow-lg py-2 z-50">
                   <div className="px-4 py-2 border-b border-gray-100">
                     <h3 className="font-medium text-gray-900">Notifications</h3>
                     <p className="text-xs text-gray-500">Items that need your attention</p>
