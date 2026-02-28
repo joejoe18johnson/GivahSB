@@ -152,7 +152,7 @@ export default function Home() {
                 )}
               </h1>
             </div>
-            <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-xl">
+            <p className="text-[15px] md:text-[17px] text-gray-600 mb-8 max-w-xl">
               {siteContent.heroSubtitle}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-10">
@@ -171,11 +171,6 @@ export default function Home() {
                 Learn how it works →
               </Link>
             </div>
-            <div className="mt-8 flex justify-start">
-              <a href="#community-wins" className="text-gray-400 hover:text-gray-600 transition-colors duration-300 ease-in-out" aria-label="Scroll down">
-                <ChevronDown className="w-8 h-8" />
-              </a>
-            </div>
           </div>
 
           {/* Right: Hero with central image + circular photos of happy/grateful community (Hispanic & Black) */}
@@ -186,7 +181,7 @@ export default function Home() {
         </div>
 
         {/* Communities Share Burdens - visible at bottom of first viewport */}
-        <section id="community-shares-burdens" className="flex-shrink-0 -mt-[40px] pt-4 pb-8 md:pb-12 animate-fade-in-up opacity-0 [animation-delay:0.2s] [animation-fill-mode:forwards]">
+        <section id="community-shares-burdens" className="flex-shrink-0 -mt-[120px] pt-4 pb-8 md:pb-12 animate-fade-in-up opacity-0 [animation-delay:0.2s] [animation-fill-mode:forwards]">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-center break-words max-w-full px-2">
               <span className="text-primary-600">{siteContent.communityHeadingPart1}</span>
@@ -444,10 +439,10 @@ export default function Home() {
           </div>
 
         {/* Campaigns Needing Support - horizontal cards (same layout as Success Stories) */}
-        <div className="bg-gradient-to-br from-success-500 to-success-600 rounded-2xl border border-gray-200 p-6 md:p-8 shadow-lg flex flex-col">
-          <h2 className="text-3xl md:text-4xl font-medium mb-6 text-white">Campaigns Needing Support</h2>
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 md:p-8 shadow-lg flex flex-col">
+          <h2 className="text-3xl md:text-4xl font-medium mb-6 bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">Campaigns Needing Support</h2>
           <ul className="flex flex-col gap-4 list-none p-0 m-0">
-            {campaigns.slice(0, 4).map((campaign) => {
+            {campaigns.slice(0, 3).map((campaign) => {
               const goal = Number(campaign.goal) || 1;
               const raised = Number(campaign.raised) || 0;
               const pct = goal > 0 ? Math.min((raised / goal) * 100, 100) : 0;
@@ -506,7 +501,7 @@ export default function Home() {
           <div className="text-center mt-6">
             <Link
               href="/campaigns"
-              className="inline-block text-white hover:text-white/90 font-medium text-sm underline"
+              className="inline-block text-primary-600 hover:text-primary-700 font-medium text-sm underline"
             >
               View All Campaigns →
             </Link>

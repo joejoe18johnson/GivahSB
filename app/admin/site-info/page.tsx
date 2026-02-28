@@ -12,7 +12,7 @@ type StringSiteContentKey = Exclude<keyof SiteContent, "homeFaqs">;
 const FIELDS: { key: StringSiteContentKey; label: string; placeholder: string; multiline?: boolean }[] = [
   { key: "siteName", label: "Site name", placeholder: "GivahBz" },
   { key: "heroTitle", label: "Home hero title", placeholder: "Sharing Burdens. Together." },
-  { key: "heroSubtitle", label: "Home hero subtitle", placeholder: "Life is either a daring adventure..." },
+  { key: "heroSubtitle", label: "Home hero subtitle", placeholder: "Help real people and causes across Belize—verified, transparent, and community-driven." },
   { key: "communityHeadingPart1", label: "Community heading (part 1)", placeholder: "Communities Share " },
   { key: "communityHeadingPart2", label: "Community heading (part 2)", placeholder: "Burdens" },
   { key: "footerTagline", label: "Footer tagline", placeholder: "Supporting organizations, charities..." },
