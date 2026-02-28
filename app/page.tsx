@@ -163,19 +163,20 @@ export default function Home() {
           <div className="order-2 lg:order-1 flex flex-col justify-center mt-14 sm:mt-16 lg:mt-0 min-h-[320px] lg:min-h-[400px] animate-fade-in-up opacity-0 [animation-fill-mode:forwards]">
             <div className="mb-4 w-full max-w-xl md:max-w-none md:w-max pb-1 flex justify-center md:justify-start">
               <h1 className="font-bold text-gray-900 w-full text-center md:text-left text-2xl sm:text-3xl md:text-4xl md:whitespace-nowrap md:min-w-max lg:text-3xl xl:text-4xl pb-[0.2em]">
-                {siteContent.heroTitle.split(/(Burdens|Together)/).map((part, i) =>
-                  part === "Burdens" ? (
-                    <span key={i} className="text-accent-600">Burdens</span>
-                  ) : part === "Together" ? (
-                    <span key={i} className="text-verified-600">Together</span>
-                  ) : (
-                    <span key={i}>{part}</span>
-                  )
-                )}
+                {(() => {
+                  const parts = siteContent.heroTitle.split(/(Burdens|Together)/);
+                  return (
+                    <>
+                      <span className="bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">{parts[0]}{parts[1]}</span>
+                      {parts[2]}
+                      <span className="text-verified-600">{parts[3]}</span>
+                    </>
+                  );
+                })()}
               </h1>
             </div>
             <p className="text-[15px] md:text-[17px] text-gray-600 mb-8 max-w-xl">
-              {siteContent.heroSubtitle}
+              {siteContent.heroSubtitle.replace(/^Life is either a daring adventure or nothing\.\s*/i, "").trim() || siteContent.heroSubtitle}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-10">
               <Link
@@ -412,9 +413,7 @@ export default function Home() {
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium mb-4 break-words px-2">
-            <span className="text-success-600">Accessible.</span>{" "}
-            <span className="text-success-600">Accountable.</span>{" "}
-            <span className="text-success-600">Transformative.</span>{" "}
+            <span className="bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">Accessible. Accountable. Transformative.</span>{" "}
             <span className="text-gray-900">For Belizeans</span>
           </h2>
         </div>
