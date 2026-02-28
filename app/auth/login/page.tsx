@@ -15,6 +15,8 @@ function LoginForm() {
   const [googleLoading, setGoogleLoading] = useState(false);
 
   const { user, isAdmin, isLoading: authLoading, adminCheckDone, login, loginWithGoogle } = useAuth();
+
+  const isInvalidCredentials = error && /invalid email or password|sign-in failed/i.test(error);
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || searchParams.get("redirect") || "/my-campaigns";
@@ -109,7 +111,14 @@ function LoginForm() {
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
+            <p>{error}</p>
+            {isInvalidCredentials && (
+              <p className="mt-2 text-sm">
+                <Link href={email ? `/auth/forgot-password?email=${encodeURIComponent(email)}` : "/auth/forgot-password"} className="font-medium text-primary-600 hover:text-primary-700 underline">
+                  Forgot password? Reset it here
+                </Link>
+              </p>
+            )}
           </div>
         )}
 
@@ -150,6 +159,11 @@ function LoginForm() {
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
+            </div>
+            <div className="mt-2 text-right">
+              <Link href={email ? `/auth/forgot-password?email=${encodeURIComponent(email)}` : "/auth/forgot-password"} className="text-sm text-primary-600 hover:text-primary-700 font-medium">
+                Forgot password?
+              </Link>
             </div>
           </div>
 
