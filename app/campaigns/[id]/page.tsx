@@ -334,10 +334,11 @@ export default function CampaignPage() {
           </div>
         </div>
 
-        {/* Donation box: right column; sticky on lg so it stays in its column and never overlaps images */}
+        {/* Donation box: right column; fixed on lg with consistent 2rem gap (rem scales with zoom) */}
         <div className="order-3 lg:order-2 w-full lg:row-span-2 lg:self-start">
+          <div className="hidden lg:block w-80 shrink-0 min-h-[50vh]" aria-hidden="true" />
           <div
-            className="bg-white rounded-xl gradient-border-1 shadow-sm p-5 sticky top-16 lg:top-[calc(4rem+0.5rem)] lg:w-80 lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto lg:z-10"
+            className="bg-white rounded-xl gradient-border-1 shadow-sm p-5 sticky top-16 lg:fixed lg:top-[calc(4rem+0.5rem)] lg:right-[2rem] lg:w-80 lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto lg:z-10"
             style={
               donateBoxNearFooter && donateBoxBottomOffset != null
                 ? { top: "auto", bottom: donateBoxBottomOffset }
