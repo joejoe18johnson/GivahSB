@@ -8,11 +8,11 @@ import type { Campaign } from "@/lib/data";
 import type { AdminDonation } from "@/lib/adminData";
 import { generateShortRef } from "@/lib/utils";
 
-/** Generate a unique campaign reference (e.g. GV-A1234). Used for all donations to that campaign. */
+/** Generate a unique campaign reference: 2 letters + 5 numbers (e.g. AB12345). Used for all donations to that campaign. */
 export async function generateUniqueCampaignReference(supabase: SupabaseClient): Promise<string> {
   const maxAttempts = 50;
   for (let i = 0; i < maxAttempts; i++) {
-    const ref = "GV-" + generateShortRef();
+    const ref = generateShortRef();
     const { data } = await supabase.from("campaigns").select("id").eq("reference_number", ref).maybeSingle();
     if (!data) return ref;
   }
