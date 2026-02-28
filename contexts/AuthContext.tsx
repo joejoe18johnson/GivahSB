@@ -153,10 +153,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user?.id]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    const supabase = createClient();
-    const profile = await signInWithEmailSupabase(supabase, email, password);
-    setUser(profileToUser(profile));
-    return true;
+    try {
+      const supabase = createClient();
+      const profile = await signInWithEmailSupabase(supabase, email, password);
+      setUser(profileToUser(profile));
+      return true;
+    } catch (e) {
+      setUser(null);
+      throw e;
+    }
   };
 
   const loginWithGoogle = async () => {

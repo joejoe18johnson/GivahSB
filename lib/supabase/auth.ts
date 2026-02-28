@@ -140,6 +140,24 @@ export async function signUpWithEmailSupabase(
   return profile;
 }
 
+async function ensureProfileExists(
+  supabase: SupabaseClient,
+  user: SupabaseUser
+): Promise<void> {
+  const { data: row } = await supabase.from("profiles").select("id").eq("id", user.id).single();
+  if (row) return;
+  await supabase.from("profiles").upsert(
+    {
+      id: user.id,
+      email: user.email ?? "",
+      name: (user.user_metadata?.name as string) ?? (user.user_metadata?.full_name as string) ?? "User",
+      role: "user",
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "id" }
+  );
+}
+
 export async function signInWithEmailSupabase(
   supabase: SupabaseClient,
   email: string,
@@ -148,6 +166,7 @@ export async function signInWithEmailSupabase(
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
   if (!data.user) throw new Error("Sign in failed");
+  await ensureProfileExists(supabase, data.user);
   const profile = await supabaseUserToProfile(supabase, data.user);
   if (!profile) throw new Error("Could not load profile");
   return profile;

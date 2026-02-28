@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useThemedModal } from "@/components/ThemedModal";
 
@@ -20,6 +20,8 @@ export default function SignupPage() {
   
   const { signup, loginWithGoogle, user, isAdmin, adminCheckDone } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || searchParams.get("redirect") || null;
   const [googleLoading, setGoogleLoading] = useState(false);
   const { alert } = useThemedModal();
 
@@ -31,8 +33,13 @@ export default function SignupPage() {
       router.replace("/profile?verify=1");
       return;
     }
-    router.replace(isAdmin ? "/admin" : "/my-campaigns");
-  }, [user, isAdmin, adminCheckDone, router]);
+    const target = callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")
+      ? callbackUrl
+      : isAdmin
+        ? "/admin"
+        : "/my-campaigns";
+    router.replace(target);
+  }, [user, isAdmin, adminCheckDone, router, callbackUrl]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({

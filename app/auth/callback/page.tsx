@@ -29,7 +29,9 @@ function AuthCallbackContent() {
         (typeof window !== "undefined" ? sessionStorage.getItem(AUTH_CALLBACK_URL_KEY) : null) || "/my-campaigns";
       if (typeof window !== "undefined") sessionStorage.removeItem(AUTH_CALLBACK_URL_KEY);
       const path = next.startsWith("http") ? new URL(next).pathname : next.startsWith("/") ? next : `/${next}`;
-      window.location.replace(path || "/my-campaigns");
+      const target = path || "/my-campaigns";
+      // Brief delay so Supabase can persist session before full-page redirect
+      setTimeout(() => window.location.replace(target), 150);
     };
 
     const fail = () => {

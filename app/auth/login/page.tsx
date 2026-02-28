@@ -21,11 +21,16 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || searchParams.get("redirect") || "/my-campaigns";
 
-  // Show error from URL (e.g. after failed OAuth callback)
+  // Show error from URL (e.g. after failed OAuth callback), then clear param so refresh doesn't repeat it
   useEffect(() => {
     const err = searchParams.get("error");
     if (err === "auth_callback") {
       setError("Sign-in could not be completed. Please try again.");
+      if (typeof window !== "undefined") {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("error");
+        window.history.replaceState({}, "", url.pathname + url.search);
+      }
     }
   }, [searchParams]);
 
@@ -59,7 +64,7 @@ function LoginForm() {
     try {
       const success = await login(email, password);
       if (success) {
-        // Redirect is handled by useEffect when user/isAdmin updates
+        // Redirect is handled by useEffect when user/isAdmin updates; keep loading until redirect
         return;
       }
       setError("Invalid email or password. Please try again.");
