@@ -204,6 +204,12 @@ export default function Header() {
                 How It Works
               </Link>
             )}
+            <Link
+              href="/campaigns/create"
+              className="bg-gradient-to-r from-primary-500 to-verified-500 text-white px-4 py-2 rounded-full font-medium hover:opacity-90 transition-opacity duration-300 ease-in-out shadow-sm"
+            >
+              Create A Campaign
+            </Link>
             {user ? (
               <>
                 <div className="relative flex items-center" ref={notificationDropdownRef}>
@@ -435,6 +441,9 @@ export default function Header() {
               {!isAdminRoute && (
                 <Link href="/how-it-works" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>How It Works</Link>
               )}
+              <Link href="/campaigns/create" className="mx-4 flex justify-center items-center bg-gradient-to-r from-primary-500 to-verified-500 text-white px-4 py-3 rounded-full font-medium hover:opacity-90 transition-opacity duration-300 ease-in-out shadow-sm" onClick={closeMobileMenu}>
+                Create A Campaign
+              </Link>
               {user ? (
                 <>
                   <Link href="/liked-campaigns" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2" onClick={closeMobileMenu}>
