@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 /** POST - upload a new image for an existing campaign owned by the current user. Returns { url }. */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { campaignId: string } }
+  { params }: { params: Promise<{ campaignId: string }> }
 ) {
   if (!isSupabaseConfigured()) {
     return NextResponse.json(
@@ -23,7 +23,7 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const campaignId = params.campaignId;
+  const { campaignId } = await params;
   if (!campaignId || campaignId.length > 128) {
     return NextResponse.json({ error: "Invalid campaign ID." }, { status: 400 });
   }
