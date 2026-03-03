@@ -8,11 +8,7 @@ export function createClient() {
   if (!url || !key) {
     throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY");
   }
-  return createBrowserClient(url, key, {
-    auth: {
-      lock: {
-        lockAcquireTimeout: 30_000, // 30s to avoid "Navigator LockManager lock timed out 10000ms"
-      },
-    },
-  });
+  // Use default auth/lock behavior; custom lock options are not yet
+  // exposed in the @supabase/ssr createBrowserClient typings.
+  return createBrowserClient(url, key);
 }
