@@ -156,33 +156,33 @@ export function ThemedModalProvider({ children }: { children: React.ReactNode })
     <ThemedModalContext.Provider value={{ alert, confirm }}>
       {children}
 
-      {/* Themed Alert Modal */}
+      {/* Themed Alert Toast */}
       {alertState.open && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50">
-          <div
-            className={`bg-white rounded-xl shadow-xl border ${alertStyle.border} max-w-md w-full overflow-hidden`}
-            role="alertdialog"
-            aria-modal="true"
-          >
-            <div className="p-6 flex items-start gap-4">
-              <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${alertStyle.iconBg} ${alertStyle.iconColor}`}>
-                <AlertIcon className="w-6 h-6" />
+        <div className="fixed inset-0 z-[200] flex justify-center pointer-events-none">
+          <div className="mt-6 max-w-md w-full px-4">
+            <div
+              className={`pointer-events-auto bg-white rounded-xl shadow-lg border ${alertStyle.border} overflow-hidden`}
+              role="status"
+              aria-live="polite"
+            >
+              <div className="p-4 flex items-start gap-3">
+                <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${alertStyle.iconBg} ${alertStyle.iconColor}`}>
+                  <AlertIcon className="w-5 h-5" />
+                </div>
+                <div className="min-w-0 flex-1 pt-0.5">
+                  <h3 className="text-sm font-semibold text-gray-900">
+                    {alertState.title ?? alertStyle.title}
+                  </h3>
+                  <p className="mt-0.5 text-sm text-gray-600">{alertState.message}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeAlert}
+                  className="ml-2 text-xs font-medium text-gray-500 hover:text-gray-700"
+                >
+                  Dismiss
+                </button>
               </div>
-              <div className="min-w-0 flex-1 pt-0.5">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {alertState.title ?? alertStyle.title}
-                </h3>
-                <p className="mt-1 text-gray-600">{alertState.message}</p>
-              </div>
-            </div>
-            <div className="px-6 pb-6 flex justify-end">
-              <button
-                type="button"
-                onClick={closeAlert}
-                className="px-4 py-2 rounded-lg font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors"
-              >
-                OK
-              </button>
             </div>
           </div>
         </div>

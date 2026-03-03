@@ -216,13 +216,21 @@ export default function MyCampaignsPage() {
             )}
           </p>
         </div>
-        <Link
-          href="/campaigns"
-          className="inline-flex items-center justify-center gap-2 bg-success-500 text-white px-6 py-3 rounded-full font-medium hover:bg-success-600 transition-colors shadow-md"
-        >
-          <Plus className="w-5 h-5" />
-          Browse campaigns
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+          <Link
+            href="/campaigns/create"
+            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary-500 to-verified-500 text-white px-6 py-3 rounded-full font-medium hover:opacity-90 transition-opacity shadow-md"
+          >
+            <Plus className="w-5 h-5" />
+            Create a campaign
+          </Link>
+          <Link
+            href="/campaigns"
+            className="inline-flex items-center justify-center gap-2 border border-gray-300 text-gray-700 px-6 py-3 rounded-full font-medium hover:bg-gray-50 transition-colors"
+          >
+            Browse campaigns
+          </Link>
+        </div>
       </div>
 
       {/* Campaigns under review */}

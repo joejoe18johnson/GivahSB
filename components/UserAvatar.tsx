@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 
 interface UserAvatarProps {
   profilePhoto?: string | null;
@@ -60,11 +61,13 @@ export default function UserAvatar({
   size = 40,
   className = "",
 }: UserAvatarProps) {
+  const [hasImageError, setHasImageError] = useState(false);
   const initial = (name?.trim() || email?.trim() || "?")[0].toUpperCase();
   const sizeClass = sizeClasses[size];
   const px = sizePx[size];
 
-  if (profilePhoto) {
+  // Try to show the photo if we have a URL and it loads successfully.
+  if (profilePhoto && !hasImageError) {
     return (
       <Image
         src={profilePhoto}
@@ -72,6 +75,7 @@ export default function UserAvatar({
         width={px}
         height={px}
         className={`rounded-full object-cover flex-shrink-0 ${sizeClass} ${className}`}
+        onError={() => setHasImageError(true)}
         unoptimized
       />
     );
