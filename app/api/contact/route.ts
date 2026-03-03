@@ -44,7 +44,10 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const supabase = getSupabaseAdmin()!;
+    const supabase = getSupabaseAdmin();
+    if (!supabase) {
+      return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
+    }
     const { error } = await supabase.from("contact_messages").insert({
       name,
       email,
@@ -52,12 +55,22 @@ export async function POST(request: NextRequest) {
       message,
     });
     if (error) {
-      console.error("Contact message insert:", error);
-      return NextResponse.json({ error: "Failed to send message" }, { status: 500 });
+      console.error("Contact message insert:", error.message, error.details);
+      const isDev = process.env.NODE_ENV === "development";
+      const message =
+        isDev && error.message
+          ? error.message
+          : "Failed to send message. If this persists, the contact_messages table may not exist—run the Supabase migration 20260224100000_contact_messages.sql.";
+      return NextResponse.json({ error: message }, { status: 500 });
     }
     return NextResponse.json({ ok: true });
   } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
     console.error("Contact submit:", err);
-    return NextResponse.json({ error: "Failed to send message" }, { status: 500 });
+    const isDev = process.env.NODE_ENV === "development";
+    return NextResponse.json(
+      { error: isDev ? msg : "Failed to send message" },
+      { status: 500 }
+    );
   }
 }
