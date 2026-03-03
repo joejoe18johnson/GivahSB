@@ -527,6 +527,14 @@ export default function MyCampaignsPage() {
                         <ArrowRight className="w-4 h-4" />
                         View Campaign Donations
                       </Link>
+                      <Link
+                        href={`/my-campaigns/${campaign.id}/edit`}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary-50 text-primary-700 hover:bg-primary-100 text-sm font-medium transition-colors"
+                        onClick={(e) => { e.stopPropagation(); }}
+                      >
+                        <FileText className="w-4 h-4" />
+                        Edit campaign
+                      </Link>
                       {!isStopped && (
                         <button
                           type="button"
