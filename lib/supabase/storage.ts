@@ -165,3 +165,22 @@ export async function uploadCampaignUnderReviewImageServer(
   const { data } = supabase.storage.from(BUCKET_CAMPAIGNS).getPublicUrl(path);
   return data.publicUrl;
 }
+
+export async function uploadCampaignImageServer(
+  supabase: SupabaseClient,
+  campaignId: string,
+  index: 0 | 1,
+  buffer: Buffer,
+  originalFileName: string,
+  mimeType: string
+): Promise<string> {
+  await ensureStorageBucket(supabase, BUCKET_CAMPAIGNS, { public: true });
+  const ext = (originalFileName.split(".").pop() || "").toLowerCase() || "jpg";
+  const path = `live/${campaignId}/image${index + 1}.${ext}`;
+  const { error } = await supabase.storage
+    .from(BUCKET_CAMPAIGNS)
+    .upload(path, buffer, { contentType: mimeType || "image/jpeg", upsert: true });
+  if (error) throw error;
+  const { data } = supabase.storage.from(BUCKET_CAMPAIGNS).getPublicUrl(path);
+  return data.publicUrl;
+}

@@ -11,6 +11,8 @@ type PatchBody = {
   fullDescription?: string;
   category?: string;
   location?: string;
+  image?: string;
+  image2?: string;
 };
 
 /** GET - fetch a single campaign owned by the current user (for editing). */
@@ -33,7 +35,7 @@ export async function GET(
   const supabase = getSupabaseAdmin()!;
   const { data, error } = await supabase
     .from("campaigns")
-    .select("id, title, description, full_description, goal, category, location, creator_id, created_at, days_left")
+    .select("id, title, description, full_description, goal, category, location, image, image2, creator_id, created_at, days_left")
     .eq("id", campaignId)
     .single();
 
@@ -52,6 +54,8 @@ export async function GET(
     goal: Number(data.goal),
     category: data.category as string,
     location: (data.location as string) ?? "",
+    image: (data.image as string) ?? "",
+    image2: (data.image2 as string) ?? "",
     createdAt: data.created_at as string,
     daysLeft: (data.days_left as number) ?? 0,
   };
@@ -91,10 +95,12 @@ export async function PATCH(
   if (typeof body.fullDescription === "string") row.full_description = body.fullDescription.trim();
   if (typeof body.category === "string") row.category = body.category.trim();
   if (typeof body.location === "string") row.location = body.location.trim();
+  if (typeof body.image === "string") row.image = body.image.trim();
+  if (typeof body.image2 === "string") row.image2 = body.image2.trim();
 
   if (Object.keys(row).length === 0) {
     return NextResponse.json(
-      { error: "No editable fields provided. You can change title, descriptions, category, and location (goal cannot be changed)." },
+      { error: "No editable fields provided. You can change title, descriptions, category, location, and images (goal cannot be changed)." },
       { status: 400 }
     );
   }

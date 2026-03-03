@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Image as ImageIcon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemedModal } from "@/components/ThemedModal";
+import SafeImage from "@/components/SafeImage";
+import { compressImageForUpload } from "@/lib/compressImage";
 
 interface EditableCampaign {
   id: string;
@@ -15,6 +17,8 @@ interface EditableCampaign {
   goal: number;
   category: string;
   location: string;
+  image: string;
+  image2: string;
 }
 
 export default function EditMyCampaignPage() {
@@ -35,6 +39,11 @@ export default function EditMyCampaignPage() {
     category: "",
     location: "",
   });
+  const [image1Url, setImage1Url] = useState<string>("");
+  const [image2Url, setImage2Url] = useState<string>("");
+  const fileInput1Ref = useRef<HTMLInputElement | null>(null);
+  const fileInput2Ref = useRef<HTMLInputElement | null>(null);
+  const [uploadingImageIndex, setUploadingImageIndex] = useState<0 | 1 | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -71,6 +80,8 @@ export default function EditMyCampaignPage() {
             category: c.category,
             location: c.location || "",
           });
+          setImage1Url(c.image || "");
+          setImage2Url(c.image2 || "");
         }
       } catch {
         if (!cancelled) setError("Failed to load campaign.");
@@ -91,6 +102,52 @@ export default function EditMyCampaignPage() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleImageChange = (index: 0 | 1) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !campaignId) return;
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file (JPG, PNG, etc.).", { variant: "error" });
+      return;
+    }
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert("Image must be less than 10MB.", { variant: "error" });
+      return;
+    }
+    setUploadingImageIndex(index);
+    try {
+      const compressed = await compressImageForUpload(file, { maxDimension: 1600, quality: 0.82 });
+      const formData = new FormData();
+      formData.append("file", compressed);
+      formData.append("index", String(index));
+      const res = await fetch(`/api/my/campaigns/${campaignId}/images`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const message = typeof data.error === "string" ? data.error : "Failed to upload image.";
+        alert(message, { variant: "error" });
+        return;
+      }
+      const url = (data as { url?: string }).url;
+      if (!url) {
+        alert("Upload succeeded but no URL was returned.", { variant: "error" });
+        return;
+      }
+      if (index === 0) setImage1Url(url);
+      else setImage2Url(url);
+      alert("Image updated.", { variant: "success" });
+    } catch {
+      alert("Failed to upload image. Please try again.", { variant: "error" });
+    } finally {
+      setUploadingImageIndex(null);
+      if (index === 0 && fileInput1Ref.current) fileInput1Ref.current.value = "";
+      if (index === 1 && fileInput2Ref.current) fileInput2Ref.current.value = "";
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!campaignId) return;
@@ -107,6 +164,8 @@ export default function EditMyCampaignPage() {
           fullDescription: form.fullDescription,
           category: form.category,
           location: form.location || undefined,
+          image: image1Url || undefined,
+          image2: image2Url || undefined,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -169,6 +228,84 @@ export default function EditMyCampaignPage() {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6 bg-white rounded-xl gradient-border-1 shadow-sm p-6 md:p-8">
+            <div>
+              <label className="block text-sm font-medium mb-2 flex items-center gap-2">
+                <ImageIcon className="w-4 h-4" />
+                Campaign images
+              </label>
+              <p className="text-xs text-gray-500 mb-3">
+                Update your two cover images. For best results use landscape images, up to 10MB each.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="relative w-full h-40 sm:h-48 bg-gray-200 rounded-lg overflow-hidden">
+                  {image1Url ? (
+                    <SafeImage
+                      src={image1Url}
+                      alt={`${form.title || "Campaign"} image 1`}
+                      fill
+                      className="object-cover"
+                      blurEdges
+                      fallback={
+                        <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
+                          Image 1
+                        </div>
+                      }
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
+                      Image 1
+                    </div>
+                  )}
+                  <div className="absolute inset-x-0 bottom-2 flex justify-center">
+                    <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 text-xs font-medium text-gray-700 cursor-pointer shadow-sm">
+                      {uploadingImageIndex === 0 ? "Uploading…" : "Change image 1"}
+                      <input
+                        ref={fileInput1Ref}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageChange(0)}
+                        disabled={uploadingImageIndex !== null}
+                      />
+                    </label>
+                  </div>
+                </div>
+                <div className="relative w-full h-40 sm:h-48 bg-gray-200 rounded-lg overflow-hidden">
+                  {image2Url || image1Url ? (
+                    <SafeImage
+                      src={image2Url || image1Url}
+                      alt={`${form.title || "Campaign"} image 2`}
+                      fill
+                      className="object-cover"
+                      blurEdges
+                      fallback={
+                        <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
+                          Image 2
+                        </div>
+                      }
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
+                      Image 2
+                    </div>
+                  )}
+                  <div className="absolute inset-x-0 bottom-2 flex justify-center">
+                    <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 text-xs font-medium text-gray-700 cursor-pointer shadow-sm">
+                      {uploadingImageIndex === 1 ? "Uploading…" : "Change image 2"}
+                      <input
+                        ref={fileInput2Ref}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageChange(1)}
+                        disabled={uploadingImageIndex !== null}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium mb-2">Campaign title *</label>
               <input
