@@ -417,7 +417,7 @@ export default function VerificationCenterPage() {
           ) : (
             <div className="space-y-4">
               <p className="text-gray-600">Upload a photo of your Social Security card or Passport for verification. Once uploaded, it will be pending admin approval and cannot be changed.</p>
-              <p className="text-sm text-gray-500">Supported: JPG, PNG, HEIC, PDF (max 10MB). If upload fails, ensure you're signed in and try again.</p>
+              <p className="text-sm text-gray-500">Supported: JPG, PNG, HEIC, PDF (max 10MB). If upload fails, ensure you&apos;re signed in and try again.</p>
               <div className="space-y-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">ID Type</label>
@@ -528,7 +528,7 @@ export default function VerificationCenterPage() {
           ) : (
             <div className="space-y-4">
               <p className="text-gray-600">Upload a proof of address document (utility bill, bank statement, or government-issued document with your address). Once uploaded, it will be pending admin approval and cannot be changed.</p>
-              <p className="text-sm text-gray-500">Supported: JPG, PNG, HEIC, PDF (max 10MB). If upload fails, ensure you're signed in and try again.</p>
+              <p className="text-sm text-gray-500">Supported: JPG, PNG, HEIC, PDF (max 10MB). If upload fails, ensure you&apos;re signed in and try again.</p>
               <div className="space-y-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Document</label>

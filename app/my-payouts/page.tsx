@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Banknote, ArrowLeft, Loader2, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { Banknote, ArrowLeft, Loader2, CheckCircle2, Clock, XCircle, Download } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatCurrency } from "@/lib/utils";
 
@@ -218,6 +218,7 @@ export default function MyPayoutsPage() {
                       <th className="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">Completed on</th>
                       <th className="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">Amount paid out</th>
                       <th className="px-4 py-2 text-left font-medium text-gray-600">Bank</th>
+                      <th className="px-4 py-2 text-left font-medium text-gray-600">Letter</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -237,6 +238,15 @@ export default function MyPayoutsPage() {
                           <div className="text-xs text-gray-500">
                             {p.accountType} · ****{p.accountLast4 || "----"}
                           </div>
+                        </td>
+                        <td className="px-4 py-2 align-top whitespace-nowrap">
+                          <a
+                            href={`/api/my/payouts/${p.id}/payout-letter.pdf`}
+                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 text-xs font-medium"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                            Download PDF
+                          </a>
                         </td>
                       </tr>
                     ))}
