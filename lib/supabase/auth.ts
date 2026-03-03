@@ -187,21 +187,6 @@ export async function signInWithGoogleSupabase(supabase: SupabaseClient): Promis
   return (await supabaseUserToProfile(supabase, sessionData.session.user)) as UserProfile;
 }
 
-export async function signInWithFacebookSupabase(supabase: SupabaseClient): Promise<UserProfile> {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "facebook",
-    options: { redirectTo: typeof window !== "undefined" ? window.location.origin + "/auth/callback" : undefined },
-  });
-  if (error) throw error;
-  if (data?.url) {
-    if (typeof window !== "undefined") window.location.href = data.url;
-    throw new Error("REDIRECTING");
-  }
-  const { data: sessionData } = await supabase.auth.getSession();
-  if (!sessionData?.session?.user) throw new Error("No session after Facebook sign-in");
-  return (await supabaseUserToProfile(supabase, sessionData.session.user)) as UserProfile;
-}
-
 export async function signOutSupabase(supabase: SupabaseClient): Promise<void> {
   await supabase.auth.signOut();
 }

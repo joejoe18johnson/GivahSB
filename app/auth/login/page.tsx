@@ -13,9 +13,8 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [facebookLoading, setFacebookLoading] = useState(false);
 
-  const { user, isAdmin, isLoading: authLoading, adminCheckDone, login, loginWithGoogle, loginWithFacebook } = useAuth();
+  const { user, isAdmin, isLoading: authLoading, adminCheckDone, login, loginWithGoogle } = useAuth();
 
   const isInvalidCredentials = error && /invalid email or password|sign-in failed/i.test(error);
   const router = useRouter();
@@ -108,32 +107,6 @@ function LoginForm() {
       setError(message);
     } finally {
       if (!isRedirecting) setGoogleLoading(false);
-    }
-  };
-
-  const handleFacebookSignIn = async () => {
-    setError("");
-    setFacebookLoading(true);
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("auth_callback_url", callbackUrl);
-      document.cookie = `${AUTH_REDIRECT_COOKIE}=${encodeURIComponent(callbackUrl)}; path=/; max-age=600; SameSite=Lax`;
-    }
-    let isRedirecting = false;
-    try {
-      await loginWithFacebook();
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "";
-      if (msg === "REDIRECTING") {
-        isRedirecting = true;
-        return;
-      }
-      let message = "Facebook sign-in failed. Please try again.";
-      if (err && typeof err === "object" && "message" in err && typeof (err as { message: string }).message === "string") {
-        message = (err as { message: string }).message;
-      }
-      setError(message);
-    } finally {
-      if (!isRedirecting) setFacebookLoading(false);
     }
   };
 
@@ -246,25 +219,6 @@ function LoginForm() {
                 />
               </svg>
               {googleLoading ? "Redirecting to Google…" : "Sign in with Google"}
-            </button>
-
-            <button
-              type="button"
-              disabled={facebookLoading}
-              onClick={handleFacebookSignIn}
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-[#1877F2] rounded-full font-medium text-[#1877F2] bg-white hover:bg-[#1877F2]/5 transition-colors disabled:opacity-70 disabled:cursor-wait"
-            >
-              <svg
-                className="w-5 h-5 flex-shrink-0"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  fill="#1877F2"
-                  d="M22 12.07C22 6.51 17.52 2 12 2S2 6.51 2 12.07C2 17.1 5.66 21.24 10.44 22v-6.99H7.9v-2.94h2.54V9.41c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.48h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.94h-2.34V22C18.34 21.24 22 17.1 22 12.07z"
-                />
-              </svg>
-              {facebookLoading ? "Redirecting to Facebook…" : "Sign in with Facebook"}
             </button>
           </div>
 
