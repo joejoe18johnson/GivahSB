@@ -170,25 +170,6 @@ export default function AdminDashboardPage() {
         <p className="text-gray-600 mt-1">Overview of all platform data</p>
       </div>
 
-      {/* Storage buckets — fix "Bucket not found" for uploads/viewing documents */}
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-            <HardDrive className="w-5 h-5 text-amber-700" />
-          </div>
-          <div>
-            <p className="font-medium text-amber-900">Document uploads &amp; storage</p>
-            <p className="text-sm text-amber-800">If you see &quot;Bucket not found&quot; when uploading or viewing documents, create the storage buckets once.</p>
-          </div>
-        </div>
-        <a
-          href="/api/admin/ensure-storage"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition-colors"
-        >
-          Create storage buckets
-        </a>
-      </div>
-
       {/* Stats - 4 cards in one row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl gradient-border-1 p-5 shadow-sm">
