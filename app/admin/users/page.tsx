@@ -22,6 +22,8 @@ export default function AdminUsersPage() {
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
+  const [rejectModal, setRejectModal] = useState<{ userId: string; userName: string; type: "id" | "address" } | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
 
   const load = async () => {
     setLoading(true);
@@ -141,6 +143,49 @@ export default function AdminUsersPage() {
     } catch (error) {
       console.error("Error approving address:", error);
       alert("Failed to approve address.", { variant: "error" });
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const openRejectModal = (userId: string, userName: string, type: "id" | "address") => {
+    setRejectModal({ userId, userName, type });
+    setRejectReason("");
+  };
+
+  const closeRejectModal = () => {
+    setRejectModal(null);
+    setRejectReason("");
+  };
+
+  const handleRejectWithReason = async () => {
+    if (!rejectModal) return;
+    const { userId, type } = rejectModal;
+    setUpdatingId(userId);
+    try {
+      const body: Record<string, unknown> =
+        type === "id"
+          ? { idVerified: false, idRejectionReason: rejectReason.trim() }
+          : { addressVerified: false, addressRejectionReason: rejectReason.trim() };
+      await fetch(`/api/admin/users/${userId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        credentials: "include",
+      });
+      invalidateUsersCache();
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.id === userId
+            ? { ...u, ...(type === "id" ? { idVerified: false, idPending: false } : { addressVerified: false, addressPending: false }) }
+            : u
+        )
+      );
+      closeRejectModal();
+      alert("The user has been notified. They can upload a new document from their Verification Center.", { variant: "success" });
+    } catch (error) {
+      console.error("Error rejecting verification:", error);
+      alert("Failed to reject. Please try again.", { variant: "error" });
     } finally {
       setUpdatingId(null);
     }
@@ -424,26 +469,48 @@ export default function AdminUsersPage() {
                           </button>
                         )}
                         {u.idDocument && !u.idVerified && (
-                          <button
-                            type="button"
-                            onClick={() => handleApproveId(u.id)}
-                            disabled={updatingId === u.id}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-verified-100 text-verified-700 hover:bg-verified-200 text-xs font-medium disabled:opacity-50"
-                          >
-                            <Shield className="w-3.5 h-3.5" />
-                            {updatingId === u.id ? "…" : "Approve ID"}
-                          </button>
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleApproveId(u.id)}
+                              disabled={updatingId === u.id}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-verified-100 text-verified-700 hover:bg-verified-200 text-xs font-medium disabled:opacity-50"
+                            >
+                              <Shield className="w-3.5 h-3.5" />
+                              {updatingId === u.id ? "…" : "Approve ID"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => openRejectModal(u.id, u.name ?? "User", "id")}
+                              disabled={updatingId === u.id}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 text-xs font-medium disabled:opacity-50"
+                            >
+                              <XCircle className="w-3.5 h-3.5" />
+                              Reject ID
+                            </button>
+                          </>
                         )}
                         {u.addressDocument && !u.addressVerified && (
-                          <button
-                            type="button"
-                            onClick={() => handleApproveAddress(u.id)}
-                            disabled={updatingId === u.id}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-verified-100 text-verified-700 hover:bg-verified-200 text-xs font-medium disabled:opacity-50"
-                          >
-                            <Shield className="w-3.5 h-3.5" />
-                            {updatingId === u.id ? "…" : "Approve Address"}
-                          </button>
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleApproveAddress(u.id)}
+                              disabled={updatingId === u.id}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-verified-100 text-verified-700 hover:bg-verified-200 text-xs font-medium disabled:opacity-50"
+                            >
+                              <Shield className="w-3.5 h-3.5" />
+                              {updatingId === u.id ? "…" : "Approve Address"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => openRejectModal(u.id, u.name ?? "User", "address")}
+                              disabled={updatingId === u.id}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 text-xs font-medium disabled:opacity-50"
+                            >
+                              <XCircle className="w-3.5 h-3.5" />
+                              Reject Address
+                            </button>
+                          </>
                         )}
                         {status === "active" && !isSelf && (
                           <button
@@ -533,6 +600,49 @@ export default function AdminUsersPage() {
           </div>
         )}
       </div>
+
+      {/* Reject verification modal */}
+      {rejectModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={closeRejectModal}>
+          <div
+            className="bg-white rounded-xl shadow-xl max-w-md w-full p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold text-gray-900">
+              Reject {rejectModal.type === "id" ? "ID document" : "Address document"}
+            </h3>
+            <p className="mt-1 text-sm text-gray-600">
+              The user will be notified and can upload a new document from their Verification Center.
+            </p>
+            <label className="mt-4 block text-sm font-medium text-gray-700">
+              Reason for rejection (optional)
+            </label>
+            <textarea
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              placeholder="e.g. Document is blurry, name does not match, expired..."
+              rows={3}
+              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={closeRejectModal}
+                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleRejectWithReason}
+                className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700"
+              >
+                Reject
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

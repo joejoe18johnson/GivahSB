@@ -7,6 +7,7 @@ import {
   setAddressVerified,
   setUserStatus,
   deleteUserFromSupabase,
+  addNotification,
 } from "@/lib/supabase/database";
 
 export const dynamic = "force-dynamic";
@@ -32,12 +33,56 @@ export async function PATCH(
   const supabase = getSupabaseAdmin()!;
   if (typeof body.phoneVerified === "boolean") {
     await setUserPhoneVerified(supabase, userId, body.phoneVerified);
+    if (body.phoneVerified === true) {
+      await addNotification(supabase, userId, {
+        type: "verification_approved",
+        title: "Phone number approved",
+        body: "Your phone number has been verified and approved. You can now use it for campaign verification.",
+        read: false,
+      });
+    }
   }
   if (typeof body.idVerified === "boolean") {
     await setIdVerified(supabase, userId, body.idVerified);
+    if (body.idVerified === true) {
+      await addNotification(supabase, userId, {
+        type: "verification_approved",
+        title: "Identity document approved",
+        body: "Your identity document has been verified and approved. You can now use it for campaign verification.",
+        read: false,
+      });
+    } else if (body.idVerified === false) {
+      const reason = typeof body.idRejectionReason === "string" ? body.idRejectionReason.trim() : "";
+      await addNotification(supabase, userId, {
+        type: "verification_rejected",
+        title: "Identity document not approved",
+        body: reason
+          ? `Your identity document could not be approved. Reason: ${reason} You can upload a new document from your Verification Center.`
+          : "Your identity document could not be approved. You can upload a new document from your Verification Center.",
+        read: false,
+      });
+    }
   }
   if (typeof body.addressVerified === "boolean") {
     await setAddressVerified(supabase, userId, body.addressVerified);
+    if (body.addressVerified === true) {
+      await addNotification(supabase, userId, {
+        type: "verification_approved",
+        title: "Address verified",
+        body: "Your address document has been verified and approved. You can now use it for campaign verification.",
+        read: false,
+      });
+    } else if (body.addressVerified === false) {
+      const reason = typeof body.addressRejectionReason === "string" ? body.addressRejectionReason.trim() : "";
+      await addNotification(supabase, userId, {
+        type: "verification_rejected",
+        title: "Address document not approved",
+        body: reason
+          ? `Your address document could not be approved. Reason: ${reason} You can upload a new document from your Verification Center.`
+          : "Your address document could not be approved. You can upload a new document from your Verification Center.",
+        read: false,
+      });
+    }
   }
   if (body.status === "active" || body.status === "on_hold" || body.status === "deleted") {
     await setUserStatus(supabase, userId, body.status);
