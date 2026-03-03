@@ -147,14 +147,18 @@ export default function ProfilePage() {
       formData.append("file", file);
       const res = await fetch("/api/profile/photo", { method: "POST", credentials: "include", body: formData });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error ?? "Upload failed");
-      const photoUrl = data.url;
+      if (!res.ok) {
+        const message = typeof (data as { error?: string }).error === "string" ? (data as { error: string }).error : "Upload failed";
+        throw new Error(message);
+      }
+      const photoUrl = (data as { url: string }).url;
       await updateUser({ profilePhoto: photoUrl });
       setProfilePhoto(photoUrl);
       setLastSavedState((prev) => ({ ...prev, profilePhoto: photoUrl }));
     } catch (error) {
       console.error("Error uploading photo:", error);
-      alert("Failed to upload photo. Please try again.", { variant: "error" });
+      const message = error instanceof Error ? error.message : "Failed to upload photo. Please try again.";
+      alert(message, { variant: "error" });
       setProfilePhoto(user.profilePhoto || null);
     } finally {
       setIsUploadingPhoto(false);
