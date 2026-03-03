@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getDonationsCached, invalidateDonationsCache } from "@/lib/supabase/adminCache";
 import { type AdminDonation } from "@/lib/adminData";
 import { formatCurrency } from "@/lib/utils";
@@ -11,6 +11,9 @@ import Link from "next/link";
 
 const PAGE_SIZE = 50;
 
+type SortKey = "date" | "amount" | "status" | "method" | "campaign" | "donor";
+type SortDirection = "asc" | "desc";
+
 export default function AdminDonationsPage() {
   const { user } = useAuth();
   const { alert } = useThemedModal();
@@ -18,19 +21,16 @@ export default function AdminDonationsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [approvingId, setApprovingId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [sortKey, setSortKey] = useState<SortKey>("date");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
 
   async function loadDonations() {
     setIsLoading(true);
     try {
       const fetchedDonations = await getDonationsCached();
-      const sorted = [...fetchedDonations].sort((a, b) => {
-        // Pending first, then by newest date
-        const aPending = a.status === "pending" ? 1 : 0;
-        const bPending = b.status === "pending" ? 1 : 0;
-        if (bPending !== aPending) return bPending - aPending;
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      });
-      setDonations(sorted);
+      setDonations(fetchedDonations);
     } catch (error) {
       console.error("Error loading donations:", error);
       setDonations([]);
@@ -43,13 +43,69 @@ export default function AdminDonationsPage() {
     loadDonations();
   }, []);
 
-  const totalPages = Math.max(1, Math.ceil(donations.length / PAGE_SIZE));
+  const filteredSortedDonations = useMemo(() => {
+    const from = startDate ? new Date(startDate) : null;
+    const to = endDate ? new Date(endDate) : null;
+    const inRange = (createdAt: string) => {
+      const d = new Date(createdAt);
+      if (Number.isNaN(d.getTime())) return true;
+      if (from && d < from) return false;
+      if (to) {
+        const endOfDay = new Date(to);
+        endOfDay.setHours(23, 59, 59, 999);
+        if (d > endOfDay) return false;
+      }
+      return true;
+    };
+    const sorted = [...donations]
+      .filter((d) => inRange(d.createdAt))
+      .sort((a, b) => {
+        const dir = sortDirection === "asc" ? 1 : -1;
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        switch (sortKey) {
+          case "amount":
+            return (a.amount - b.amount) * dir;
+          case "status":
+            return a.status.localeCompare(b.status) * dir || (dateB - dateA) * -dir;
+          case "method":
+            return a.method.localeCompare(b.method) * dir || (dateB - dateA) * -dir;
+          case "campaign":
+            return a.campaignTitle.localeCompare(b.campaignTitle) * dir || (dateB - dateA) * -dir;
+          case "donor": {
+            const nameA = a.anonymous ? "" : a.donorName;
+            const nameB = b.anonymous ? "" : b.donorName;
+            return nameA.localeCompare(nameB) * dir || (dateB - dateA) * -dir;
+          }
+          case "date":
+          default:
+            return (dateA - dateB) * dir;
+        }
+      });
+    return sorted;
+  }, [donations, sortKey, sortDirection, startDate, endDate]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredSortedDonations.length / PAGE_SIZE));
   const start = (page - 1) * PAGE_SIZE;
-  const paginatedDonations = donations.slice(start, start + PAGE_SIZE);
+  const paginatedDonations = filteredSortedDonations.slice(start, start + PAGE_SIZE);
 
   useEffect(() => {
     if (page > totalPages) setPage(1);
   }, [page, totalPages]);
+
+  const toggleSort = (key: SortKey) => {
+    setSortKey((prevKey) => {
+      if (prevKey === key) {
+        setSortDirection((prevDir) => (prevDir === "asc" ? "desc" : "asc"));
+        return prevKey;
+      }
+      setSortDirection("asc");
+      return key;
+    });
+  };
+
+  const sortIndicator = (key: SortKey) =>
+    sortKey === key ? (sortDirection === "asc" ? "▲" : "▼") : "";
 
   async function handleApprove(donationId: string) {
     setApprovingId(donationId);
@@ -113,15 +169,42 @@ export default function AdminDonationsPage() {
         <div>
           <h1 className="text-2xl md:text-3xl font-semibold text-gray-900">All Donations</h1>
           <p className="text-gray-600 mt-1">
-            {donations.length} donations total
-            {donations.length > 0 && (
-              <> · Showing {start + 1}–{Math.min(start + PAGE_SIZE, donations.length)}</>
+            {filteredSortedDonations.length} donations total
+            {filteredSortedDonations.length > 0 && (
+              <> · Showing {start + 1}–{Math.min(start + PAGE_SIZE, filteredSortedDonations.length)}</>
             )}
           </p>
         </div>
-        <div className="flex gap-4 text-sm">
-          <span className="text-gray-600">Completed: <strong className="text-verified-600">{formatCurrency(totalCompleted)}</strong></span>
-          <span className="text-gray-600">Pending: <strong className="text-amber-600">{formatCurrency(totalPending)}</strong></span>
+        <div className="flex flex-col sm:items-end gap-3 text-sm">
+          <div className="flex gap-4">
+            <span className="text-gray-600">Completed: <strong className="text-verified-600">{formatCurrency(totalCompleted)}</strong></span>
+            <span className="text-gray-600">Pending: <strong className="text-amber-600">{formatCurrency(totalPending)}</strong></span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-gray-500">Filter by date:</span>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => { setPage(1); setStartDate(e.target.value); }}
+              className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
+            />
+            <span className="text-gray-400 text-xs">to</span>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => { setPage(1); setEndDate(e.target.value); }}
+              className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
+            />
+            {(startDate || endDate) && (
+              <button
+                type="button"
+                onClick={() => { setStartDate(""); setEndDate(""); setPage(1); }}
+                className="text-xs text-primary-600 hover:text-primary-700 underline"
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -133,14 +216,38 @@ export default function AdminDonationsPage() {
               <tr className="bg-gray-50 text-left text-gray-500">
                 <th className="px-5 py-3 font-medium">Ref</th>
                 <th className="px-5 py-3 font-medium">ID</th>
-                <th className="px-5 py-3 font-medium">Date</th>
-                <th className="px-5 py-3 font-medium">Campaign</th>
-                <th className="px-5 py-3 font-medium">Donor</th>
+                <th className="px-5 py-3 font-medium">
+                  <button type="button" onClick={() => toggleSort("date")} className="inline-flex items-center gap-1">
+                    Date <span className="text-xs">{sortIndicator("date")}</span>
+                  </button>
+                </th>
+                <th className="px-5 py-3 font-medium">
+                  <button type="button" onClick={() => toggleSort("campaign")} className="inline-flex items-center gap-1">
+                    Campaign <span className="text-xs">{sortIndicator("campaign")}</span>
+                  </button>
+                </th>
+                <th className="px-5 py-3 font-medium">
+                  <button type="button" onClick={() => toggleSort("donor")} className="inline-flex items-center gap-1">
+                    Donor <span className="text-xs">{sortIndicator("donor")}</span>
+                  </button>
+                </th>
                 <th className="px-5 py-3 font-medium">Email</th>
-                <th className="px-5 py-3 font-medium">Amount</th>
-                <th className="px-5 py-3 font-medium">Method</th>
+                <th className="px-5 py-3 font-medium">
+                  <button type="button" onClick={() => toggleSort("amount")} className="inline-flex items-center gap-1">
+                    Amount <span className="text-xs">{sortIndicator("amount")}</span>
+                  </button>
+                </th>
+                <th className="px-5 py-3 font-medium">
+                  <button type="button" onClick={() => toggleSort("method")} className="inline-flex items-center gap-1">
+                    Method <span className="text-xs">{sortIndicator("method")}</span>
+                  </button>
+                </th>
                 <th className="px-5 py-3 font-medium">Anonymous</th>
-                <th className="px-5 py-3 font-medium">Status</th>
+                <th className="px-5 py-3 font-medium">
+                  <button type="button" onClick={() => toggleSort("status")} className="inline-flex items-center gap-1">
+                    Status <span className="text-xs">{sortIndicator("status")}</span>
+                  </button>
+                </th>
                 <th className="px-5 py-3 font-medium">Actions</th>
               </tr>
             </thead>

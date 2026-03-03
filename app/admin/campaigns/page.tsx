@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Campaign } from "@/lib/data";
 import { getCampaignsForAdminCached, invalidateCampaignsCache } from "@/lib/supabase/adminCache";
 import { formatCurrency } from "@/lib/utils";
@@ -11,6 +11,8 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const PAGE_SIZE = 50;
 type CampaignWithStatus = Campaign & { status?: string };
+type SortKey = "created" | "goal" | "raised" | "title" | "creator" | "status" | "verified";
+type SortDirection = "asc" | "desc";
 
 export default function AdminCampaignsPage() {
   const { user: currentUser } = useAuth();
@@ -23,6 +25,10 @@ export default function AdminCampaignsPage() {
   const [editForm, setEditForm] = useState({ title: "", description: "", fullDescription: "" });
   const [savingText, setSavingText] = useState(false);
   const [page, setPage] = useState(1);
+  const [sortKey, setSortKey] = useState<SortKey>("created");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const { confirm, alert } = useThemedModal();
 
   async function loadCampaigns() {
@@ -30,10 +36,7 @@ export default function AdminCampaignsPage() {
     setIsLoading(true);
     try {
       const fetchedCampaigns = await getCampaignsForAdminCached();
-      const sorted = [...fetchedCampaigns].sort((a, b) =>
-        new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime()
-      );
-      setCampaigns(sorted);
+      setCampaigns(fetchedCampaigns);
     } catch (error) {
       console.error("Error loading campaigns:", error);
       setLoadError(error instanceof Error ? error.message : "Failed to load campaigns");
@@ -46,13 +49,72 @@ export default function AdminCampaignsPage() {
     loadCampaigns();
   }, []);
 
-  const totalPages = Math.max(1, Math.ceil(campaigns.length / PAGE_SIZE));
+  const filteredSortedCampaigns = useMemo(() => {
+    const from = startDate ? new Date(startDate) : null;
+    const to = endDate ? new Date(endDate) : null;
+    const inRange = (createdAt?: string) => {
+      if (!createdAt) return true;
+      const d = new Date(createdAt);
+      if (Number.isNaN(d.getTime())) return true;
+      if (from && d < from) return false;
+      if (to) {
+        const endOfDay = new Date(to);
+        endOfDay.setHours(23, 59, 59, 999);
+        if (d > endOfDay) return false;
+      }
+      return true;
+    };
+    const sorted = [...campaigns]
+      .filter((c) => inRange(c.createdAt))
+      .sort((a, b) => {
+        const dir = sortDirection === "asc" ? 1 : -1;
+        const dateA = new Date(a.createdAt ?? 0).getTime();
+        const dateB = new Date(b.createdAt ?? 0).getTime();
+        switch (sortKey) {
+          case "goal":
+            return ((a.goal ?? 0) - (b.goal ?? 0)) * dir;
+          case "raised":
+            return ((a.raised ?? 0) - (b.raised ?? 0)) * dir;
+          case "title":
+            return (a.title ?? "").localeCompare(b.title ?? "") * dir || (dateA - dateB) * dir;
+          case "creator":
+            return (a.creator ?? "").localeCompare(b.creator ?? "") * dir || (dateA - dateB) * dir;
+          case "status":
+            return (a.status ?? "").localeCompare(b.status ?? "") * dir || (dateA - dateB) * dir;
+          case "verified": {
+            const va = a.verified ? 1 : 0;
+            const vb = b.verified ? 1 : 0;
+            return (va - vb) * dir || (dateA - dateB) * dir;
+          }
+          case "created":
+          default:
+            return (dateA - dateB) * dir;
+        }
+      });
+    return sorted;
+  }, [campaigns, sortKey, sortDirection, startDate, endDate]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredSortedCampaigns.length / PAGE_SIZE));
   const start = (page - 1) * PAGE_SIZE;
-  const paginatedCampaigns = campaigns.slice(start, start + PAGE_SIZE);
+  const paginatedCampaigns = filteredSortedCampaigns.slice(start, start + PAGE_SIZE);
 
   useEffect(() => {
     if (page > totalPages) setPage(1);
   }, [page, totalPages]);
+
+  const toggleSort = (key: SortKey) => {
+    setSortKey((prevKey) => {
+      if (prevKey === key) {
+        setSortDirection((prevDir) => (prevDir === "asc" ? "desc" : "asc"));
+        return prevKey;
+      }
+      setSortDirection("asc");
+      return key;
+    });
+  };
+
+  const sortIndicator = (key: SortKey) =>
+    sortKey === key ? (sortDirection === "asc" ? "▲" : "▼") : "";
 
   const handleDelete = async (campaignId: string, title: string) => {
     const ok = await confirm(
@@ -169,13 +231,40 @@ export default function AdminCampaignsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-semibold text-gray-900">All Campaigns</h1>
-          <p className="text-gray-600 mt-1">{campaigns.length} campaigns total</p>
-          {campaigns.length > 0 && (
-            <p className="text-gray-500 text-sm mt-1">Showing {start + 1}–{Math.min(start + PAGE_SIZE, campaigns.length)}</p>
+          <p className="text-gray-600 mt-1">{filteredSortedCampaigns.length} campaigns total</p>
+          {filteredSortedCampaigns.length > 0 && (
+            <p className="text-gray-500 text-sm mt-1">Showing {start + 1}–{Math.min(start + PAGE_SIZE, filteredSortedCampaigns.length)}</p>
           )}
           <p className="text-gray-500 text-sm mt-1">
             Put a campaign on hold to hide it from the public site, or delete it. Use <strong>Release</strong> to make an on-hold campaign live again.
           </p>
+        </div>
+        <div className="flex flex-col sm:items-end gap-2 text-sm">
+          <span className="text-gray-500">Filter by created date:</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
+              className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
+            />
+            <span className="text-gray-400 text-xs">to</span>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
+              className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
+            />
+            {(startDate || endDate) && (
+              <button
+                type="button"
+                onClick={() => { setStartDate(""); setEndDate(""); setPage(1); }}
+                className="text-xs text-primary-600 hover:text-primary-700 underline"
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -188,16 +277,44 @@ export default function AdminCampaignsPage() {
             <thead>
               <tr className="bg-gray-50 text-left text-gray-500">
                 <th className="px-5 py-3 font-medium">Ref #</th>
-                <th className="px-5 py-3 font-medium">Title</th>
-                <th className="px-5 py-3 font-medium">Creator</th>
+                <th className="px-5 py-3 font-medium">
+                  <button type="button" onClick={() => toggleSort("title")} className="inline-flex items-center gap-1">
+                    Title <span className="text-xs">{sortIndicator("title")}</span>
+                  </button>
+                </th>
+                <th className="px-5 py-3 font-medium">
+                  <button type="button" onClick={() => toggleSort("creator")} className="inline-flex items-center gap-1">
+                    Creator <span className="text-xs">{sortIndicator("creator")}</span>
+                  </button>
+                </th>
                 <th className="px-5 py-3 font-medium">Type</th>
                 <th className="px-5 py-3 font-medium">Category</th>
-                <th className="px-5 py-3 font-medium">Goal</th>
-                <th className="px-5 py-3 font-medium">Raised</th>
+                <th className="px-5 py-3 font-medium">
+                  <button type="button" onClick={() => toggleSort("goal")} className="inline-flex items-center gap-1">
+                    Goal <span className="text-xs">{sortIndicator("goal")}</span>
+                  </button>
+                </th>
+                <th className="px-5 py-3 font-medium">
+                  <button type="button" onClick={() => toggleSort("raised")} className="inline-flex items-center gap-1">
+                    Raised <span className="text-xs">{sortIndicator("raised")}</span>
+                  </button>
+                </th>
                 <th className="px-5 py-3 font-medium">Donors</th>
-                <th className="px-5 py-3 font-medium">Created</th>
-                <th className="px-5 py-3 font-medium">Status</th>
-                <th className="px-5 py-3 font-medium">Verified</th>
+                <th className="px-5 py-3 font-medium">
+                  <button type="button" onClick={() => toggleSort("created")} className="inline-flex items-center gap-1">
+                    Created <span className="text-xs">{sortIndicator("created")}</span>
+                  </button>
+                </th>
+                <th className="px-5 py-3 font-medium">
+                  <button type="button" onClick={() => toggleSort("status")} className="inline-flex items-center gap-1">
+                    Status <span className="text-xs">{sortIndicator("status")}</span>
+                  </button>
+                </th>
+                <th className="px-5 py-3 font-medium">
+                  <button type="button" onClick={() => toggleSort("verified")} className="inline-flex items-center gap-1">
+                    Verified <span className="text-xs">{sortIndicator("verified")}</span>
+                  </button>
+                </th>
                 <th className="px-5 py-3 font-medium">Actions</th>
                 <th className="px-5 py-3 font-medium">ID</th>
               </tr>
