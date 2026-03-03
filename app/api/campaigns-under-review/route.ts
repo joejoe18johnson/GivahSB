@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseUserFromRequest } from "@/lib/supabase/auth-server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
-import { addCampaignUnderReview } from "@/lib/supabase/database";
+import { addCampaignUnderReview, creatorHasCampaignWithTitle } from "@/lib/supabase/database";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -66,6 +66,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: "Your address document must be verified before you can create a campaign. Upload it in your profile and wait for approval." },
       { status: 403 }
+    );
+  }
+
+  const isDuplicate = await creatorHasCampaignWithTitle(supabase, user.id, title);
+  if (isDuplicate) {
+    return NextResponse.json(
+      { error: "You already have a campaign or pending submission with this title. Please use a different title." },
+      { status: 400 }
     );
   }
 

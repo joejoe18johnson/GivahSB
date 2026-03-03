@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Heart, LogOut, Menu, X, Bell, Shield, User, FolderOpen, Settings, ChevronDown, Megaphone, Trophy, BookOpen } from "lucide-react";
+import { Search, Heart, LogOut, Menu, X, Bell, Shield, User, FolderOpen, Settings, ChevronDown, Megaphone, Trophy, BookOpen, Trash2 } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
@@ -95,7 +95,22 @@ export default function Header() {
     else if (n.campaignId) router.push(`/campaigns/${n.campaignId}`);
     else router.push("/my-campaigns");
   };
-  
+
+  const handleRemoveNotification = async (e: React.MouseEvent, n: UserNotification) => {
+    e.stopPropagation();
+    e.preventDefault();
+    try {
+      const res = await fetch(`/api/notifications/${n.id}`, { method: "DELETE", credentials: "include" });
+      if (res.ok) {
+        setNotifications((prev) => prev.filter((x) => x.id !== n.id));
+        setTotalNotificationCount((c) => Math.max(0, c - 1));
+        if (!n.read) setUnreadCount((c) => Math.max(0, c - 1));
+      }
+    } catch {
+      // ignore
+    }
+  };
+
   const { heartedIds } = useHearted();
   useEffect(() => {
     setHeartedCount(heartedIds.length);
@@ -238,11 +253,11 @@ export default function Header() {
                         ) : (
                           <ul className="py-2">
                             {notifications.map((n) => (
-                              <li key={n.id}>
+                              <li key={n.id} className="relative group">
                                 <button
                                   type="button"
                                   onClick={() => handleNotificationClick(n)}
-                                  className={`w-full text-left px-4 py-3 hover:bg-gray-50 ${!n.read ? "bg-primary-50/50" : ""}`}
+                                  className={`w-full text-left px-4 py-3 pr-10 hover:bg-gray-50 ${!n.read ? "bg-primary-50/50" : ""}`}
                                 >
                                   <div className="flex items-start justify-between gap-2">
                                     <p className="text-sm font-medium text-gray-900 flex-1 min-w-0">{n.title}</p>
@@ -253,6 +268,14 @@ export default function Header() {
                                     )}
                                   </div>
                                   <p className="text-xs text-gray-600 line-clamp-2 mt-0.5">{n.body}</p>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={(e) => handleRemoveNotification(e, n)}
+                                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded text-gray-400 hover:text-red-600 hover:bg-red-50"
+                                  aria-label="Remove notification"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
                                 </button>
                               </li>
                             ))}

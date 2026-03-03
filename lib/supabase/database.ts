@@ -8,6 +8,30 @@ import type { Campaign } from "@/lib/data";
 import type { AdminDonation } from "@/lib/adminData";
 import { generateShortRef } from "@/lib/utils";
 
+/** Normalize campaign title for duplicate check (trim + lower). */
+function normalizeTitle(title: string): string {
+  return title.trim().toLowerCase();
+}
+
+/**
+ * Returns true if this creator already has a campaign (live or under review) with the same title (case-insensitive).
+ */
+export async function creatorHasCampaignWithTitle(
+  supabase: SupabaseClient,
+  creatorId: string,
+  title: string
+): Promise<boolean> {
+  const normalized = normalizeTitle(title);
+  if (!normalized) return false;
+  const [liveRes, underReviewRes] = await Promise.all([
+    supabase.from("campaigns").select("title").eq("creator_id", creatorId),
+    supabase.from("campaigns_under_review").select("title").eq("creator_id", creatorId).eq("status", "pending"),
+  ]);
+  const liveTitles = (liveRes.data ?? []).map((r: { title: string }) => normalizeTitle(r.title));
+  const underReviewTitles = (underReviewRes.data ?? []).map((r: { title: string }) => normalizeTitle(r.title));
+  return liveTitles.includes(normalized) || underReviewTitles.includes(normalized);
+}
+
 /** Generate a unique campaign reference: 2 letters + 5 numbers (e.g. AB12345). Used for all donations to that campaign. */
 export async function generateUniqueCampaignReference(supabase: SupabaseClient): Promise<string> {
   const maxAttempts = 50;

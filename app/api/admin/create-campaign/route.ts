@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseUserFromRequest, getAdminEmails } from "@/lib/supabase/auth-server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
-import { adminCreateCampaign, type AdminCreateCampaignPayload } from "@/lib/supabase/database";
+import { adminCreateCampaign, creatorHasCampaignWithTitle, type AdminCreateCampaignPayload } from "@/lib/supabase/database";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -97,6 +97,15 @@ export async function POST(request: NextRequest) {
 
   try {
     const supabase = getSupabaseAdmin()!;
+    if (creatorId) {
+      const isDuplicate = await creatorHasCampaignWithTitle(supabase, creatorId, title);
+      if (isDuplicate) {
+        return NextResponse.json(
+          { error: "This creator already has a campaign or pending submission with this title. Use a different title." },
+          { status: 400 }
+        );
+      }
+    }
     const campaignId = await adminCreateCampaign(supabase, payload);
     return NextResponse.json({ success: true, campaignId });
   } catch (err) {
