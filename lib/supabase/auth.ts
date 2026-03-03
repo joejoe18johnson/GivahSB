@@ -196,7 +196,7 @@ export async function updateUserProfileSupabase(
   userId: string,
   updates: Partial<UserProfile>
 ): Promise<void> {
-  const row: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  const row: Record<string, unknown> = { id: userId, updated_at: new Date().toISOString() };
   if (updates.name !== undefined) row.name = updates.name;
   if (updates.phoneNumber !== undefined) row.phone_number = updates.phoneNumber;
   if (updates.phoneVerified !== undefined) row.phone_verified = updates.phoneVerified;
@@ -209,8 +209,9 @@ export async function updateUserProfileSupabase(
   if (updates.addressDocument !== undefined) row.address_document = updates.addressDocument;
   if (updates.addressVerified !== undefined) row.address_verified = updates.addressVerified;
   if (updates.addressPending !== undefined) row.address_pending = updates.addressPending;
-  if (Object.keys(row).length <= 1) return;
-  await supabase.from("profiles").update(row).eq("id", userId);
+  if (Object.keys(row).length <= 2) return; // only id + updated_at
+  const { error } = await supabase.from("profiles").upsert(row, { onConflict: "id" });
+  if (error) throw error;
 }
 
 export async function resetPasswordSupabase(supabase: SupabaseClient, email: string): Promise<void> {
