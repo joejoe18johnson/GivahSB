@@ -352,7 +352,7 @@ export default function Header() {
               <>
                 <Link
                   href={pathname && !pathname.startsWith("/auth") ? `/auth/login?callbackUrl=${encodeURIComponent(pathname)}` : "/auth/login"}
-                  className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
+                  className="bg-success-500 text-white px-4 py-2 rounded-full font-medium hover:bg-success-600 transition-colors duration-300 ease-in-out"
                 >
                   Sign In
                 </Link>
@@ -479,7 +479,13 @@ export default function Header() {
                 </>
               ) : (
                 <>
-                  <Link href={pathname && !pathname.startsWith("/auth") ? `/auth/login?callbackUrl=${encodeURIComponent(pathname)}` : "/auth/login"} className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Sign In</Link>
+                  <Link
+                    href={pathname && !pathname.startsWith("/auth") ? `/auth/login?callbackUrl=${encodeURIComponent(pathname)}` : "/auth/login"}
+                    className="mx-4 mt-2 block text-center gradient-border-1 rounded-full py-3 px-4 font-medium bg-white text-primary-600 hover:bg-primary-50 transition-colors duration-300 ease-in-out"
+                    onClick={closeMobileMenu}
+                  >
+                    Sign In
+                  </Link>
                   <Link
                     href={pathname && !pathname.startsWith("/auth") ? `/auth/signup?callbackUrl=${encodeURIComponent(pathname)}` : "/auth/signup"}
                     className="mx-4 mt-2 block text-center gradient-border-1 rounded-full py-3 px-4 font-medium bg-white text-primary-600 hover:bg-primary-50 transition-colors duration-300 ease-in-out"
