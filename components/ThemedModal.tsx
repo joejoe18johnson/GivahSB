@@ -9,9 +9,9 @@ type ConfirmVariant = "primary" | "danger" | "success" | "warning";
 const alertStyles: Record<AlertVariant, { icon: typeof CheckCircle2; border: string; iconBg: string; iconColor: string; title: string }> = {
   success: {
     icon: CheckCircle2,
-    border: "border-verified-200",
-    iconBg: "bg-verified-100",
-    iconColor: "text-verified-600",
+    border: "border-success-200",
+    iconBg: "bg-success-100",
+    iconColor: "text-success-600",
     title: "Success",
   },
   error: {
@@ -49,11 +49,11 @@ const confirmStyles: Record<ConfirmVariant, { icon: typeof CheckCircle2; border:
   },
   success: {
     icon: CheckCircle2,
-    border: "border-verified-200",
-    iconBg: "bg-verified-100",
-    iconColor: "text-verified-600",
-    confirmBtn: "bg-verified-600 text-white",
-    confirmHover: "hover:bg-verified-700",
+    border: "border-success-200",
+    iconBg: "bg-success-100",
+    iconColor: "text-success-600",
+    confirmBtn: "bg-success-600 text-white",
+    confirmHover: "hover:bg-success-700",
   },
   warning: {
     icon: AlertTriangle,
