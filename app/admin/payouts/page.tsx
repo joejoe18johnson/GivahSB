@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useThemedModal } from "@/components/ThemedModal";
-import { Banknote, CheckCircle, Loader2, X, Printer } from "lucide-react";
+import { Banknote, CheckCircle, Loader2, X, FileDown } from "lucide-react";
 
 interface PayoutRow {
   id: string;
@@ -238,10 +238,26 @@ export default function AdminPayoutsPage() {
     setSelectedPayout(p);
   }
 
-  async function handlePrintFromRow(p: PayoutRow, e: React.MouseEvent) {
+  async function openPayoutLetterWindow(p: PayoutRow, donations: DonationRow[]) {
+    const html = buildPayoutLetterHtml(p, donations);
+    const win = window.open("", "_blank", "noopener,noreferrer");
+    if (!win) {
+      alert("Popup blocked. Allow popups to download or print the payout letter.", {
+        title: "Popup blocked",
+        variant: "info",
+      });
+      return;
+    }
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    win.print();
+  }
+
+  async function handleDownloadPdfFromRow(p: PayoutRow, e: React.MouseEvent) {
     e.stopPropagation();
     if (p.status !== "completed") {
-      alert("A printable payout letter is available after the payout is marked as completed.", {
+      alert("A downloadable payout letter is available after the payout is marked as completed.", {
         title: "Not ready yet",
         variant: "info",
       });
@@ -253,21 +269,9 @@ export default function AdminPayoutsPage() {
       });
       const data = (await res.json().catch(() => [])) as unknown;
       const donations = Array.isArray(data) ? (data as DonationRow[]) : [];
-      const html = buildPayoutLetterHtml(p, donations);
-      const win = window.open("", "_blank", "noopener,noreferrer");
-      if (!win) {
-        alert("Popup blocked. Allow popups to print or save the payout letter.", {
-          title: "Popup blocked",
-          variant: "info",
-        });
-        return;
-      }
-      win.document.write(html);
-      win.document.close();
-      win.focus();
-      win.print();
+      await openPayoutLetterWindow(p, donations);
     } catch (err) {
-      console.error("Error printing payout letter:", err);
+      console.error("Error opening payout letter:", err);
       alert("Failed to open payout letter. Please try again.", {
         title: "Error",
         variant: "error",
@@ -275,19 +279,9 @@ export default function AdminPayoutsPage() {
     }
   }
 
-  function downloadPayoutLetter() {
+  function handleDownloadPdfFromModal() {
     if (!selectedPayout) return;
-    const html = buildPayoutLetterHtml(selectedPayout, payoutDonations);
-    const win = window.open("", "_blank", "noopener,noreferrer");
-    if (!win) {
-      alert("Popup blocked. Allow popups to download the payout letter.", { title: "Download", variant: "info" });
-      return;
-    }
-    win.document.write(html);
-    win.document.close();
-    win.focus();
-    win.print();
-    // User can save as PDF from the print dialog, then close the tab
+    openPayoutLetterWindow(selectedPayout, payoutDonations);
   }
 
   async function handleComplete(id: string, e: React.MouseEvent) {
@@ -416,11 +410,11 @@ export default function AdminPayoutsPage() {
                       {p.status === "completed" ? (
                         <button
                           type="button"
-                          onClick={(e) => handlePrintFromRow(p, e)}
+                          onClick={(e) => handleDownloadPdfFromRow(p, e)}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 text-gray-700 text-xs font-medium hover:bg-gray-50"
                         >
-                          <Printer className="w-4 h-4" />
-                          <span className="hidden sm:inline">Print</span>
+                          <FileDown className="w-4 h-4" />
+                          <span className="hidden sm:inline">Download PDF</span>
                         </button>
                       ) : (
                         <span className="text-[11px] text-gray-400">After completion</span>
@@ -521,11 +515,11 @@ export default function AdminPayoutsPage() {
               {selectedPayout.status === "completed" ? (
                 <button
                   type="button"
-                  onClick={downloadPayoutLetter}
+                  onClick={handleDownloadPdfFromModal}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700"
                 >
-                  <Printer className="w-4 h-4" />
-                  Print / save as PDF
+                  <FileDown className="w-4 h-4" />
+                  Download PDF
                 </button>
               ) : (
                 <span className="text-xs text-gray-500 mr-auto">
