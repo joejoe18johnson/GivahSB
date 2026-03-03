@@ -238,20 +238,33 @@ export default function AdminPayoutsPage() {
     setSelectedPayout(p);
   }
 
-  async function openPayoutLetterWindow(p: PayoutRow, donations: DonationRow[]) {
-    const html = buildPayoutLetterHtml(p, donations);
+  function openPrintWindow(): Window | null {
     const win = window.open("", "_blank", "noopener,noreferrer");
     if (!win) {
       alert("Popup blocked. Allow popups to download or print the payout letter.", {
         title: "Popup blocked",
         variant: "info",
       });
-      return;
+      return null;
     }
+    win.document.write(`<!doctype html><html><head><meta charset="utf-8" /><title>Preparing…</title></head><body style="font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;padding:24px;color:#111827;"><p>Preparing payout letter…</p></body></html>`);
+    win.document.close();
+    return win;
+  }
+
+  function writeHtmlAndPrint(win: Window, html: string) {
+    win.document.open();
     win.document.write(html);
     win.document.close();
     win.focus();
     win.print();
+  }
+
+  function openPayoutLetterWindow(p: PayoutRow, donations: DonationRow[], existingWin?: Window | null) {
+    const html = buildPayoutLetterHtml(p, donations);
+    const win = existingWin ?? openPrintWindow();
+    if (!win) return;
+    writeHtmlAndPrint(win, html);
   }
 
   async function handleDownloadPdfFromRow(p: PayoutRow, e: React.MouseEvent) {
@@ -263,14 +276,20 @@ export default function AdminPayoutsPage() {
       });
       return;
     }
+    // Open the window synchronously from the click event; fetching first can trigger popup blockers.
+    const win = openPrintWindow();
+    if (!win) return;
     try {
       const res = await fetch(`/api/admin/data/donations?campaignId=${encodeURIComponent(p.campaignId)}`, {
         credentials: "include",
       });
       const data = (await res.json().catch(() => [])) as unknown;
       const donations = Array.isArray(data) ? (data as DonationRow[]) : [];
-      await openPayoutLetterWindow(p, donations);
+      openPayoutLetterWindow(p, donations, win);
     } catch (err) {
+      try {
+        win.close();
+      } catch {}
       console.error("Error opening payout letter:", err);
       alert("Failed to open payout letter. Please try again.", {
         title: "Error",

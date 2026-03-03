@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, DollarSign, Building2, Printer } from "lucide-react";
+import { ArrowLeft, DollarSign, Building2, Printer, Download } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatCurrency } from "@/lib/utils";
 
@@ -342,14 +342,23 @@ export default function RequestPayoutPage() {
                   <p className="text-gray-500 text-sm mt-4">
                     Your payout has been completed. You can print or save a copy of this payout confirmation for your records.
                   </p>
-                  <button
-                    type="button"
-                    onClick={handlePrintLetter}
-                    className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700"
-                  >
-                    <Printer className="w-4 h-4" />
-                    Print / save payout letter
-                  </button>
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <a
+                      href={payoutRequest ? `/api/my/payouts/${payoutRequest.id}/payout-letter.pdf` : "#"}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700"
+                    >
+                      <Download className="w-4 h-4" />
+                      Download payout letter (PDF)
+                    </a>
+                    <button
+                      type="button"
+                      onClick={handlePrintLetter}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 text-sm font-medium hover:bg-gray-50"
+                    >
+                      <Printer className="w-4 h-4" />
+                      Print
+                    </button>
+                  </div>
                 </>
               ) : (
                 <p className="text-gray-500 text-sm mt-4">
