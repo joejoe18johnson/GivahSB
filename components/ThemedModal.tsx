@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { CheckCircle2, AlertTriangle, Info } from "lucide-react";
 
 type AlertVariant = "success" | "error" | "info";
@@ -151,6 +151,17 @@ export function ThemedModalProvider({ children }: { children: React.ReactNode })
   const AlertIcon = alertStyle.icon;
   const confirmStyle = confirmState.open ? confirmStyles[confirmState.variant] : null;
   const ConfirmIcon = confirmStyle?.icon ?? Info;
+
+  // Auto-dismiss alert toasts after 5 seconds
+  useEffect(() => {
+    if (!alertState.open) return;
+    const timer = setTimeout(() => {
+      closeAlert();
+    }, 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [alertState.open, alertState.message, alertState.title, alertState.variant, closeAlert]);
 
   return (
     <ThemedModalContext.Provider value={{ alert, confirm }}>
