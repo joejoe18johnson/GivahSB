@@ -14,8 +14,6 @@ import {
   getUsersCached,
   getDonationsCached,
 } from "@/lib/supabase/adminCache";
-import type { CampaignUnderReviewDoc } from "@/lib/supabase/database";
-
 export default function AdminLayout({
   children,
 }: {
@@ -25,8 +23,6 @@ export default function AdminLayout({
   const router = useRouter();
   const pathname = usePathname();
 
-  const [notifications, setNotifications] = useState<CampaignUnderReviewDoc[]>([]);
-  const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
   const [sectionCounts, setSectionCounts] = useState({
     campaigns: 0,
     users: 0,
@@ -38,8 +34,6 @@ export default function AdminLayout({
     idPending: 0,
     pendingPayouts: 0,
   });
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
   // Notification total = actual items needing action; goes to 0 when all dealt with
   const notificationTotal =
     sectionCounts.underReview +
@@ -68,17 +62,12 @@ export default function AdminLayout({
     if (!isAdmin) return;
     async function load() {
       try {
-        const [underReviewCount, list, campaigns, users, donations] = await Promise.all([
+        const [underReviewCount, campaigns, users, donations] = await Promise.all([
           getCampaignsUnderReviewCountCached(),
-          getCampaignsUnderReviewCached(),
           getCampaignsCached(),
           getUsersCached(),
           getDonationsCached(),
         ]);
-        const underReviewNewestFirst = [...list].sort(
-          (a, b) => new Date(b.submittedAt ?? 0).getTime() - new Date(a.submittedAt ?? 0).getTime()
-        );
-        setNotifications(underReviewNewestFirst.slice(0, 10));
         const since = sevenDaysAgo();
         const phonePending = users.filter((u) => u.phoneNumber && !u.phoneVerified).length;
         const addressPending = users.filter((u) => u.addressDocument && !u.addressVerified).length;
@@ -106,7 +95,6 @@ export default function AdminLayout({
           pendingPayouts,
         });
       } catch {
-        setNotifications([]);
         setSectionCounts({
           campaigns: 0,
           users: 0,
@@ -124,16 +112,6 @@ export default function AdminLayout({
     const interval = setInterval(load, 60000);
     return () => clearInterval(interval);
   }, [isAdmin]);
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setShowNotificationDropdown(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   useEffect(() => {
     if (isLoading) return;
@@ -206,85 +184,24 @@ export default function AdminLayout({
             </button>
           </div>
           <div className="pt-4">
-            {/* Notification bell - next to sidebar sections */}
-            <div className="relative mb-2" ref={dropdownRef}>
-              <button
-                type="button"
-                onClick={() => setShowNotificationDropdown((v) => !v)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg w-full text-left transition-colors ${
-                  notificationTotal > 0
-                    ? "bg-red-50 border border-red-200 text-red-800 hover:bg-red-100"
+            <Link
+              href="/admin/notifications"
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
+                pathname === "/admin/notifications"
+                  ? "bg-primary-50 text-primary-700 font-medium"
+                  : notificationTotal > 0
+                    ? "bg-amber-50/80 border border-amber-200 text-amber-900 hover:bg-amber-100"
                     : "text-gray-600 hover:bg-gray-100"
-                }`}
-                aria-label="Notifications"
-              >
-                <Bell className={`w-4 h-4 shrink-0 ${notificationTotal > 0 ? "text-red-600" : ""}`} />
-                <span className="flex-1 font-medium">Notifications</span>
-                {notificationTotal > 0 && (
-                  <span className="min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-medium animate-pulse">
-                    {notificationTotal > 99 ? "99+" : notificationTotal}
-                  </span>
-                )}
-              </button>
-              {showNotificationDropdown && (
-                <div className="absolute left-0 top-full mt-1 w-72 max-h-[20rem] overflow-y-auto bg-white rounded-xl border border-gray-200 shadow-lg py-2 z-50">
-                  <div className="px-4 py-2 border-b border-gray-100">
-                    <h3 className="font-medium text-gray-900">Notifications</h3>
-                    <p className="text-xs text-gray-500">Items that need your attention</p>
-                  </div>
-                  <div className="py-2 px-2 space-y-1">
-                    {actionItemsSorted
-                      .filter((item) => item.count > 0)
-                      .map((item) => (
-                        <Link
-                          key={item.key}
-                          href={item.href}
-                          onClick={() => setShowNotificationDropdown(false)}
-                          className="flex items-center justify-between px-3 py-2 rounded-lg bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-colors"
-                        >
-                          <span className="text-sm text-amber-900 font-medium">{item.label}</span>
-                          <span className="rounded-full bg-red-500 text-white text-xs font-medium min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center">
-                            {item.count > 99 ? "99+" : item.count}
-                          </span>
-                        </Link>
-                      ))}
-                    {actionItemsSorted.every((item) => item.count === 0) && (
-                      <p className="px-3 py-4 text-sm text-gray-500 text-center">No items needing action</p>
-                    )}
-                    <div className="border-t border-gray-100 pt-2 mt-1">
-                      <p className="px-3 py-1 text-xs text-gray-500">Quick links</p>
-                      <Link href="/admin/campaigns" onClick={() => setShowNotificationDropdown(false)} className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 text-sm text-gray-700">
-                        Campaigns
-                      </Link>
-                      <Link href="/admin/users" onClick={() => setShowNotificationDropdown(false)} className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 text-sm text-gray-700">
-                        Users
-                      </Link>
-                      <Link href="/admin/donations" onClick={() => setShowNotificationDropdown(false)} className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 text-sm text-gray-700">
-                        Donations
-                      </Link>
-                      <Link href="/admin/payouts" onClick={() => setShowNotificationDropdown(false)} className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 text-sm text-gray-700">
-                        Payouts
-                      </Link>
-                    </div>
-                  </div>
-                  {notifications.length > 0 && (
-                    <div className="border-t border-gray-100 pt-2">
-                      <p className="px-4 text-xs text-gray-500 mb-2">Campaigns awaiting review</p>
-                      <ul className="max-h-40 overflow-y-auto">
-                        {notifications.slice(0, 5).map((n) => (
-                          <li key={n.id}>
-                            <Link href="/admin/under-review" onClick={() => setShowNotificationDropdown(false)} className="block px-4 py-2 hover:bg-gray-50 text-left text-sm text-gray-900 truncate">
-                              {n.title}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
+              }`}
+            >
+              <Bell className={`w-4 h-4 shrink-0 ${notificationTotal > 0 ? "text-red-600" : ""}`} />
+              <span className="flex-1">Notifications</span>
+              {notificationTotal > 0 && (
+                <span className="min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-medium">
+                  {notificationTotal > 99 ? "99+" : notificationTotal}
+                </span>
               )}
-            </div>
-
+            </Link>
             <Link
               href="/admin"
               className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
