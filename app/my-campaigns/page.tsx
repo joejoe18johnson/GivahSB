@@ -225,6 +225,13 @@ export default function MyCampaignsPage() {
             Create a campaign
           </Link>
           <Link
+            href="/my-payouts"
+            className="inline-flex items-center justify-center gap-2 border border-gray-300 text-gray-700 px-6 py-3 rounded-full font-medium hover:bg-gray-50 transition-colors"
+          >
+            <DollarSign className="w-5 h-5" />
+            View payouts
+          </Link>
+          <Link
             href="/campaigns"
             className="inline-flex items-center justify-center gap-2 border border-gray-300 text-gray-700 px-6 py-3 rounded-full font-medium hover:bg-gray-50 transition-colors"
           >
