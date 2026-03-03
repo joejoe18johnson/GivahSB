@@ -332,6 +332,37 @@ export default function CreateCampaignPage() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? "Failed to submit campaign");
       }
+      const createData = await res.json().catch(() => ({})) as { id?: string };
+      const underReviewId = typeof createData.id === "string" ? createData.id : null;
+
+      if (underReviewId && proofFiles.length > 0) {
+        const proofUploadUrl = typeof window !== "undefined" ? `${window.location.origin}/api/upload-proof-document` : "/api/upload-proof-document";
+        const proofUrls: string[] = [];
+        for (let i = 0; i < proofFiles.length; i++) {
+          const form = new FormData();
+          form.append("file", proofFiles[i]!);
+          form.append("pendingId", underReviewId);
+          form.append("index", String(i));
+          const proofRes = await fetch(proofUploadUrl, { method: "POST", credentials: "include", body: form });
+          const proofData = await proofRes.json().catch(() => ({}));
+          if (!proofRes.ok) {
+            throw new Error(typeof proofData.error === "string" ? proofData.error : "Failed to upload proof document");
+          }
+          if (typeof proofData.url === "string") proofUrls.push(proofData.url);
+        }
+        if (proofUrls.length > 0) {
+          const putRes = await fetch(`/api/my/campaigns-under-review/${underReviewId}/proof`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ urls: proofUrls }),
+          });
+          if (!putRes.ok) {
+            console.warn("Could not save proof document URLs to campaign under review");
+          }
+        }
+      }
+
       router.push("/my-campaigns");
     };
 

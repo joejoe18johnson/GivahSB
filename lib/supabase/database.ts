@@ -94,6 +94,7 @@ interface CampaignUnderReviewRow {
   creator_id: string;
   image: string | null;
   image2: string | null;
+  proof_document_urls?: string[] | null;
   status: string;
   submitted_at: string;
   created_at: string;
@@ -477,6 +478,8 @@ export interface CampaignUnderReviewDoc {
   status: "pending" | "approved" | "rejected";
   image?: string;
   image2?: string;
+  /** Proof-of-need document URLs (PDFs, images) for admin to review. */
+  proofDocumentUrls?: string[];
   daysLeft?: number;
 }
 
@@ -484,6 +487,9 @@ function toUnderReview(r: CampaignUnderReviewRow): CampaignUnderReviewDoc {
   const daysLeft = r.days_left !== null && r.days_left !== undefined && Number(r.days_left) === 0
     ? 0
     : (Number(r.days_left) || 30);
+  const proofDocumentUrls = Array.isArray(r.proof_document_urls)
+    ? r.proof_document_urls.filter((u): u is string => typeof u === "string")
+    : undefined;
   return {
     id: r.id,
     title: r.title,
@@ -497,6 +503,7 @@ function toUnderReview(r: CampaignUnderReviewRow): CampaignUnderReviewDoc {
     status: (r.status as CampaignUnderReviewDoc["status"]) || "pending",
     image: r.image ?? undefined,
     image2: r.image2 ?? undefined,
+    proofDocumentUrls: proofDocumentUrls?.length ? proofDocumentUrls : undefined,
     daysLeft,
   };
 }
@@ -639,6 +646,18 @@ export async function updateCampaignUnderReviewStatus(
   const { error } = await supabase
     .from("campaigns_under_review")
     .update({ status })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function updateCampaignUnderReviewProofUrls(
+  supabase: SupabaseClient,
+  id: string,
+  proofDocumentUrls: string[]
+): Promise<void> {
+  const { error } = await supabase
+    .from("campaigns_under_review")
+    .update({ proof_document_urls: proofDocumentUrls })
     .eq("id", id);
   if (error) throw error;
 }

@@ -7,7 +7,7 @@ import type { CampaignUnderReviewDoc } from "@/lib/supabase/database";
 import { formatCurrency } from "@/lib/utils";
 import { useThemedModal } from "@/components/ThemedModal";
 import SafeImage from "@/components/SafeImage";
-import { Clock, CheckCircle2, XCircle, X, FileText, User, DollarSign, Image as ImageIcon } from "lucide-react";
+import { Clock, CheckCircle2, XCircle, X, FileText, User, DollarSign, Image as ImageIcon, ExternalLink, FileCheck } from "lucide-react";
 
 export default function AdminUnderReviewPage() {
   const [list, setList] = useState<CampaignUnderReviewDoc[]>([]);
@@ -305,6 +305,34 @@ export default function AdminUnderReviewPage() {
                   </Link>
                   .
                 </p>
+              </div>
+
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
+                  <FileCheck className="w-4 h-4" />
+                  Proof of need documents
+                </h4>
+                {selectedCampaign.proofDocumentUrls && selectedCampaign.proofDocumentUrls.length > 0 ? (
+                  <ul className="space-y-2">
+                    {selectedCampaign.proofDocumentUrls.map((url, i) => (
+                      <li key={i}>
+                        <a
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 hover:border-primary-300 text-sm font-medium"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <FileText className="w-4 h-4 text-gray-500 shrink-0" />
+                          View proof document {selectedCampaign.proofDocumentUrls!.length > 1 ? i + 1 : ""}
+                          <ExternalLink className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-gray-500 py-2">No proof documents uploaded for this campaign.</p>
+                )}
               </div>
             </div>
 
