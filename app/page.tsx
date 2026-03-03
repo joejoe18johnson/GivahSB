@@ -3,7 +3,6 @@
 import { Permanent_Marker } from "next/font/google";
 import CampaignCard from "@/components/CampaignCard";
 import { Campaign } from "@/lib/data";
-import { getTopCampaignsByFunding } from "@/lib/campaignUtils";
 import { fetchCampaignsFromAPI } from "@/lib/services/campaignService";
 import SafeImage from "@/components/SafeImage";
 import HeroCommunityVisual from "@/components/HeroCommunityVisual";
@@ -76,20 +75,21 @@ export default function Home() {
     return () => { cancelled = true; };
   }, []);
 
+  const TOP_CAMPAIGNS_COUNT = 10;
   const allTrendingCampaigns = (() => {
     const goal = (c: Campaign) => Number(c.goal) || 1;
     const raised = (c: Campaign) => Number(c.raised) || 0;
     const pct = (c: Campaign) => (goal(c) > 0 ? raised(c) / goal(c) : 0);
-    // Trending = 60%+ funded but not fully funded
-    const trending = campaigns.filter(
-      (c) => goal(c) > 0 && raised(c) / goal(c) >= 0.6 && raised(c) < goal(c)
-    );
-    if (trending.length > 0) return getTopCampaignsByFunding(trending, 12);
-    // Fallback: 8 top campaigns by percentage funded (not fully funded)
     const notFullyFunded = campaigns.filter((c) => goal(c) > 0 && raised(c) < goal(c));
-    return [...notFullyFunded]
-      .sort((a, b) => pct(b) - pct(a))
-      .slice(0, 8);
+    // Prefer 60%+ funded (featured), then fill with highest % funded; show up to 10
+    const sorted = [...notFullyFunded].sort((a, b) => {
+      const aFeatured = pct(a) >= 0.6;
+      const bFeatured = pct(b) >= 0.6;
+      if (aFeatured && !bFeatured) return -1;
+      if (!aFeatured && bFeatured) return 1;
+      return pct(b) - pct(a);
+    });
+    return sorted.slice(0, TOP_CAMPAIGNS_COUNT);
   })();
   const cardsPerPage = 4;
   const totalPages = Math.max(1, Math.ceil(allTrendingCampaigns.length / cardsPerPage));
