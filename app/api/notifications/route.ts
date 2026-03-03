@@ -6,7 +6,7 @@ import { getUserNotifications, getUnreadNotificationCount, getTotalNotificationC
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-/** GET - list notifications, unread count, and total count for current user. Use ?limit= for page (e.g. limit=100). */
+/** GET - list all notifications (read and unread) for current user, plus unread/total counts. Notifications stay in the list when marked read. Use ?limit= (e.g. limit=200). */
 export async function GET(request: NextRequest) {
   if (!isSupabaseConfigured()) {
     return NextResponse.json({ notifications: [], unreadCount: 0, totalCount: 0 }, { status: 200 });

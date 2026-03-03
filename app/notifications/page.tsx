@@ -42,6 +42,7 @@ export default function NotificationsPage() {
   }, [user, isLoading, router]);
 
   const handleClick = async (n: UserNotification) => {
+    // Mark as read when user views (clicks) the notification; it stays in the list
     if (!n.read) {
       try {
         await fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" });

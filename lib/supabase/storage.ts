@@ -166,6 +166,36 @@ export async function uploadCampaignUnderReviewImageServer(
   return data.publicUrl;
 }
 
+const PROOF_ALLOWED_EXT = new Set(["jpg", "jpeg", "png", "gif", "webp", "heic", "pdf", "doc", "docx"]);
+
+export function isAllowedProofMime(mimeType: string, fileName: string): boolean {
+  if (mimeType === "application/pdf") return true;
+  if (mimeType.startsWith("image/")) return true;
+  if (mimeType === "application/msword" || mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") return true;
+  const ext = (fileName.split(".").pop() || "").toLowerCase();
+  return PROOF_ALLOWED_EXT.has(ext);
+}
+
+/** Upload a proof-of-need document for an under-review campaign (path: under-review/{pendingId}/proof/{index}.{ext}). */
+export async function uploadProofDocumentUnderReviewServer(
+  supabase: SupabaseClient,
+  pendingId: string,
+  index: number,
+  buffer: Buffer,
+  originalFileName: string,
+  mimeType: string
+): Promise<string> {
+  await ensureStorageBucket(supabase, BUCKET_CAMPAIGNS, { public: true });
+  const ext = (originalFileName.split(".").pop() || "").toLowerCase() || (mimeType === "application/pdf" ? "pdf" : "jpg");
+  const path = `under-review/${pendingId}/proof/${index}.${ext}`;
+  const { error } = await supabase.storage
+    .from(BUCKET_CAMPAIGNS)
+    .upload(path, buffer, { contentType: mimeType || "application/octet-stream", upsert: true });
+  if (error) throw error;
+  const { data } = supabase.storage.from(BUCKET_CAMPAIGNS).getPublicUrl(path);
+  return data.publicUrl;
+}
+
 export async function uploadCampaignImageServer(
   supabase: SupabaseClient,
   campaignId: string,
