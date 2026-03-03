@@ -60,9 +60,12 @@ export function HeartedProvider({ children }: { children: ReactNode }) {
           : [...heartedIds, campaignId];
         setHeartedIds(newIds);
         try {
+          const { data: { session } } = await supabase.auth.getSession();
+          const headers: Record<string, string> = { "Content-Type": "application/json" };
+          if (session?.access_token) headers.Authorization = `Bearer ${session.access_token}`;
           const res = await fetch("/api/hearted", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers,
             credentials: "include",
             body: JSON.stringify({ campaignId }),
           });

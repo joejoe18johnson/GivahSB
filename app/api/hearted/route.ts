@@ -5,6 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { getHeartedCampaignIds } from "@/lib/supabase/database";
@@ -12,32 +13,33 @@ import { getHeartedCampaignIds } from "@/lib/supabase/database";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-async function getAuthenticatedUserId(request: NextRequest): Promise<string | null> {
+async function getAuthenticatedUser(request: NextRequest): Promise<User | null> {
   const supabase = await createClient();
-  let { data: { user } } = await supabase.auth.getUser();
-  if (user?.id) return user.id;
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user?.id) return user;
   const authHeader = request.headers.get("authorization");
   const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7).trim() : null;
   if (!token) return null;
   const { data: { user: tokenUser } } = await supabase.auth.getUser(token);
-  return tokenUser?.id ?? null;
+  return tokenUser ?? null;
+}
+
+function getNameAndEmail(user: User): { name: string; email: string | null } {
+  const name =
+    (user.user_metadata?.name as string) ||
+    (user.user_metadata?.full_name as string) ||
+    user.email?.split("@")[0] ||
+    "User";
+  return { name, email: user.email ?? null };
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const userId = await getAuthenticatedUserId(request);
-    if (!userId) {
+    const user = await getAuthenticatedUser(request);
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    const name =
-      user?.user_metadata?.name ||
-      user?.user_metadata?.full_name ||
-      user?.email?.split("@")[0] ||
-      "User";
-    const email = user?.email ?? null;
+    const { name, email } = getNameAndEmail(user);
 
     const body = await request.json().catch(() => ({}));
     const campaignId = typeof body?.campaignId === "string" ? body.campaignId.trim() : null;
@@ -53,7 +55,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const ids = await getHeartedCampaignIds(admin, userId);
+    const ids = await getHeartedCampaignIds(admin, user.id);
     const index = ids.indexOf(campaignId);
     const isHearted = index === -1;
     const newIds = isHearted ? [...ids, campaignId] : ids.filter((_, i) => i !== index);
@@ -63,7 +65,7 @@ export async function POST(request: NextRequest) {
       .from("profiles")
       .upsert(
         {
-          id: userId,
+          id: user.id,
           name,
           email,
           hearted_campaigns: newIds,
