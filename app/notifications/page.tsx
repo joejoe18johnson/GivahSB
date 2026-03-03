@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { Bell, CheckCircle2 } from "lucide-react";
+import { Bell, CheckCircle2, Trash2 } from "lucide-react";
 
 interface UserNotification {
   id: string;
@@ -55,6 +55,17 @@ export default function NotificationsPage() {
     else if (n.type === "verification_approved" || n.type === "verification_rejected") router.push("/verification-center");
     else if (n.campaignId) router.push(`/campaigns/${n.campaignId}`);
     else router.push("/my-campaigns");
+  };
+
+  const handleRemove = async (e: React.MouseEvent, n: UserNotification) => {
+    e.stopPropagation();
+    e.preventDefault();
+    try {
+      const res = await fetch(`/api/notifications/${n.id}`, { method: "DELETE", credentials: "include" });
+      if (res.ok) setNotifications((prev) => prev.filter((x) => x.id !== n.id));
+    } catch {
+      // ignore
+    }
   };
 
   const formatDate = (iso: string) =>
@@ -108,11 +119,11 @@ export default function NotificationsPage() {
           ) : (
             <ul className="space-y-2">
               {notifications.map((n) => (
-                <li key={n.id}>
+                <li key={n.id} className="relative">
                   <button
                     type="button"
                     onClick={() => handleClick(n)}
-                    className={`w-full text-left bg-white rounded-xl border border-gray-200 p-4 transition-colors hover:bg-primary-50/30 hover:border-primary-200 ${!n.read ? "border-primary-200 bg-primary-50/20" : ""}`}
+                    className={`w-full text-left bg-white rounded-xl border border-gray-200 p-4 pr-12 transition-colors hover:bg-primary-50/30 hover:border-primary-200 ${!n.read ? "border-primary-200 bg-primary-50/20" : ""}`}
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex-shrink-0 w-10 h-10 rounded-full bg-success-100 flex items-center justify-center text-success-600">
@@ -124,6 +135,14 @@ export default function NotificationsPage() {
                         <p className="text-xs text-gray-400 mt-2">{formatDate(n.createdAt)}</p>
                       </div>
                     </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => handleRemove(e, n)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                    aria-label="Remove notification"
+                  >
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </li>
               ))}
