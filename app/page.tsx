@@ -12,15 +12,11 @@ import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
-import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
 
 const permanentMarker = Permanent_Marker({ weight: "400", subsets: ["latin"] });
 
 export default function Home() {
   const { content: siteContent } = useSiteContent();
-  const { user, isAdmin, adminCheckDone, isLoading: authLoading } = useAuth();
-  const router = useRouter();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [campaignsError, setCampaignsError] = useState<string | null>(null);
@@ -32,15 +28,6 @@ export default function Home() {
   const [trendingCanScrollRight, setTrendingCanScrollRight] = useState(false);
   const [currentMobileIndex, setCurrentMobileIndex] = useState(0);
   const trendingMobileScrollRaf = useRef<number | null>(null);
-
-  // If a user is logged in, treat the campaigns dashboard as their home.
-  useEffect(() => {
-    if (authLoading) return;
-    if (!user) return;
-    if (!adminCheckDone) return;
-    const target = isAdmin ? "/admin" : "/my-campaigns";
-    router.replace(target);
-  }, [user, isAdmin, adminCheckDone, authLoading, router]);
 
   const updateTrendingScrollState = () => {
     const el = trendingScrollRef.current;
