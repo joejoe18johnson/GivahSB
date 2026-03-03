@@ -71,7 +71,11 @@ export default function VerificationCenterPage() {
       }
     } catch (error) {
       console.error("Error saving phone:", error);
-      alert("Failed to save phone number. Please try again.", { variant: "error" });
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : "Failed to save phone number. Please try again.";
+      alert(message, { variant: "error" });
     }
   };
 
@@ -161,7 +165,7 @@ export default function VerificationCenterPage() {
       alert("ID document uploaded successfully. It will be reviewed by an admin.", { variant: "success" });
     } catch (error: unknown) {
       console.error("Error uploading ID document:", error);
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = error instanceof Error && error.message ? error.message : String(error);
       alert(`Upload failed: ${errorMessage}`, { variant: "error" });
     } finally {
       setIsUploadingId(false);
@@ -236,7 +240,7 @@ export default function VerificationCenterPage() {
       alert("Address document uploaded successfully. It will be reviewed by an admin.", { variant: "success" });
     } catch (error: unknown) {
       console.error("Error uploading address document:", error);
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = error instanceof Error && error.message ? error.message : String(error);
       alert(`Upload failed: ${errorMessage}`, { variant: "error" });
     } finally {
       setIsUploadingAddress(false);
