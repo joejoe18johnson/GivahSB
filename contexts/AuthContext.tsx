@@ -9,7 +9,6 @@ import {
   signInWithGoogleSupabase,
   signUpWithEmailSupabase,
   signOutSupabase,
-  updateUserProfileSupabase,
   supabaseUserToProfile,
   resetPasswordSupabase,
   UserProfile,
@@ -195,9 +194,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     try {
       const supabase = createClient();
-      await updateUserProfileSupabase(supabase, user.id, updates as Partial<UserProfile>);
-      // Re-fetch profile from server so state matches DB (e.g. phone number persists on refresh)
       const { data: { session } } = await supabase.auth.getSession();
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (session?.access_token) headers.Authorization = `Bearer ${session.access_token}`;
+      const res = await fetch("/api/profile/update", {
+        method: "POST",
+        headers,
+        credentials: "include",
+        body: JSON.stringify(updates),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(typeof data.error === "string" ? data.error : "Failed to update profile");
+      }
+      // Re-fetch profile so state matches DB (e.g. phone number persists on refresh)
       if (session?.user) {
         const profile = await supabaseUserToProfile(supabase, session.user);
         if (profile) setUser(profileToUser(profile));
