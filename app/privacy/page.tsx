@@ -83,7 +83,19 @@ export default function PrivacyPage() {
               To exercise any of these rights, please contact us using the details below. We will respond within the timeframes set by the Act.
             </p>
 
-            <h2 className="text-2xl font-semibold text-gray-900 mt-10 mb-4">8. Retention</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mt-10 mb-4">8. Data deletion requests</h2>
+            <p>
+              Apps that access user data must provide a way for users to request that their data be deleted. You can request deletion of your data from GivahBz as follows:
+            </p>
+            <ul className="list-disc pl-6 space-y-2 mt-2">
+              <li><strong>By contact form or email:</strong> Use our <Link href="/contact" className="text-primary-600 hover:text-primary-700 font-medium underline">Contact</Link> page or email us (see Section 11 below) and clearly state that you are requesting deletion of your personal data. Include the email address associated with your account so we can identify your data. We will process your request in line with the Data Protection Act and any legal retention requirements.</li>
+              <li><strong>Logged-in users:</strong> You may also contact us from the email address linked to your account; we will verify your identity and then process your deletion request in line with the Data Protection Act and our retention obligations (e.g. we may need to keep some data for legal or accounting purposes for a limited period).</li>
+            </ul>
+            <p className="mt-4">
+              We will confirm receipt of your request and complete the deletion (or explain any limited retention) within the timeframes required by the Data Protection Act, 2021. <a href="https://www.pdp.gov.bz/" target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-700 font-medium underline">Learn more</a> about your rights and the Data Protection Commissioner of Belize. For how to reach us, see Contact us below.
+            </p>
+
+            <h2 className="text-2xl font-semibold text-gray-900 mt-10 mb-4">9. Retention</h2>
             <p>
               We keep your data only for as long as necessary to fulfil the purposes set out in this notice, to comply with legal obligations (e.g. tax, anti-money laundering), and to resolve disputes and enforce our agreements.
             </p>
@@ -93,12 +105,12 @@ export default function PrivacyPage() {
               Our services are not directed at children. We do not knowingly collect personal data from anyone under 18. If you believe we have collected such data, please contact us so we can delete it.
             </p>
 
-            <h2 className="text-2xl font-semibold text-gray-900 mt-10 mb-4">10. Changes to this notice</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mt-10 mb-4">11. Changes to this notice</h2>
             <p>
               We may update this privacy information from time to time. We will post the updated version on this page and, where required by law, notify you of significant changes.
             </p>
 
-            <h2 className="text-2xl font-semibold text-gray-900 mt-10 mb-4">11. Contact us</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mt-10 mb-4">12. Contact us</h2>
             <p>
               For privacy-related requests, to exercise your rights, or for questions about this notice, contact us:
             </p>

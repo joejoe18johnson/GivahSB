@@ -7,6 +7,7 @@ import type { User as SupabaseUser } from "@supabase/supabase-js";
 import {
   signInWithEmailSupabase,
   signInWithGoogleSupabase,
+  signInWithFacebookSupabase,
   signUpWithEmailSupabase,
   signOutSupabase,
   supabaseUserToProfile,
@@ -41,6 +42,7 @@ interface AuthContextType {
   adminCheckDone: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   loginWithGoogle: () => Promise<void>;
+  loginWithFacebook: () => Promise<void>;
   signup: (email: string, password: string, name: string, phoneNumber?: string) => Promise<boolean>;
   requestPasswordReset: (email: string) => Promise<void>;
   updateUser: (updates: Partial<User>) => Promise<void>;
@@ -168,6 +170,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await signInWithGoogleSupabase(supabase);
   };
 
+  const loginWithFacebook = async () => {
+    const supabase = createClient();
+    await signInWithFacebookSupabase(supabase);
+  };
+
   const signup = async (
     email: string,
     password: string,
@@ -243,6 +250,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         adminCheckDone,
         login,
         loginWithGoogle,
+        loginWithFacebook,
         signup,
         requestPasswordReset,
         updateUser,

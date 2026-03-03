@@ -12,14 +12,30 @@ export default function ContactPage() {
   });
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would submit to a backend API
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
+    setError(null);
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error ?? "Failed to send message");
+        return;
+      }
+      setSubmitted(true);
       setFormData({ name: "", email: "", subject: "", message: "" });
-    }, 3000);
+      setTimeout(() => setSubmitted(false), 3000);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleChange = (
@@ -56,6 +72,11 @@ export default function ContactPage() {
               {/* Contact Form */}
               <div>
                 <h2 className="text-3xl font-medium mb-6">Send Us a Message</h2>
+                {error && (
+                  <div className="mb-4 p-4 rounded-lg bg-red-50 border border-red-200 text-red-800 text-sm">
+                    {error}
+                  </div>
+                )}
                 {submitted ? (
                   <div className="bg-success-50 border border-success-200 rounded-lg p-8 text-center">
                     <CheckCircle2 className="w-16 h-16 text-success-600 mx-auto mb-4" />
@@ -129,10 +150,11 @@ export default function ContactPage() {
                     </div>
                     <button
                       type="submit"
-                      className="w-full bg-success-500 text-white px-8 py-4 rounded-full font-medium hover:bg-success-600 transition-colors flex items-center justify-center gap-2"
+                      disabled={submitting}
+                      className="w-full bg-success-500 text-white px-8 py-4 rounded-full font-medium hover:bg-success-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                       <Send className="w-5 h-5" />
-                      Send Message
+                      {submitting ? "Sending…" : "Send Message"}
                     </button>
                   </form>
                 )}

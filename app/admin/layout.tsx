@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { LayoutDashboard, Megaphone, Users, Heart, ArrowLeft, Clock, Bell, LogOut, Trophy, FileText, Banknote } from "lucide-react";
+import { LayoutDashboard, Megaphone, Users, Heart, ArrowLeft, Clock, Bell, LogOut, Trophy, Mail, Banknote } from "lucide-react";
 import UserAvatar from "@/components/UserAvatar";
 import {
   getCampaignsUnderReviewCountCached,
@@ -304,11 +304,11 @@ export default function AdminLayout({
               )}
             </Link>
             <Link
-              href="/admin/site-info"
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg ${pathname === "/admin/site-info" ? "bg-primary-50 text-primary-700 font-medium" : "text-gray-600 hover:bg-gray-100"}`}
+              href="/admin/messages"
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg ${pathname === "/admin/messages" ? "bg-primary-50 text-primary-700 font-medium" : "text-gray-600 hover:bg-gray-100"}`}
             >
-              <FileText className="w-4 h-4" />
-              <span className="flex-1">Edit site info</span>
+              <Mail className="w-4 h-4" />
+              <span className="flex-1">Messages</span>
             </Link>
             <Link
               href="/admin/campaigns"
