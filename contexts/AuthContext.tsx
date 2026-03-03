@@ -196,7 +196,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const supabase = createClient();
       await updateUserProfileSupabase(supabase, user.id, updates as Partial<UserProfile>);
-      setUser((prev) => (prev ? { ...prev, ...updates } : prev));
+      // Re-fetch profile from server so state matches DB (e.g. phone number persists on refresh)
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const profile = await supabaseUserToProfile(supabase, session.user);
+        if (profile) setUser(profileToUser(profile));
+        else setUser((prev) => (prev ? { ...prev, ...updates } : prev));
+      } else {
+        setUser((prev) => (prev ? { ...prev, ...updates } : prev));
+      }
     } catch (e) {
       console.error("Error updating user:", e);
       throw e;

@@ -325,7 +325,7 @@ export default function VerificationCenterPage() {
                   Pending approval
                 </span>
               ) : null}
-              {user?.phoneVerified && <p className="text-sm text-gray-600">This number cannot be changed or removed.</p>}
+              <p className="text-sm text-gray-600">This number cannot be changed. Only an admin can verify or deny it.</p>
             </div>
           ) : editingPhone ? (
             <div className="space-y-3">
