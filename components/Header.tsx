@@ -358,7 +358,7 @@ export default function Header() {
                 </Link>
                 <Link
                   href={pathname && !pathname.startsWith("/auth") ? `/auth/signup?callbackUrl=${encodeURIComponent(pathname)}` : "/auth/signup"}
-                  className="bg-success-500 text-white px-4 py-2 rounded-full font-medium hover:bg-success-600 transition-colors duration-300 ease-in-out"
+                  className="gradient-border-1 rounded-full px-4 py-2 font-medium bg-white text-primary-600 hover:bg-primary-50 transition-colors duration-300 ease-in-out shadow-sm"
                 >
                   Sign Up
                 </Link>
