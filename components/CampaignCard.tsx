@@ -74,6 +74,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
                 alt={campaign.title}
                 fill
                 className={`object-cover ${goalReached ? "opacity-90" : ""}`}
+                blurEdges
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 fallback={
                   <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-200 to-primary-400">

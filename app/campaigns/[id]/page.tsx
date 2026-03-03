@@ -190,6 +190,7 @@ export default function CampaignPage() {
                             className="object-cover"
                             sizes="100vw"
                             priority={i === 0}
+                            blurEdges
                             fallback={fallbackContent()}
                           />
                         ) : (
@@ -253,6 +254,7 @@ export default function CampaignPage() {
                         className="object-cover"
                         sizes="(max-width: 1024px) 50vw, 30vw"
                         priority
+                        blurEdges
                         fallback={
                           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-200 to-primary-400">
                             <span className="text-primary-600 text-5xl font-medium opacity-20">
@@ -277,6 +279,7 @@ export default function CampaignPage() {
                         fill
                         className="object-cover object-center"
                         sizes="(max-width: 1024px) 50vw, 30vw"
+                        blurEdges
                         fallback={
                           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-300 to-primary-500">
                             <span className="text-primary-700 text-5xl font-medium opacity-20">

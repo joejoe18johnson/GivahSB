@@ -12,6 +12,8 @@ interface SafeImageProps {
   sizes?: string;
   priority?: boolean;
   fallback?: React.ReactNode;
+  /** When true, renders a blurred version of the image behind the main image to softly fill edges. */
+  blurEdges?: boolean;
 }
 
 export default function SafeImage({
@@ -24,6 +26,7 @@ export default function SafeImage({
   sizes,
   priority,
   fallback,
+  blurEdges,
 }: SafeImageProps) {
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -96,6 +99,16 @@ export default function SafeImage({
     <>
       {fill ? (
         <div className="relative w-full h-full">
+          {blurEdges && !hasError && imageSrc && (
+            <div
+              className="absolute inset-0 -z-10 scale-110 blur-xl"
+              style={{
+                backgroundImage: `url(${imageSrc})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+          )}
           {isLoading && !hasError && (
             <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center z-0">
               <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
@@ -120,6 +133,16 @@ export default function SafeImage({
         </div>
       ) : (
         <div className="relative" style={{ width: width || "100%", height: height || "auto" }}>
+          {blurEdges && !hasError && imageSrc && (
+            <div
+              className="absolute inset-0 -z-10 scale-110 blur-xl"
+              style={{
+                backgroundImage: `url(${imageSrc})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+          )}
           {isLoading && !hasError && (
             <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center z-0">
               <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>

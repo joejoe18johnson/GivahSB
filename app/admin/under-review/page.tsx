@@ -260,6 +260,7 @@ export default function AdminUnderReviewPage() {
                         alt={`${selectedCampaign.title} - Image 1`}
                         fill
                         className="object-cover"
+                        blurEdges
                         fallback={
                           <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
                             Image 1
@@ -279,6 +280,7 @@ export default function AdminUnderReviewPage() {
                         alt={`${selectedCampaign.title} - Image 2`}
                         fill
                         className="object-cover"
+                        blurEdges
                         fallback={
                           <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
                             Image 2
