@@ -122,8 +122,12 @@ export default function CampaignPage() {
       try {
         const newState = await toggleHeart(campaign.id);
         if (newState) toast.show("Campaign Saved to Favorites");
-      } catch {
-        toast.show("Could not save to favorites. Try again.");
+      } catch (err) {
+        const message =
+          err instanceof Error && err.message
+            ? err.message
+            : "Could not save to favorites. Try again.";
+        toast.show(message);
       }
     }
   };
