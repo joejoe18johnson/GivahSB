@@ -131,7 +131,7 @@ function buildPayoutLetterHtml(p: PayoutRow, donations: DonationRow[]): string {
     </div>
     <div class="contact">
       <div>givahbz.com</div>
-      <div>Belize City, Belize</div>
+      <div>Belmopan City, Belize</div>
     </div>
   </header>
   <hr class="divider" />

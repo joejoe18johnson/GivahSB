@@ -366,16 +366,31 @@ export default function Header() {
             )}
           </nav>
 
-          {/* Mobile menu button and profile picture */}
+          {/* Mobile notifications, profile picture and menu button */}
           <div className="lg:hidden flex items-center gap-2 shrink-0">
             {user && (
-              <Link
-                href="/profile"
-                className="w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={40} className="w-full h-full" />
-              </Link>
+              <>
+                <Link
+                  href="/notifications"
+                  className="relative w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:text-primary-600 hover:bg-gray-100 transition-colors duration-300 ease-in-out flex-shrink-0"
+                  aria-label="Notifications"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Bell className="w-5 h-5" />
+                  {totalNotificationCount > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1 flex items-center justify-center rounded-full bg-primary-600 text-white text-xs font-medium">
+                      {totalNotificationCount > 99 ? "99+" : totalNotificationCount}
+                    </span>
+                  )}
+                </Link>
+                <Link
+                  href="/profile"
+                  className="w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={40} className="w-full h-full" />
+                </Link>
+              </>
             )}
             <button
               type="button"

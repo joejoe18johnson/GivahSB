@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, DollarSign, Building2 } from "lucide-react";
+import { ArrowLeft, DollarSign, Building2, Printer } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatCurrency } from "@/lib/utils";
 
@@ -33,6 +33,116 @@ interface PayoutRequestInfo {
   createdAt: string;
 }
 
+function buildCreatorPayoutLetterHtml(campaign: CampaignInfo, payout: PayoutRequestInfo): string {
+  const amount = formatCurrency(campaign.raised);
+  const createdDate = new Date(payout.createdAt).toLocaleDateString(undefined, {
+    dateStyle: "medium",
+  });
+  const maskedAccount = `****${String(payout.accountNumber).slice(-4)}`;
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Payout confirmation – ${escapeHtml(campaign.title)}</title>
+  <style>
+    @page { size: letter; margin: 0.75in; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 11pt;
+      line-height: 1.4;
+      color: #111827;
+      max-width: 8.5in;
+      margin: 0 auto;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .logo {
+      height: 40px;
+      width: auto;
+    }
+    .site-name {
+      font-size: 14pt;
+      font-weight: 700;
+      color: #059669;
+    }
+    .tagline {
+      font-size: 10pt;
+      color: #4b5563;
+    }
+    .contact {
+      text-align: right;
+      font-size: 9pt;
+      color: #4b5563;
+    }
+    .divider {
+      border: 0;
+      border-top: 2px solid #059669;
+      margin: 0.25rem 0 1rem;
+    }
+    h1 { font-size: 16pt; margin-bottom: 0.5em; color: #111827; }
+    .meta { margin: 1em 0; }
+    .meta p { margin: 0.25em 0; }
+    .amount { font-weight: 600; }
+    .footer-note {
+      margin-top: 1em;
+      font-size: 9pt;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="brand">
+      <img src="/givah-logo.png" alt="GivahBz" class="logo" />
+      <div>
+        <div class="site-name">GivahBz</div>
+        <div class="tagline">Sharing Burdens. Together.</div>
+      </div>
+    </div>
+    <div class="contact">
+      <div>givahbz.com</div>
+      <div>Belmopan City, Belize</div>
+    </div>
+  </header>
+  <hr class="divider" />
+  <h1>Payout confirmation</h1>
+  <div class="meta">
+    <p><strong>Campaign:</strong> ${escapeHtml(campaign.title)}</p>
+    <p><strong>Amount paid out:</strong> <span class="amount">${escapeHtml(amount)}</span></p>
+    <p><strong>Bank:</strong> ${escapeHtml(payout.bankName)}${payout.accountType ? " · " + escapeHtml(payout.accountType) : ""}</p>
+    <p><strong>Account holder:</strong> ${escapeHtml(payout.accountHolderName)}</p>
+    <p><strong>Account number:</strong> ${escapeHtml(maskedAccount)}${payout.branch ? " · Branch: " + escapeHtml(payout.branch) : ""}</p>
+    <p><strong>Status:</strong> ${escapeHtml(payout.status)}</p>
+    <p><strong>Payout requested:</strong> ${escapeHtml(createdDate)}</p>
+  </div>
+  <p>Thank you for using GivahBz to raise funds for your cause. This letter confirms that the payout for your campaign has been processed to the bank account details you provided.</p>
+  <p class="footer-note">Generated from your GivahBz account. Default paper size: Letter (8.5&quot; × 11&quot;).</p>
+</body>
+</html>`;
+}
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export default function RequestPayoutPage() {
   const params = useParams();
   const router = useRouter();
@@ -52,6 +162,20 @@ export default function RequestPayoutPage() {
     accountHolderName: "",
     branch: "",
   });
+
+  const handlePrintLetter = () => {
+    if (!campaign || !payoutRequest || payoutRequest.status !== "completed") return;
+    const html = buildCreatorPayoutLetterHtml(campaign, payoutRequest);
+    const win = window.open("", "_blank", "noopener,noreferrer");
+    if (!win) {
+      window.alert("Popup blocked. Please allow popups to print or save your payout letter.");
+      return;
+    }
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    win.print();
+  };
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -213,9 +337,25 @@ export default function RequestPayoutPage() {
                   <p><span className="font-medium">Status:</span> <span className="capitalize">{payoutRequest.status}</span></p>
                 </div>
               )}
-              <p className="text-gray-500 text-sm mt-4">
-                We will process your payout and notify you when it is completed. Contact support if you have questions.
-              </p>
+              {payoutRequest?.status === "completed" ? (
+                <>
+                  <p className="text-gray-500 text-sm mt-4">
+                    Your payout has been completed. You can print or save a copy of this payout confirmation for your records.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handlePrintLetter}
+                    className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700"
+                  >
+                    <Printer className="w-4 h-4" />
+                    Print / save payout letter
+                  </button>
+                </>
+              ) : (
+                <p className="text-gray-500 text-sm mt-4">
+                  We will process your payout and notify you when it is completed. A printable payout letter will be available here once it is marked as completed. Contact support if you have questions.
+                </p>
+              )}
               <Link
                 href="/my-campaigns"
                 className="inline-block mt-6 px-6 py-2.5 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 transition-colors"
