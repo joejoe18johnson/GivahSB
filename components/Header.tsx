@@ -366,7 +366,7 @@ export default function Header() {
             )}
           </nav>
 
-          {/* Mobile notifications, profile picture and menu button */}
+          {/* Mobile: notifications, hearted campaigns, profile picture and menu button */}
           <div className="lg:hidden flex items-center gap-2 shrink-0">
             {user && (
               <>
@@ -380,6 +380,19 @@ export default function Header() {
                   {totalNotificationCount > 0 && (
                     <span className="absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1 flex items-center justify-center rounded-full bg-primary-600 text-white text-xs font-medium">
                       {totalNotificationCount > 99 ? "99+" : totalNotificationCount}
+                    </span>
+                  )}
+                </Link>
+                <Link
+                  href="/liked-campaigns"
+                  className="relative w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:text-primary-600 hover:bg-gray-100 transition-colors duration-300 ease-in-out flex-shrink-0"
+                  aria-label="Liked campaigns"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Heart className="w-5 h-5" />
+                  {heartedCount > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-medium">
+                      {heartedCount > 99 ? "99+" : heartedCount}
                     </span>
                   )}
                 </Link>
