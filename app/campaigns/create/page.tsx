@@ -194,10 +194,10 @@ export default function CreateCampaignPage() {
             Once all three are verified, you can create campaigns from this page.
           </p>
           <Link
-            href="/profile"
+            href="/verification-center"
             className="inline-block bg-primary-600 text-white px-6 py-3 rounded-full font-medium hover:bg-primary-700"
           >
-            Go to my profile
+            Go to verification center
           </Link>
         </div>
       </div>
