@@ -6,49 +6,38 @@ import { Heart, ArrowLeft } from "lucide-react";
 import { Campaign } from "@/lib/data";
 import { fetchCampaignsFromAPI } from "@/lib/services/campaignService";
 import CampaignCard from "@/components/CampaignCard";
-import { getHeartedCampaignIds } from "@/components/HeartedCampaigns";
+import { useHearted } from "@/components/HeartedCampaigns";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function LikedCampaignsPage() {
-  const [heartedIds, setHeartedIds] = useState<string[]>([]);
+  const { heartedIds, refreshHeartedIds } = useHearted();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentLikedIndex, setCurrentLikedIndex] = useState(0);
   const likedScrollRef = useRef<HTMLDivElement>(null);
   const likedScrollRaf = useRef<number | null>(null);
-  const { user } = useAuth();
 
   useEffect(() => {
-    async function loadData() {
+    let cancelled = false;
+    (async () => {
       try {
-        // Load all campaigns from API (Supabase)
         const fetchedCampaigns = await fetchCampaignsFromAPI();
-        setCampaigns(fetchedCampaigns);
-        
-        // Load hearted campaign IDs
-        if (user) {
-          // TODO: Load from Supabase profile/hearts
-          setHeartedIds(getHeartedCampaignIds());
-        } else {
-          setHeartedIds(getHeartedCampaignIds());
-        }
+        if (!cancelled) setCampaigns(fetchedCampaigns);
       } catch (error) {
         console.error("Error loading campaigns:", error);
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
-    }
-    loadData();
-    
-    // Listen for changes
-    const handleChange = () => {
-      setHeartedIds(getHeartedCampaignIds());
-    };
-    window.addEventListener("heartedCampaignsChanged", handleChange);
+    })();
     return () => {
-      window.removeEventListener("heartedCampaignsChanged", handleChange);
+      cancelled = true;
     };
-  }, [user]);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("heartedCampaignsChanged", refreshHeartedIds);
+    return () => window.removeEventListener("heartedCampaignsChanged", refreshHeartedIds);
+  }, [refreshHeartedIds]);
 
   const heartedCampaigns = campaigns.filter((campaign) => heartedIds.includes(campaign.id));
 
