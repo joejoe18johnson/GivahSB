@@ -206,7 +206,7 @@ export default function Header() {
             </div>
             <Link
               href="/campaigns/create"
-              className="bg-gradient-to-r from-primary-500 to-verified-500 text-white px-4 py-2 rounded-full font-medium hover:opacity-90 transition-opacity duration-300 ease-in-out shadow-sm"
+              className="gradient-border-1 rounded-full px-4 py-2 font-medium bg-white text-primary-600 hover:bg-primary-50 transition-colors duration-300 ease-in-out shadow-sm"
             >
               Create A Campaign
             </Link>
@@ -352,7 +352,7 @@ export default function Header() {
               <>
                 <Link
                   href={pathname && !pathname.startsWith("/auth") ? `/auth/login?callbackUrl=${encodeURIComponent(pathname)}` : "/auth/login"}
-                  className="bg-success-500 text-white px-4 py-2 rounded-full font-medium hover:bg-success-600 transition-colors duration-300 ease-in-out"
+                  className="bg-gradient-to-r from-primary-500 to-verified-500 text-white px-4 py-2 rounded-full font-medium hover:opacity-90 transition-opacity duration-300 ease-in-out shadow-sm"
                 >
                   Sign In
                 </Link>
@@ -432,7 +432,7 @@ export default function Header() {
                   </div>
                 )}
               </div>
-              <Link href="/campaigns/create" className="mx-4 flex justify-center items-center bg-gradient-to-r from-primary-500 to-verified-500 text-white px-4 py-3 rounded-full font-medium hover:opacity-90 transition-opacity duration-300 ease-in-out shadow-sm" onClick={closeMobileMenu}>
+              <Link href="/campaigns/create" className="mx-4 flex justify-center items-center gradient-border-1 rounded-full px-4 py-3 font-medium bg-white text-primary-600 hover:bg-primary-50 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
                 Create A Campaign
               </Link>
               {user ? (
@@ -478,22 +478,22 @@ export default function Header() {
                   </button>
                 </>
               ) : (
-                <>
+                <div className="mx-4 mt-2 space-y-2">
                   <Link
                     href={pathname && !pathname.startsWith("/auth") ? `/auth/login?callbackUrl=${encodeURIComponent(pathname)}` : "/auth/login"}
-                    className="mx-4 mt-2 block text-center gradient-border-1 rounded-full py-3 px-4 font-medium bg-white text-primary-600 hover:bg-primary-50 transition-colors duration-300 ease-in-out"
+                    className="block text-center bg-gradient-to-r from-primary-500 to-verified-500 text-white rounded-full py-3 px-4 font-medium hover:opacity-90 transition-opacity duration-300 ease-in-out shadow-sm"
                     onClick={closeMobileMenu}
                   >
                     Sign In
                   </Link>
                   <Link
                     href={pathname && !pathname.startsWith("/auth") ? `/auth/signup?callbackUrl=${encodeURIComponent(pathname)}` : "/auth/signup"}
-                    className="mx-4 mt-2 block text-center gradient-border-1 rounded-full py-3 px-4 font-medium bg-white text-primary-600 hover:bg-primary-50 transition-colors duration-300 ease-in-out"
+                    className="block text-center gradient-border-1 rounded-full py-3 px-4 font-medium bg-white text-primary-600 hover:bg-primary-50 transition-colors duration-300 ease-in-out"
                     onClick={closeMobileMenu}
                   >
                     Sign Up
                   </Link>
-                </>
+                </div>
               )}
             </nav>
           </div>

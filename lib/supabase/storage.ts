@@ -15,14 +15,23 @@ export async function ensureStorageBucket(
   bucketId: string,
   options?: { public?: boolean }
 ): Promise<void> {
-  const { data: existing } = await supabase.storage.getBucket(bucketId);
+  const { data: existing, error: getError } = await supabase.storage.getBucket(bucketId);
   if (existing) return; // bucket already exists
+  // If getBucket failed with "not found", or we have no data, create the bucket
+  const notFound =
+    getError &&
+    /not found|Bucket not found|404/i.test(String((getError as { message?: string }).message ?? ""));
+  if (!notFound && getError) throw getError;
+
   const { error } = await supabase.storage.createBucket(bucketId, {
     public: options?.public ?? true,
   });
   if (error) {
     const msg = String((error as { message?: string }).message ?? "");
     if (msg.includes("already exists") || msg.includes("duplicate") || msg.includes("Bucket already exists")) return;
+    // Race: another request may have created it; verify before throwing
+    const { data: now } = await supabase.storage.getBucket(bucketId);
+    if (now) return;
     throw error;
   }
 }

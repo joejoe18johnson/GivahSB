@@ -32,6 +32,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url: data.publicUrl });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Upload failed.";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const hint =
+      /Bucket not found|bucket not found/i.test(message)
+        ? " An admin must create storage buckets: open /admin and click “Create storage buckets”, or visit /api/admin/ensure-storage while logged in as admin."
+        : "";
+    return NextResponse.json({ error: message + hint }, { status: 500 });
   }
 }
