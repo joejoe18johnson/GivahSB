@@ -75,43 +75,11 @@ function ResetPasswordContent() {
       const type = searchParams.get("type");
       const code = searchParams.get("code");
 
-      // 1) Query params: token_hash + type=recovery
-      if (tokenHash && type === "recovery") {
-        try {
-          const { error } = await supabase.auth.verifyOtp({
-            token_hash: tokenHash,
-            type: "recovery",
-          });
-          if (cancelled) return;
-          if (error) {
-            setStep("error");
-            setMessage(error.message || "This link has expired. Please request a new password reset.");
-            return;
-          }
-          setStep("form");
-        } catch (err) {
-          if (cancelled) return;
-          setStep("error");
-          setMessage(err instanceof Error ? err.message : "Something went wrong.");
-        }
-        return;
-      }
-
-      // 2) Query params: code (PKCE)
-      if (code) {
-        try {
-          const { error } = await supabase.auth.exchangeCodeForSession(code);
-          if (cancelled) return;
-          if (error) {
-            setStep("error");
-            setMessage(error.message || "This link may have expired. Please request a new password reset.");
-            return;
-          }
-          setStep("form");
-        } catch (err) {
-          if (cancelled) return;
-          setStep("error");
-          setMessage(err instanceof Error ? err.message : "Something went wrong.");
+      // 1) Query params present: send user to server callback so the exchange happens on the server (avoids Navigator LockManager timeout on client)
+      if ((tokenHash && type === "recovery") || code) {
+        const params = new URLSearchParams(window.location.search);
+        if (typeof window !== "undefined") {
+          window.location.replace(`/api/auth/reset-callback?${params.toString()}`);
         }
         return;
       }
@@ -124,29 +92,18 @@ function ResetPasswordContent() {
       const recoveredDelayed = await tryHashRecovery();
       if (cancelled || recoveredDelayed) return;
 
-      // 4) No params and no hash: maybe we were redirected from /api/auth/reset-callback with session in cookies
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (cancelled) return;
-        if (session) {
-          setStep("form");
-          return;
-        }
-      } catch {
-        // ignore
-      }
-
+      // 4) No params and no hash: either came from /api/auth/reset-callback (session in cookies) or direct visit.
+      // Do NOT call getSession() — it competes with AuthContext and causes Navigator LockManager timeout.
       const errorParam = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("error") : null;
       if (errorParam === "invalid_code" || errorParam === "invalid_token") {
         setMessage("This link has expired or was already used. Please request a new password reset link.");
+        setStep("error");
       } else if (errorParam === "server_error") {
         setMessage("Something went wrong on our side. Please request a new reset link and try again.");
+        setStep("error");
       } else {
-        setMessage(
-          "We couldn't read the reset link. Use the exact link from the email (open it directly; if you copy-paste, the part after # can be lost). Or request a new reset link and open it in a private/incognito window."
-        );
+        setStep("form");
       }
-      setStep("error");
       setMessage(
         "We couldn’t read the reset link. Use the exact link from the email (open it directly; if you copy-paste, the part after # can be lost). Or request a new reset link and open it in a private/incognito window."
       );
