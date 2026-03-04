@@ -145,7 +145,7 @@ export default function AdminUnderReviewPage() {
                   <th className="px-5 py-3 font-medium">Creator</th>
                   <th className="px-5 py-3 font-medium">Category</th>
                   <th className="px-5 py-3 font-medium">Goal</th>
-                  <th className="px-5 py-3 font-medium">Description</th>
+                  <th className="px-5 py-3 font-medium">Story preview</th>
                   <th className="px-5 py-3 font-medium">Actions</th>
                 </tr>
               </thead>
@@ -161,7 +161,9 @@ export default function AdminUnderReviewPage() {
                     <td className="px-5 py-3 text-gray-900">{c.creatorName}</td>
                     <td className="px-5 py-3 text-gray-600">{c.category}</td>
                     <td className="px-5 py-3 font-medium">{formatCurrency(c.goal)}</td>
-                    <td className="px-5 py-3 text-gray-600 max-w-[220px] truncate" title={c.description}>{c.description}</td>
+                    <td className="px-5 py-3 text-gray-600 max-w-[260px] truncate" title={c.fullDescription || c.description}>
+                      {c.fullDescription || c.description}
+                    </td>
                     <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center gap-2">
                         <button
@@ -250,10 +252,12 @@ export default function AdminUnderReviewPage() {
                 <h4 className="text-sm font-medium text-gray-700 mb-1">Short description</h4>
                 <p className="text-gray-600 text-sm">{selectedCampaign.description}</p>
               </div>
-              {(selectedCampaign.fullDescription || "") !== (selectedCampaign.description || "") && selectedCampaign.fullDescription && (
+              {selectedCampaign.fullDescription && (
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-1">Full description</h4>
-                  <p className="text-gray-600 text-sm whitespace-pre-wrap">{selectedCampaign.fullDescription}</p>
+                  <h4 className="text-sm font-medium text-gray-700 mb-1">Full story</h4>
+                  <p className="text-gray-600 text-sm whitespace-pre-wrap">
+                    {selectedCampaign.fullDescription}
+                  </p>
                 </div>
               )}
 
