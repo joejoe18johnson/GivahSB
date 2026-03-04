@@ -4,13 +4,19 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { X } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 const STORAGE_KEY = "givahbz_welcome_dismissed";
 
 export default function WelcomePopup() {
+  const pathname = usePathname();
   const { content } = useSiteContent();
   const [show, setShow] = useState(false);
+
+  // Do not show on auth pages (reset password, confirm email, login, signup, etc.)
+  const isAuthRoute = pathname?.startsWith("/auth") ?? false;
+  if (isAuthRoute) return null;
 
   useEffect(() => {
     if (typeof window === "undefined") return;

@@ -21,21 +21,25 @@ function ResetPasswordContent() {
   useEffect(() => {
     let cancelled = false;
     const supabase = createClient();
+    const tokenHash = searchParams.get("token_hash");
+    const type = searchParams.get("type");
+    const code = searchParams.get("code");
+
+    // Safety: if still verifying after 12s, show helpful error (avoids lock timeout hang)
+    const timeoutId = setTimeout(() => {
+      if (cancelled) return;
+      setStep((s) => {
+        if (s !== "verifying") return s;
+        setMessage(
+          "Verification is taking too long. Try: (1) Close other tabs with this site open, (2) Open this link in a private/incognito window, or (3) Request a new reset link."
+        );
+        return "error";
+      });
+    }, 12000);
 
     async function run() {
-      const tokenHash = searchParams.get("token_hash");
-      const type = searchParams.get("type");
-      const code = searchParams.get("code");
-
-      // Session may already exist if Supabase sent tokens in the URL hash (client auto-recovers)
-      const { data: { session } } = await supabase.auth.getSession();
-      if (cancelled) return;
-      if (session) {
-        setStep("form");
-        return;
-      }
-
-      // Query params: token_hash + type=recovery (or code for PKCE)
+      // When we have token_hash or code, verify immediately. Do NOT call getSession() first —
+      // it can cause Navigator LockManager timeout when Supabase then tries to verify.
       if (tokenHash && type === "recovery") {
         try {
           const { error } = await supabase.auth.verifyOtp({
@@ -75,14 +79,19 @@ function ResetPasswordContent() {
         return;
       }
 
-      // No query params: maybe tokens are in hash; give the client a moment to recover session
+      // No query params: maybe tokens in hash; only then check session (avoid lock contention)
       if (typeof window !== "undefined" && window.location.hash) {
-        await new Promise((r) => setTimeout(r, 400));
+        await new Promise((r) => setTimeout(r, 300));
         if (cancelled) return;
-        const { data: { session: session2 } } = await supabase.auth.getSession();
-        if (session2) {
-          setStep("form");
-          return;
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (cancelled) return;
+          if (session) {
+            setStep("form");
+            return;
+          }
+        } catch {
+          // ignore lock errors for hash flow
         }
       }
 
@@ -91,7 +100,10 @@ function ResetPasswordContent() {
     }
 
     run();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
   }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
