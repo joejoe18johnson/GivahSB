@@ -17,6 +17,7 @@ export async function GET(request: Request) {
   const payoutStatusByCampaign = await getPayoutStatusForCampaigns(supabase, campaignIds);
   const listWithPayout = list.map((c) => ({
     ...c,
+    status: c.status ?? "live",
     payoutStatus: payoutStatusByCampaign[c.id] ?? null,
   }));
   const res = NextResponse.json(listWithPayout);

@@ -270,6 +270,18 @@ export async function setCampaignOnHold(
   if (error) throw error;
 }
 
+/** Set campaign status to stopped (e.g. after payout is completed). */
+export async function setCampaignStatusToStopped(
+  supabase: SupabaseClient,
+  campaignId: string
+): Promise<void> {
+  const { error } = await supabase
+    .from("campaigns")
+    .update({ status: "stopped", updated_at: new Date().toISOString() })
+    .eq("id", campaignId);
+  if (error) throw error;
+}
+
 export async function getCampaignsForAdmin(
   supabase: SupabaseClient
 ): Promise<(Campaign & { status?: string })[]> {
@@ -298,19 +310,19 @@ export async function getCampaignsOnHoldForUser(
   return (data || []).map((r: CampaignRow) => ({ ...toCampaign(r), status: r.status }));
 }
 
-/** Live campaigns for a given creator (by user id). Used for My Campaigns so raised/backers are always current. */
+/** Live and stopped campaigns for a given creator (by user id). Used for My Campaigns. Stopped = fully funded and paid out; no edit allowed. */
 export async function getLiveCampaignsForUser(
   supabase: SupabaseClient,
   creatorId: string
-): Promise<Campaign[]> {
+): Promise<(Campaign & { status?: string })[]> {
   if (!creatorId) return [];
   const { data, error } = await supabase
     .from("campaigns")
     .select("*")
     .eq("creator_id", creatorId)
-    .eq("status", "live");
+    .in("status", ["live", "stopped"]);
   if (error) throw error;
-  return (data || []).map((r: CampaignRow) => toCampaign(r));
+  return (data || []).map((r: CampaignRow) => ({ ...toCampaign(r), status: r.status }));
 }
 
 // Donations

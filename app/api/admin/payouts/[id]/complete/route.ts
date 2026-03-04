@@ -4,6 +4,7 @@ import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
 import {
   getPayoutRequestById,
   updatePayoutRequestStatus,
+  setCampaignStatusToStopped,
   addNotification,
 } from "@/lib/supabase/database";
 import { sendPayoutCompletedEmail } from "@/lib/email";
@@ -45,6 +46,7 @@ export async function POST(
 
   try {
     await updatePayoutRequestStatus(supabase, payoutRequestId, "completed");
+    await setCampaignStatusToStopped(supabase, payout.campaign_id);
 
     const { data: camp } = await supabase
       .from("campaigns")

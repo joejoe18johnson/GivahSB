@@ -20,6 +20,71 @@ interface UserNotification {
   createdAt: string;
 }
 
+function NotificationDropdownRow({
+  notification: n,
+  markReadAndRemove,
+  scrollContainerRef,
+  isOpen,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+  onRemove,
+}: {
+  notification: UserNotification;
+  markReadAndRemove: (n: UserNotification) => void;
+  scrollContainerRef: React.RefObject<HTMLDivElement | null>;
+  isOpen: boolean;
+  onClick: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+  onRemove: (e: React.MouseEvent) => void;
+}) {
+  const liRef = useRef<HTMLLIElement>(null);
+  useEffect(() => {
+    if (!n.read && isOpen && scrollContainerRef.current && liRef.current) {
+      const root = scrollContainerRef.current;
+      const el = liRef.current;
+      const obs = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) markReadAndRemove(n);
+        },
+        { root, threshold: 0.1 }
+      );
+      obs.observe(el);
+      return () => obs.disconnect();
+    }
+  }, [n.id, n.read, isOpen, markReadAndRemove, n, scrollContainerRef]);
+  return (
+    <li ref={liRef} className="relative group">
+      <button
+        type="button"
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        className={`w-full text-left px-4 py-3 pr-10 hover:bg-gray-50 ${!n.read ? "bg-primary-50/50" : ""}`}
+      >
+        <div className="flex items-start justify-between gap-2">
+          <p className="text-sm font-medium text-gray-900 flex-1 min-w-0">{n.title}</p>
+          {!n.read && (
+            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-primary-600 bg-primary-100 px-1.5 py-0.5 rounded">
+              New
+            </span>
+          )}
+        </div>
+        <p className="text-xs text-gray-600 line-clamp-2 mt-0.5">{n.body}</p>
+      </button>
+      <button
+        type="button"
+        onClick={onRemove}
+        className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded text-gray-400 hover:text-red-600 hover:bg-red-50"
+        aria-label="Remove notification"
+      >
+        <Trash2 className="w-3.5 h-3.5" />
+      </button>
+    </li>
+  );
+}
+
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -30,6 +95,7 @@ export default function Header() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [totalNotificationCount, setTotalNotificationCount] = useState(0);
   const notificationDropdownRef = useRef<HTMLDivElement>(null);
+  const notificationScrollContainerRef = useRef<HTMLDivElement>(null);
   const campaignsDropdownRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const [showCampaignsDropdown, setShowCampaignsDropdown] = useState(false);
@@ -104,29 +170,6 @@ export default function Header() {
     }
   }, []);
 
-  useEffect(() => {
-    if (!showNotificationDropdown || notifications.length === 0) return;
-    const unread = notifications.filter((n) => !n.read);
-    if (unread.length === 0) return;
-    const unreadIds = new Set(unread.map((n) => n.id));
-    let cancelled = false;
-    (async () => {
-      for (const n of unread) {
-        if (cancelled) return;
-        try {
-          await fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" });
-        } catch {
-          // ignore
-        }
-      }
-      if (!cancelled) {
-        setNotifications((prev) => prev.filter((x) => !unreadIds.has(x.id)));
-        setUnreadCount(0);
-        setTotalNotificationCount((prev) => Math.max(0, prev - unread.length));
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [showNotificationDropdown, notifications]);
 
   const handleNotificationClick = async (n: UserNotification) => {
     if (!n.read) {
@@ -332,7 +375,10 @@ export default function Header() {
                   </button>
                   {showNotificationDropdown && (
                     <div className="absolute right-0 top-full mt-1 w-80 z-[100]">
-                      <div className="max-h-[20rem] overflow-y-auto bg-white rounded-xl shadow-lg py-2 border border-gray-200 w-full">
+                      <div
+                        ref={notificationScrollContainerRef}
+                        className="max-h-[20rem] overflow-y-auto bg-white rounded-xl shadow-lg py-2 border border-gray-200 w-full"
+                      >
                         <div className="px-4 py-2 border-b border-gray-100">
                           <h3 className="font-medium text-gray-900">Notifications</h3>
                           {notifications.length > 0 && (
@@ -363,33 +409,17 @@ export default function Header() {
                         ) : (
                           <ul className="py-2">
                             {notifications.map((n) => (
-                              <li key={n.id} className="relative group">
-                                <button
-                                  type="button"
-                                  onClick={() => handleNotificationClick(n)}
-                                  onMouseEnter={() => handleNotificationHover(n)}
-                                  onMouseLeave={handleNotificationHoverEnd}
-                                  className={`w-full text-left px-4 py-3 pr-10 hover:bg-gray-50 ${!n.read ? "bg-primary-50/50" : ""}`}
-                                >
-                                  <div className="flex items-start justify-between gap-2">
-                                    <p className="text-sm font-medium text-gray-900 flex-1 min-w-0">{n.title}</p>
-                                    {!n.read && (
-                                      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-primary-600 bg-primary-100 px-1.5 py-0.5 rounded">
-                                        New
-                                      </span>
-                                    )}
-                                  </div>
-                                  <p className="text-xs text-gray-600 line-clamp-2 mt-0.5">{n.body}</p>
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={(e) => handleRemoveNotification(e, n)}
-                                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded text-gray-400 hover:text-red-600 hover:bg-red-50"
-                                  aria-label="Remove notification"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-                              </li>
+                              <NotificationDropdownRow
+                                key={n.id}
+                                notification={n}
+                                markReadAndRemove={markReadAndRemove}
+                                scrollContainerRef={notificationScrollContainerRef}
+                                isOpen={showNotificationDropdown}
+                                onClick={() => handleNotificationClick(n)}
+                                onMouseEnter={() => handleNotificationHover(n)}
+                                onMouseLeave={handleNotificationHoverEnd}
+                                onRemove={(e) => handleRemoveNotification(e, n)}
+                              />
                             ))}
                           </ul>
                         )}

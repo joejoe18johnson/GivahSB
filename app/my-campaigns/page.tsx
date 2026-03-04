@@ -407,7 +407,8 @@ export default function MyCampaignsPage() {
             const goal = Number(campaign.goal) || 0;
             const raised = Number(campaign.raised) || 0;
             const progress = goal > 0 ? Math.min((raised / goal) * 100, 100) : 0;
-            const isStopped = stoppedIds.has(campaign.id);
+            const status = (campaign as { status?: string }).status;
+            const isStopped = status === "stopped" || stoppedIds.has(campaign.id);
             const goalReached = goal > 0 && raised >= goal - 0.01;
             return (
               <div
@@ -544,14 +545,16 @@ export default function MyCampaignsPage() {
                         <ArrowRight className="w-4 h-4" />
                         View Campaign Donations
                       </Link>
-                      <Link
-                        href={`/my-campaigns/${campaign.id}/edit`}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary-50 text-primary-700 hover:bg-primary-100 text-sm font-medium transition-colors"
-                        onClick={(e) => { e.stopPropagation(); }}
-                      >
-                        <FileText className="w-4 h-4" />
-                        Edit campaign
-                      </Link>
+                      {!isStopped && (
+                        <Link
+                          href={`/my-campaigns/${campaign.id}/edit`}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary-50 text-primary-700 hover:bg-primary-100 text-sm font-medium transition-colors"
+                          onClick={(e) => { e.stopPropagation(); }}
+                        >
+                          <FileText className="w-4 h-4" />
+                          Edit campaign
+                        </Link>
+                      )}
                       {!isStopped && (
                         <button
                           type="button"

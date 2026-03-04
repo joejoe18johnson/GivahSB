@@ -45,7 +45,7 @@ function NotificationListItem({
       (entries) => {
         if (entries[0]?.isIntersecting) onMarkReadAndRemove(n);
       },
-      { threshold: 0.5, rootMargin: "0px" }
+      { threshold: 0.1, rootMargin: "0px" }
     );
     obs.observe(el);
     return () => obs.disconnect();

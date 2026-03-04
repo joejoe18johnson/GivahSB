@@ -19,6 +19,7 @@ interface EditableCampaign {
   location: string;
   image: string;
   image2: string;
+  status?: string;
 }
 
 export default function EditMyCampaignPage() {
@@ -72,6 +73,10 @@ export default function EditMyCampaignPage() {
         }
         if (!cancelled && data.campaign) {
           const c = data.campaign as EditableCampaign;
+          if (c.status === "stopped") {
+            router.replace("/my-campaigns?message=stopped");
+            return;
+          }
           setCampaign(c);
           setForm({
             title: c.title,

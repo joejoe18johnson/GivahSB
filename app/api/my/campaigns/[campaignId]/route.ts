@@ -35,7 +35,7 @@ export async function GET(
   const supabase = getSupabaseAdmin()!;
   const { data, error } = await supabase
     .from("campaigns")
-    .select("id, title, description, full_description, goal, category, location, image, image2, creator_id, created_at, days_left")
+    .select("id, title, description, full_description, goal, category, location, image, image2, creator_id, created_at, days_left, status")
     .eq("id", campaignId)
     .single();
 
@@ -58,6 +58,7 @@ export async function GET(
     image2: (data.image2 as string) ?? "",
     createdAt: data.created_at as string,
     daysLeft: (data.days_left as number) ?? 0,
+    status: (data as { status?: string }).status ?? "live",
   };
 
   const res = NextResponse.json({ campaign });
@@ -107,10 +108,10 @@ export async function PATCH(
 
   const supabase = getSupabaseAdmin()!;
 
-  // Ensure the campaign belongs to this user
+  // Ensure the campaign belongs to this user and is not stopped (fully funded + paid out)
   const { data: existing, error: loadErr } = await supabase
     .from("campaigns")
-    .select("id, creator_id")
+    .select("id, creator_id, status")
     .eq("id", campaignId)
     .single();
   if (loadErr || !existing) {
@@ -118,6 +119,12 @@ export async function PATCH(
   }
   if ((existing as { creator_id: string | null }).creator_id !== user.id) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  if ((existing as { status?: string }).status === "stopped") {
+    return NextResponse.json(
+      { error: "This campaign has been fully funded and paid out. It can no longer be edited; you can only delete it." },
+      { status: 403 }
+    );
   }
 
   const { error: updateErr } = await supabase

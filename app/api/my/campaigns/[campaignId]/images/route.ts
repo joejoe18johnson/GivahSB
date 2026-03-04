@@ -66,10 +66,10 @@ export async function POST(
   try {
     const supabase = getSupabaseAdmin()!;
 
-    // Ensure this campaign belongs to the current user
+    // Ensure this campaign belongs to the current user and is not stopped
     const { data: campaign, error: campErr } = await supabase
       .from("campaigns")
-      .select("id, creator_id")
+      .select("id, creator_id, status")
       .eq("id", campaignId)
       .single();
     if (campErr || !campaign) {
@@ -77,6 +77,12 @@ export async function POST(
     }
     if ((campaign as { creator_id: string | null }).creator_id !== user.id) {
       return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+    }
+    if ((campaign as { status?: string }).status === "stopped") {
+      return NextResponse.json(
+        { error: "This campaign has been fully funded and paid out. It can no longer be edited." },
+        { status: 403 }
+      );
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
