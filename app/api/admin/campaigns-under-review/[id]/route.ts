@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseUserFromRequest, getAdminEmails } from "@/lib/supabase/auth-server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
-import { updateCampaignUnderReviewStatus, deleteCampaignUnderReview } from "@/lib/supabase/database";
+import { updateCampaignUnderReviewStatus, deleteCampaignUnderReview, addNotification } from "@/lib/supabase/database";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -25,6 +25,25 @@ export async function PATCH(
   const body = await request.json().catch(() => ({})) as { status?: string };
   const status = body.status === "rejected" ? "rejected" : "approved";
   const supabase = getSupabaseAdmin()!;
+
+  if (status === "rejected") {
+    const { data: row } = await supabase
+      .from("campaigns_under_review")
+      .select("creator_id, title")
+      .eq("id", id)
+      .single();
+    const creatorId = (row as { creator_id?: string } | null)?.creator_id;
+    const title = (row as { title?: string } | null)?.title ?? "Your campaign";
+    if (creatorId) {
+      await addNotification(supabase, creatorId, {
+        type: "campaign_rejected",
+        title: "Campaign rejected",
+        body: `Your campaign "${title}" has been rejected and will not go live. You can submit a new campaign from My Campaigns if you wish.`,
+        read: false,
+      });
+    }
+  }
+
   await updateCampaignUnderReviewStatus(supabase, id, status);
   return NextResponse.json({ ok: true });
 }
