@@ -218,7 +218,7 @@ export default function MyPayoutsPage() {
                       <th className="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">Completed on</th>
                       <th className="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">Amount paid out</th>
                       <th className="px-4 py-2 text-left font-medium text-gray-600">Bank</th>
-                      <th className="px-4 py-2 text-left font-medium text-gray-600">Letter</th>
+                      <th className="px-4 py-2 text-left font-medium text-gray-600">Invoice / Statement</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
