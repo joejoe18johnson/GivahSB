@@ -25,7 +25,6 @@ const LINE_HEIGHT = 14;
 const PAYOUT_TITLE_SIZE = 22; // "PAYOUT DETAILS"
 const BODY_SIZE = 11;
 const SMALL_SIZE = 9;
-const TAGLINE_SIZE = 10;
 
 function safeFileName(s: string): string {
   const cleaned = (s || "payout-letter")
@@ -158,26 +157,12 @@ export async function GET(
       font: helveticaBold,
       color: green,
     });
-    page.drawText("SHARING BURDENS. TOGETHER.", {
-      x: MARGIN + logoW + 10,
-      y: y - 38,
-      size: TAGLINE_SIZE,
-      font: helvetica,
-      color: green,
-    });
   } else {
     page.drawText("GivahBZ", {
       x: MARGIN,
       y: y - 20,
       size: 14,
       font: helveticaBold,
-      color: green,
-    });
-    page.drawText("SHARING BURDENS. TOGETHER.", {
-      x: MARGIN,
-      y: y - 34,
-      size: TAGLINE_SIZE,
-      font: helvetica,
       color: green,
     });
   }
