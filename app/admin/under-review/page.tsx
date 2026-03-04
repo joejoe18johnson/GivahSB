@@ -41,7 +41,7 @@ export default function AdminUnderReviewPage() {
     if (campaign && (!campaign.proofDocumentUrls || campaign.proofDocumentUrls.length === 0)) {
       alert("Proof of need is required. This campaign has no proof documents. Ask the creator to resubmit with proof documents, or reject this submission.", {
         title: "Proof required",
-        variant: "warning",
+        variant: "info",
       });
       return;
     }
