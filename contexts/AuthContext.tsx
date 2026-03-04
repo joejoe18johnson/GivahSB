@@ -41,7 +41,7 @@ interface AuthContextType {
   adminCheckDone: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   loginWithGoogle: () => Promise<void>;
-  signup: (email: string, password: string, name: string, phoneNumber?: string) => Promise<boolean>;
+  signup: (email: string, password: string, name: string, phoneNumber?: string) => Promise<void>;
   requestPasswordReset: (email: string) => Promise<void>;
   updateUser: (updates: Partial<User>) => Promise<void>;
   logout: () => Promise<void>;

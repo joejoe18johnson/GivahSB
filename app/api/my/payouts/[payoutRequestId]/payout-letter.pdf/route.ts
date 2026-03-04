@@ -202,9 +202,9 @@ export async function GET(
   const executablePath = await chromium.executablePath();
   const browser = await puppeteer.launch({
     args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
     executablePath,
-    headless: chromium.headless,
+    headless: true,
+    defaultViewport: null,
   });
 
   try {
@@ -217,7 +217,7 @@ export async function GET(
     });
 
     const fileName = `payout-letter-${safeFileName(campaignTitle)}.pdf`;
-    return new NextResponse(pdf, {
+    return new NextResponse(Buffer.from(pdf), {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename=\"${fileName}\"`,
