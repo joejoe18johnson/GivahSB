@@ -38,6 +38,18 @@ function ResetPasswordContent() {
 
   useEffect(() => {
     let cancelled = false;
+
+    // 1) If link has code or token_hash in query, redirect immediately (before any Supabase client use) to avoid lock
+    const tokenHash = searchParams.get("token_hash");
+    const type = searchParams.get("type");
+    const code = searchParams.get("code");
+    if ((tokenHash && type === "recovery") || code) {
+      if (typeof window !== "undefined") {
+        window.location.replace(`/api/auth/reset-callback?${new URLSearchParams(window.location.search).toString()}`);
+      }
+      return;
+    }
+
     const supabase = createClient();
 
     // Safety: if still verifying after 14s, show helpful error
@@ -71,20 +83,7 @@ function ResetPasswordContent() {
     }
 
     async function run() {
-      const tokenHash = searchParams.get("token_hash");
-      const type = searchParams.get("type");
-      const code = searchParams.get("code");
-
-      // 1) Query params present: send user to server callback so the exchange happens on the server (avoids Navigator LockManager timeout on client)
-      if ((tokenHash && type === "recovery") || code) {
-        const params = new URLSearchParams(window.location.search);
-        if (typeof window !== "undefined") {
-          window.location.replace(`/api/auth/reset-callback?${params.toString()}`);
-        }
-        return;
-      }
-
-      // 3) Tokens in URL hash — try immediately, then once after a short delay (hash can appear late in SPAs)
+      // 2) Tokens in URL hash — try immediately, then once after a short delay (hash can appear late in SPAs)
       const recovered = await tryHashRecovery();
       if (cancelled || recovered) return;
       await new Promise((r) => setTimeout(r, 400));
@@ -104,9 +103,6 @@ function ResetPasswordContent() {
       } else {
         setStep("form");
       }
-      setMessage(
-        "We couldn’t read the reset link. Use the exact link from the email (open it directly; if you copy-paste, the part after # can be lost). Or request a new reset link and open it in a private/incognito window."
-      );
     }
 
     run();
