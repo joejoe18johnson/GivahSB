@@ -69,15 +69,8 @@ function SignupContent() {
     
     try {
       await signup(formData.email, formData.password, formData.name);
-      if (typeof window !== "undefined") {
-        sessionStorage.setItem("signup_redirect_profile", "1");
-      }
-      setTimeout(() => {
-        alert(
-          "Account created! To create campaigns you need to verify your phone number, ID document, and address. Go to your Profile to complete verification.",
-          { title: "Verify to create campaigns", variant: "info" }
-        );
-      }, 300);
+      router.replace(`/auth/check-email?email=${encodeURIComponent(formData.email)}`);
+      return;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "";
       const raw =
