@@ -11,6 +11,7 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
@@ -21,15 +22,24 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || searchParams.get("redirect") || "/my-campaigns";
 
-  // Show error from URL (e.g. after failed OAuth callback), then clear param so refresh doesn't repeat it
+  // Show error/success from URL, then clear param
   useEffect(() => {
     const err = searchParams.get("error");
+    const reset = searchParams.get("reset");
     if (err === "auth_callback") {
       setError("Sign-in could not be completed. Please try again.");
       if (typeof window !== "undefined") {
         const url = new URL(window.location.href);
         url.searchParams.delete("error");
         window.history.replaceState({}, "", url.pathname + url.search);
+      }
+    }
+    if (reset === "success") {
+      setSuccessMessage("Your password has been updated. You can sign in with your new password.");
+      if (typeof window !== "undefined") {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("reset");
+        window.history.replaceState({}, "", url.pathname + (url.search || ""));
       }
     }
   }, [searchParams]);
@@ -124,6 +134,12 @@ function LoginForm() {
           <h1 className="text-3xl font-medium text-gray-900 mb-2">Welcome Back</h1>
           <p className="text-gray-600">Sign in to your GivahBz account</p>
         </div>
+
+        {successMessage && (
+          <div className="bg-success-50 border border-success-200 text-success-800 px-4 py-3 rounded-lg mb-6 text-sm">
+            {successMessage}
+          </div>
+        )}
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">

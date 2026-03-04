@@ -117,16 +117,18 @@ export async function signUpWithEmailSupabase(
   name: string,
   phoneNumber?: string
 ): Promise<UserProfile> {
-  const emailRedirectTo =
+  // Verification link in email must point to /auth/confirm so we can verify and then redirect.
+  const base =
     typeof window !== "undefined"
-      ? `${window.location.origin}/auth/login`
-      : undefined;
+      ? window.location.origin
+      : process.env.NEXT_PUBLIC_SITE_URL || "https://www.givahbz.com";
+  const baseUrl = (base.startsWith("http") ? base : `https://${base}`).replace(/\/$/, "");
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: { name, phone_number: phoneNumber?.trim() || null },
-      ...(emailRedirectTo ? { emailRedirectTo } : {}),
+      emailRedirectTo: `${baseUrl}/auth/confirm`,
     },
   });
   if (error) throw error;
@@ -222,7 +224,12 @@ export async function updateUserProfileSupabase(
 }
 
 export async function resetPasswordSupabase(supabase: SupabaseClient, email: string): Promise<void> {
+  const base =
+    typeof window !== "undefined"
+      ? window.location.origin
+      : process.env.NEXT_PUBLIC_SITE_URL || "https://www.givahbz.com";
+  const baseUrl = (base.startsWith("http") ? base : `https://${base}`).replace(/\/$/, "");
   await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: typeof window !== "undefined" ? `${window.location.origin}/auth/reset-password` : undefined,
+    redirectTo: `${baseUrl}/auth/reset-password`,
   });
 }

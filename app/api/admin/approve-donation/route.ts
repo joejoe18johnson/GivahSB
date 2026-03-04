@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseUserFromRequest, getAdminEmails } from "@/lib/supabase/auth-server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { approveDonation } from "@/lib/supabase/database";
-import { sendDonationReceivedEmail } from "@/lib/email";
+import { sendDonationReceivedEmail, sendDonationApprovedEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -61,18 +61,29 @@ export async function POST(request: NextRequest) {
     const supabase = getSupabaseAdmin()!;
     await approveDonation(supabase, donationId);
 
-    // Notify campaign creator by email (only after admin approval)
+    // Notify campaign creator and donor by email (only after admin approval)
     const { data: don } = await supabase
       .from("donations")
-      .select("campaign_id, amount, anonymous, donor_name")
+      .select("campaign_id, amount, anonymous, donor_name, donor_email")
       .eq("id", donationId)
       .single();
     if (don) {
+      const d = don as {
+        campaign_id: string;
+        amount: number;
+        anonymous?: boolean;
+        donor_name?: string;
+        donor_email?: string;
+      };
       const camp = (await supabase
         .from("campaigns")
         .select("creator_id, title")
-        .eq("id", (don as { campaign_id: string }).campaign_id)
+        .eq("id", d.campaign_id)
         .single()).data as { creator_id?: string | null; title?: string } | null;
+      const campaignTitle = camp?.title ?? "your campaign";
+      const amountNum = Number(d.amount);
+
+      // Email campaign creator: someone donated to their campaign
       const creatorId = camp?.creator_id ?? null;
       if (creatorId) {
         const { data: profile } = await supabase
@@ -85,14 +96,25 @@ export async function POST(request: NextRequest) {
           await sendDonationReceivedEmail({
             to: creatorEmail,
             creatorName: (profile as { name?: string } | null)?.name ?? "there",
-            campaignTitle: camp?.title ?? "your campaign",
-            amount: Number((don as { amount: number }).amount),
-            donorDisplay: (don as { anonymous?: boolean }).anonymous
+            campaignTitle,
+            amount: amountNum,
+            donorDisplay: d.anonymous
               ? "Anonymous"
-              : ((don as { donor_name?: string }).donor_name || "Anonymous").trim() || "Anonymous",
+              : (d.donor_name || "Anonymous").trim() || "Anonymous",
             status: "completed",
           });
         }
+      }
+
+      // Email donor: their donation was approved and successful
+      const donorEmail = (d.donor_email || "").trim();
+      if (donorEmail) {
+        await sendDonationApprovedEmail({
+          to: donorEmail,
+          donorName: (d.donor_name || "").trim() || "there",
+          campaignTitle,
+          amount: amountNum,
+        });
       }
     }
 

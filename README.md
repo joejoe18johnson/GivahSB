@@ -79,6 +79,8 @@ The app supports multiple authentication methods:
 
 **Authentication** is handled by **Supabase Auth** (email/password and Google OAuth). Enable Google in Supabase → Authentication → Providers and set redirect URL to `https://your-domain.com/auth/callback`. Admin access is controlled by `ADMIN_EMAILS` / `NEXT_PUBLIC_ADMIN_EMAILS`.
 
+**Email verification & password reset (bot protection):** Sign-up requires email confirmation; the link in the email goes to `/auth/confirm`. Password reset links go to `/auth/reset-password`. In Supabase → Authentication → URL Configuration, add these **Redirect URLs** (in addition to the OAuth callback): `https://your-domain.com/auth/confirm`, `https://your-domain.com/auth/reset-password`. Enable **Confirm email** in Authentication → Providers → Email so new users must verify their email before signing in.
+
 ### Deploy (e.g. Vercel)
 
 Add these environment variables in your host (e.g. Vercel → Settings → Environment Variables):

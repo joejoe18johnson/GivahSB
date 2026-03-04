@@ -358,6 +358,33 @@ export async function sendDonationReceivedEmail(
 
 // Donor-facing: donation receipt (single donation)
 
+/** Email to donor after admin has approved their donation — confirms donation was successful. */
+export interface DonationApprovedEmailParams {
+  to: string;
+  donorName: string;
+  campaignTitle: string;
+  amount: number;
+}
+
+export async function sendDonationApprovedEmail(params: DonationApprovedEmailParams): Promise<void> {
+  const { to, donorName, campaignTitle, amount } = params;
+  if (!to) return;
+  const amountStr = `BZ$${Number(amount || 0).toLocaleString()}`;
+  await sendEmailViaResend({
+    to,
+    subject: `Your donation to ${campaignTitle} was successful`,
+    html: wrapEmailWithTemplate(`
+      <p style="margin:0 0 1em;">Hi ${donorName || "there"},</p>
+      <p style="margin:0 0 1em;">Good news — your donation has been approved and is now complete.</p>
+      <p style="margin:0 0 1em;">
+        <strong>Campaign:</strong> ${campaignTitle}<br/>
+        <strong>Amount:</strong> ${amountStr}
+      </p>
+      <p style="margin:0;">Thank you for supporting this campaign on Givah.</p>
+    `),
+  });
+}
+
 export interface DonationReceiptEmailParams {
   to: string;
   donorName: string;
