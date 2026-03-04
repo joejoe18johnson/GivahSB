@@ -22,7 +22,7 @@ interface UserNotification {
 
 function NotificationDropdownRow({
   notification: n,
-  markReadAndRemove,
+  markAsRead,
   scrollContainerRef,
   isOpen,
   onClick,
@@ -31,7 +31,7 @@ function NotificationDropdownRow({
   onRemove,
 }: {
   notification: UserNotification;
-  markReadAndRemove: (n: UserNotification) => void;
+  markAsRead: (n: UserNotification) => void;
   scrollContainerRef: React.RefObject<HTMLDivElement | null>;
   isOpen: boolean;
   onClick: () => void;
@@ -46,14 +46,14 @@ function NotificationDropdownRow({
       const el = liRef.current;
       const obs = new IntersectionObserver(
         (entries) => {
-          if (entries[0]?.isIntersecting) markReadAndRemove(n);
+          if (entries[0]?.isIntersecting) markAsRead(n);
         },
         { root, threshold: 0.1 }
       );
       obs.observe(el);
       return () => obs.disconnect();
     }
-  }, [n.id, n.read, isOpen, markReadAndRemove, n, scrollContainerRef]);
+  }, [n.id, n.read, isOpen, markAsRead, n, scrollContainerRef]);
   return (
     <li ref={liRef} className="relative group">
       <button
@@ -143,30 +143,31 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const markReadAndRemove = useCallback(async (n: UserNotification) => {
+  const markAsRead = useCallback(async (n: UserNotification) => {
     if (n.read) return;
     try {
       await fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" });
-      setNotifications((prev) => prev.filter((x) => x.id !== n.id));
+      setNotifications((prev) =>
+        prev.map((x) => (x.id === n.id ? { ...x, read: true } : x))
+      );
       setUnreadCount((c) => Math.max(0, c - 1));
-      setTotalNotificationCount((c) => Math.max(0, c - 1));
     } catch {
       // ignore
     }
   }, []);
 
-  const hoverRemoveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hoverReadTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleNotificationHover = useCallback(
     (n: UserNotification) => {
-      if (hoverRemoveTimeoutRef.current) clearTimeout(hoverRemoveTimeoutRef.current);
-      hoverRemoveTimeoutRef.current = setTimeout(() => markReadAndRemove(n), 400);
+      if (hoverReadTimeoutRef.current) clearTimeout(hoverReadTimeoutRef.current);
+      hoverReadTimeoutRef.current = setTimeout(() => markAsRead(n), 400);
     },
-    [markReadAndRemove]
+    [markAsRead]
   );
   const handleNotificationHoverEnd = useCallback(() => {
-    if (hoverRemoveTimeoutRef.current) {
-      clearTimeout(hoverRemoveTimeoutRef.current);
-      hoverRemoveTimeoutRef.current = null;
+    if (hoverReadTimeoutRef.current) {
+      clearTimeout(hoverReadTimeoutRef.current);
+      hoverReadTimeoutRef.current = null;
     }
   }, []);
 
@@ -175,9 +176,10 @@ export default function Header() {
     if (!n.read) {
       try {
         await fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" });
-        setNotifications((prev) => prev.filter((x) => x.id !== n.id));
+        setNotifications((prev) =>
+          prev.map((x) => (x.id === n.id ? { ...x, read: true } : x))
+        );
         setUnreadCount((c) => Math.max(0, c - 1));
-        setTotalNotificationCount((c) => Math.max(0, c - 1));
       } catch {
         // ignore
       }
@@ -367,9 +369,9 @@ export default function Header() {
                     aria-label="Notifications"
                   >
                     <Bell className="w-5 h-5" />
-                    {totalNotificationCount > 0 && (
+                    {unreadCount > 0 && (
                       <span className="absolute top-0 right-0 min-w-[1.25rem] h-5 px-1 flex items-center justify-center rounded-full bg-primary-600 text-white text-xs font-medium">
-                        {totalNotificationCount > 99 ? "99+" : totalNotificationCount}
+                        {unreadCount > 99 ? "99+" : unreadCount}
                       </span>
                     )}
                   </button>
@@ -412,7 +414,7 @@ export default function Header() {
                               <NotificationDropdownRow
                                 key={n.id}
                                 notification={n}
-                                markReadAndRemove={markReadAndRemove}
+                                markAsRead={markAsRead}
                                 scrollContainerRef={notificationScrollContainerRef}
                                 isOpen={showNotificationDropdown}
                                 onClick={() => handleNotificationClick(n)}

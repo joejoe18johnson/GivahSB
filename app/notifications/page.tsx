@@ -21,7 +21,7 @@ const NOTIFICATIONS_PAGE_LIMIT = 200;
 
 function NotificationListItem({
   notification: n,
-  onMarkReadAndRemove,
+  onMarkAsRead,
   onHover,
   onHoverEnd,
   onClick,
@@ -29,7 +29,7 @@ function NotificationListItem({
   formatDate,
 }: {
   notification: UserNotification;
-  onMarkReadAndRemove: (n: UserNotification) => void;
+  onMarkAsRead: (n: UserNotification) => void;
   onHover: (n: UserNotification) => void;
   onHoverEnd: () => void;
   onClick: (n: UserNotification) => void;
@@ -43,13 +43,13 @@ function NotificationListItem({
     if (!el) return;
     const obs = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting) onMarkReadAndRemove(n);
+        if (entries[0]?.isIntersecting) onMarkAsRead(n);
       },
       { threshold: 0.1, rootMargin: "0px" }
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, [n.id, n.read, onMarkReadAndRemove, n]);
+  }, [n.id, n.read, onMarkAsRead, n]);
 
   return (
     <li ref={ref} className="relative">
@@ -88,7 +88,7 @@ export default function NotificationsPage() {
   const router = useRouter();
   const [notifications, setNotifications] = useState<UserNotification[]>([]);
   const [loading, setLoading] = useState(true);
-  const hoverRemoveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hoverReadTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -106,11 +106,13 @@ export default function NotificationsPage() {
     return () => { cancelled = true; };
   }, [user, isLoading, router]);
 
-  const markReadAndRemove = useCallback(async (n: UserNotification) => {
+  const markAsRead = useCallback(async (n: UserNotification) => {
     if (n.read) return;
     try {
       await fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" });
-      setNotifications((prev) => prev.filter((x) => x.id !== n.id));
+      setNotifications((prev) =>
+        prev.map((x) => (x.id === n.id ? { ...x, read: true } : x))
+      );
     } catch {
       // ignore
     }
@@ -118,15 +120,15 @@ export default function NotificationsPage() {
 
   const handleNotificationHover = useCallback(
     (n: UserNotification) => {
-      if (hoverRemoveTimeoutRef.current) clearTimeout(hoverRemoveTimeoutRef.current);
-      hoverRemoveTimeoutRef.current = setTimeout(() => markReadAndRemove(n), 400);
+      if (hoverReadTimeoutRef.current) clearTimeout(hoverReadTimeoutRef.current);
+      hoverReadTimeoutRef.current = setTimeout(() => markAsRead(n), 400);
     },
-    [markReadAndRemove]
+    [markAsRead]
   );
   const handleNotificationHoverEnd = useCallback(() => {
-    if (hoverRemoveTimeoutRef.current) {
-      clearTimeout(hoverRemoveTimeoutRef.current);
-      hoverRemoveTimeoutRef.current = null;
+    if (hoverReadTimeoutRef.current) {
+      clearTimeout(hoverReadTimeoutRef.current);
+      hoverReadTimeoutRef.current = null;
     }
   }, []);
 
@@ -134,7 +136,9 @@ export default function NotificationsPage() {
     if (!n.read) {
       try {
         await fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" });
-        setNotifications((prev) => prev.filter((x) => x.id !== n.id));
+        setNotifications((prev) =>
+          prev.map((x) => (x.id === n.id ? { ...x, read: true } : x))
+        );
       } catch {
         // ignore
       }
@@ -269,7 +273,7 @@ export default function NotificationsPage() {
                 <NotificationListItem
                   key={n.id}
                   notification={n}
-                  onMarkReadAndRemove={markReadAndRemove}
+                  onMarkAsRead={markAsRead}
                   onHover={handleNotificationHover}
                   onHoverEnd={handleNotificationHoverEnd}
                   onClick={handleClick}
