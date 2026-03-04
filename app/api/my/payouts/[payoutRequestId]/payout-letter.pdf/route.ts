@@ -295,13 +295,14 @@ export async function GET(
 
   const pdfBytes = await doc.save();
   const fileName = `payout-letter-${safeFileName(campaignTitle)}.pdf`;
+  const body = Buffer.from(pdfBytes);
 
-  return new NextResponse(pdfBytes, {
+  return new NextResponse(body, {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="${fileName}"`,
       "Cache-Control": "no-store, max-age=0",
-      "Content-Length": String(pdfBytes.length),
+      "Content-Length": String(body.length),
     },
   });
 }

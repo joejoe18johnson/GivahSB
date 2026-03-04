@@ -10,7 +10,6 @@
     "seed": "tsx scripts/seed-campaigns.ts"
   },
   "dependencies": {
-    "@sparticuz/chromium": "^143.0.4",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.97.0",
     "browser-image-compression": "^2.0.2",
@@ -18,7 +17,6 @@
     "next": "^16.1.6",
     "next-auth": "^4.24.13",
     "pdf-lib": "^1.17.1",
-    "puppeteer-core": "^24.37.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
