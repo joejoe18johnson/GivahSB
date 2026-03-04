@@ -39,6 +39,13 @@ function LoginForm() {
     if (!user) return;
     // Wait for server admin check so we know final isAdmin before redirecting
     if (!adminCheckDone) return;
+
+    const fullyVerified = !!(user.phoneVerified && user.idVerified && user.addressVerified);
+    if (!fullyVerified && !isAdmin) {
+      router.replace("/verification-center");
+      return;
+    }
+
     if (isAdmin) {
       const adminPath = callbackUrl.startsWith("/admin") ? callbackUrl : "/admin";
       router.replace(adminPath);
