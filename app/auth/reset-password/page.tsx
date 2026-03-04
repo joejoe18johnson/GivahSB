@@ -20,21 +20,24 @@ function ResetPasswordContent() {
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
+    const supabase = createClient();
+
+    async function run() {
       const tokenHash = searchParams.get("token_hash");
       const type = searchParams.get("type");
       const code = searchParams.get("code");
 
-      const supabase = createClient();
-
-      if (!tokenHash && !code) {
-        setStep("error");
-        setMessage("Invalid or expired reset link. Please request a new password reset from the sign-in page.");
+      // Session may already exist if Supabase sent tokens in the URL hash (client auto-recovers)
+      const { data: { session } } = await supabase.auth.getSession();
+      if (cancelled) return;
+      if (session) {
+        setStep("form");
         return;
       }
 
-      try {
-        if (tokenHash && type === "recovery") {
+      // Query params: token_hash + type=recovery (or code for PKCE)
+      if (tokenHash && type === "recovery") {
+        try {
           const { error } = await supabase.auth.verifyOtp({
             token_hash: tokenHash,
             type: "recovery",
@@ -45,7 +48,17 @@ function ResetPasswordContent() {
             setMessage(error.message || "This link has expired. Please request a new password reset.");
             return;
           }
-        } else if (code) {
+          setStep("form");
+        } catch (err) {
+          if (cancelled) return;
+          setStep("error");
+          setMessage(err instanceof Error ? err.message : "Something went wrong.");
+        }
+        return;
+      }
+
+      if (code) {
+        try {
           const { error } = await supabase.auth.exchangeCodeForSession(code);
           if (cancelled) return;
           if (error) {
@@ -53,18 +66,31 @@ function ResetPasswordContent() {
             setMessage(error.message || "This link may have expired. Please request a new password reset.");
             return;
           }
-        } else {
+          setStep("form");
+        } catch (err) {
+          if (cancelled) return;
           setStep("error");
-          setMessage("Invalid link. Please use the link from your email.");
+          setMessage(err instanceof Error ? err.message : "Something went wrong.");
+        }
+        return;
+      }
+
+      // No query params: maybe tokens are in hash; give the client a moment to recover session
+      if (typeof window !== "undefined" && window.location.hash) {
+        await new Promise((r) => setTimeout(r, 400));
+        if (cancelled) return;
+        const { data: { session: session2 } } = await supabase.auth.getSession();
+        if (session2) {
+          setStep("form");
           return;
         }
-        setStep("form");
-      } catch (err) {
-        if (cancelled) return;
-        setStep("error");
-        setMessage(err instanceof Error ? err.message : "Something went wrong.");
       }
-    })();
+
+      setStep("error");
+      setMessage("Invalid or expired reset link. Please request a new password reset from the sign-in page.");
+    }
+
+    run();
     return () => { cancelled = true; };
   }, [searchParams]);
 

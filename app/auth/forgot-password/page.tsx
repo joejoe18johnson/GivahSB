@@ -2,10 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useAuth } from "@/contexts/AuthContext";
 
 export default function ForgotPasswordPage() {
-  const { requestPasswordReset } = useAuth();
   const [email, setEmail] = useState("");
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -25,7 +23,15 @@ export default function ForgotPasswordPage() {
     }
     setStatus("loading");
     try {
-      await requestPasswordReset(email.trim());
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(typeof data.error === "string" ? data.error : "Could not send reset email. Please try again.");
+      }
       setStatus("success");
     } catch (err) {
       setStatus("error");
