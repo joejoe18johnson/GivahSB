@@ -40,7 +40,7 @@ function drawWrappedText(
   y: number,
   maxWidth: number,
   size: number,
-  font: { widthOfTextAtSize: (t: string, s: number) => number }
+  font: PDFFont
 ): number {
   const words = text.split(/\s+/);
   let line = "";
