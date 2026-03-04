@@ -5,10 +5,28 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
+/** Parse URL hash into key-value map (e.g. #access_token=x&type=recovery). */
+function parseHash(hash: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  if (!hash || !hash.startsWith("#")) return out;
+  hash
+    .slice(1)
+    .split("&")
+    .forEach((part) => {
+      const i = part.indexOf("=");
+      if (i > 0) {
+        const key = decodeURIComponent(part.slice(0, i));
+        const value = decodeURIComponent(part.slice(i + 1));
+        out[key] = value;
+      }
+    });
+  return out;
+}
+
 /**
  * Handles the redirect from the "reset password" email link.
- * URL may contain token_hash&type=recovery or code= (PKCE).
- * After verifying, shows form to set new password.
+ * Supabase may send tokens as: (1) query token_hash&type=recovery, (2) query code= (PKCE),
+ * or (3) hash #access_token=...&refresh_token=...&type=recovery. We handle all three.
  */
 function ResetPasswordContent() {
   const router = useRouter();
@@ -25,21 +43,20 @@ function ResetPasswordContent() {
     const type = searchParams.get("type");
     const code = searchParams.get("code");
 
-    // Safety: if still verifying after 12s, show helpful error (avoids lock timeout hang)
+    // Safety: if still verifying after 14s, show helpful error
     const timeoutId = setTimeout(() => {
       if (cancelled) return;
       setStep((s) => {
         if (s !== "verifying") return s;
         setMessage(
-          "Verification is taking too long. Try: (1) Close other tabs with this site open, (2) Open this link in a private/incognito window, or (3) Request a new reset link."
+          "Verification is taking too long. Try opening this link in a private/incognito window, or request a new reset link."
         );
         return "error";
       });
-    }, 12000);
+    }, 14000);
 
     async function run() {
-      // When we have token_hash or code, verify immediately. Do NOT call getSession() first —
-      // it can cause Navigator LockManager timeout when Supabase then tries to verify.
+      // 1) Query params: token_hash + type=recovery
       if (tokenHash && type === "recovery") {
         try {
           const { error } = await supabase.auth.verifyOtp({
@@ -61,6 +78,7 @@ function ResetPasswordContent() {
         return;
       }
 
+      // 2) Query params: code (PKCE)
       if (code) {
         try {
           const { error } = await supabase.auth.exchangeCodeForSession(code);
@@ -79,19 +97,35 @@ function ResetPasswordContent() {
         return;
       }
 
-      // No query params: maybe tokens in hash; only then check session (avoid lock contention)
+      // 3) Tokens in URL hash (#access_token=...&refresh_token=...&type=recovery)
+      // Supabase often sends recovery links this way. setSession() avoids lock timeouts.
       if (typeof window !== "undefined" && window.location.hash) {
-        await new Promise((r) => setTimeout(r, 300));
-        if (cancelled) return;
-        try {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (cancelled) return;
-          if (session) {
+        const hashParams = parseHash(window.location.hash);
+        const accessToken = hashParams.access_token;
+        const refreshToken = hashParams.refresh_token;
+        const hashType = hashParams.type;
+        if (hashType === "recovery" && accessToken && refreshToken) {
+          try {
+            const { error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            if (cancelled) return;
+            if (error) {
+              setStep("error");
+              setMessage(error.message || "This link has expired. Please request a new password reset.");
+              return;
+            }
+            // Clear hash from URL so refresh doesn't reprocess
+            window.history.replaceState(null, "", window.location.pathname + window.location.search);
             setStep("form");
             return;
+          } catch (err) {
+            if (cancelled) return;
+            setStep("error");
+            setMessage(err instanceof Error ? err.message : "Something went wrong.");
+            return;
           }
-        } catch {
-          // ignore lock errors for hash flow
         }
       }
 
@@ -143,10 +177,13 @@ function ResetPasswordContent() {
   }
 
   if (step === "error") {
+    const isTimeout = message.includes("Verification is taking too long");
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
         <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
-          <h1 className="text-2xl font-medium text-gray-900 mb-4">Invalid or expired link</h1>
+          <h1 className="text-2xl font-medium text-gray-900 mb-4">
+            {isTimeout ? "Verification timed out" : "Invalid or expired link"}
+          </h1>
           <p className="text-gray-600 mb-6">{message}</p>
           <Link
             href="/auth/forgot-password"
