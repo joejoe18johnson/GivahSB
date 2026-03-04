@@ -30,6 +30,8 @@ export default function VerificationCenterPage() {
   const [addressDocumentFile, setAddressDocumentFile] = useState<File | null>(null);
   const [isUploadingAddress, setIsUploadingAddress] = useState(false);
   const [addressUploadProgress, setAddressUploadProgress] = useState(0);
+  const [idRejectionReason, setIdRejectionReason] = useState<string | null>(null);
+  const [addressRejectionReason, setAddressRejectionReason] = useState<string | null>(null);
 
   const idFileInputRef = useRef<HTMLInputElement>(null);
   const addressFileInputRef = useRef<HTMLInputElement>(null);
@@ -41,6 +43,53 @@ export default function VerificationCenterPage() {
       if (user.phoneVerified) setEditingPhone(false);
     }
   }, [user]);
+
+  // Load latest rejection reasons (ID / address) from notifications so we can show them next to the upload UI
+  useEffect(() => {
+    if (!user) {
+      setIdRejectionReason(null);
+      setAddressRejectionReason(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/notifications?limit=50", { credentials: "include" });
+        const data = res.ok ? await res.json().catch(() => ({})) : {};
+        const list = Array.isArray(data.notifications) ? data.notifications : [];
+        // Look for the most recent verification_rejected notifications
+        const reversed = [...list].reverse() as {
+          type?: string;
+          title?: string;
+          body?: string;
+        }[];
+        const idNotif = reversed.find(
+          (n) =>
+            n.type === "verification_rejected" &&
+            typeof n.title === "string" &&
+            n.title.toLowerCase().includes("identity document")
+        );
+        const addrNotif = reversed.find(
+          (n) =>
+            n.type === "verification_rejected" &&
+            typeof n.title === "string" &&
+            n.title.toLowerCase().includes("address document")
+        );
+        if (!cancelled) {
+          setIdRejectionReason(typeof idNotif?.body === "string" ? idNotif.body : null);
+          setAddressRejectionReason(typeof addrNotif?.body === "string" ? addrNotif.body : null);
+        }
+      } catch {
+        if (!cancelled) {
+          setIdRejectionReason(null);
+          setAddressRejectionReason(null);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id]);
 
   const handleSavePhone = async () => {
     const raw = phoneInput.trim();
@@ -267,6 +316,8 @@ export default function VerificationCenterPage() {
     setAddressDocumentFile(file);
   };
 
+  const idRejected = !!(user?.idDocument && !user.idVerified && !user.idPending);
+  const addressRejected = !!(user?.addressDocument && !user.addressVerified && !user.addressPending);
   const idBlocked = user?.idVerified || (user?.idPending === true && !!user?.idDocument);
 
   if (isLoading) {
@@ -382,7 +433,7 @@ export default function VerificationCenterPage() {
           </div>
         </div>
         <div className="px-6 py-4">
-          {user?.idDocument ? (
+          {user?.idDocument && !idRejected ? (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-gray-600" />
@@ -416,6 +467,15 @@ export default function VerificationCenterPage() {
             </div>
           ) : (
             <div className="space-y-4">
+              {idRejected && idRejectionReason && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <p className="text-sm font-medium text-red-800 mb-1">ID document not approved</p>
+                  <p className="text-sm text-red-700 whitespace-pre-line">{idRejectionReason}</p>
+                  <p className="text-xs text-red-600 mt-2">
+                    Please fix the issue and upload a new ID document below.
+                  </p>
+                </div>
+              )}
               <p className="text-gray-600">Upload a photo of your Social Security card or Passport for verification. Once uploaded, it will be pending admin approval and cannot be changed.</p>
               <p className="text-sm text-gray-500">Supported: JPG, PNG, HEIC, PDF (max 10MB). If upload fails, ensure you&apos;re signed in and try again.</p>
               <div className="space-y-3">
@@ -493,7 +553,7 @@ export default function VerificationCenterPage() {
           </div>
         </div>
         <div className="px-6 py-4">
-          {user?.addressDocument ? (
+          {user?.addressDocument && !addressRejected ? (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-gray-600" />
@@ -527,6 +587,15 @@ export default function VerificationCenterPage() {
             </div>
           ) : (
             <div className="space-y-4">
+              {addressRejected && addressRejectionReason && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <p className="text-sm font-medium text-red-800 mb-1">Address document not approved</p>
+                  <p className="text-sm text-red-700 whitespace-pre-line">{addressRejectionReason}</p>
+                  <p className="text-xs text-red-600 mt-2">
+                    Please fix the issue and upload a new proof of address below.
+                  </p>
+                </div>
+              )}
               <p className="text-gray-600">Upload a proof of address document (utility bill, bank statement, or government-issued document with your address). Once uploaded, it will be pending admin approval and cannot be changed.</p>
               <p className="text-sm text-gray-500">Supported: JPG, PNG, HEIC, PDF (max 10MB). If upload fails, ensure you&apos;re signed in and try again.</p>
               <div className="space-y-3">
