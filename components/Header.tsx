@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Heart, LogOut, Menu, X, Bell, Shield, User, FolderOpen, Settings, ChevronDown, Megaphone, Trophy, BookOpen, Trash2 } from "lucide-react";
+import { Search, Heart, LogOut, Menu, X, Bell, Shield, User, FolderOpen, Settings, ChevronDown, Megaphone, Trophy, BookOpen, Trash2, CheckCheck } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
@@ -77,12 +77,64 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const markReadAndRemove = useCallback(async (n: UserNotification) => {
+    if (n.read) return;
+    try {
+      await fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" });
+      setNotifications((prev) => prev.filter((x) => x.id !== n.id));
+      setUnreadCount((c) => Math.max(0, c - 1));
+      setTotalNotificationCount((c) => Math.max(0, c - 1));
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const hoverRemoveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const handleNotificationHover = useCallback(
+    (n: UserNotification) => {
+      if (hoverRemoveTimeoutRef.current) clearTimeout(hoverRemoveTimeoutRef.current);
+      hoverRemoveTimeoutRef.current = setTimeout(() => markReadAndRemove(n), 400);
+    },
+    [markReadAndRemove]
+  );
+  const handleNotificationHoverEnd = useCallback(() => {
+    if (hoverRemoveTimeoutRef.current) {
+      clearTimeout(hoverRemoveTimeoutRef.current);
+      hoverRemoveTimeoutRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!showNotificationDropdown || notifications.length === 0) return;
+    const unread = notifications.filter((n) => !n.read);
+    if (unread.length === 0) return;
+    const unreadIds = new Set(unread.map((n) => n.id));
+    let cancelled = false;
+    (async () => {
+      for (const n of unread) {
+        if (cancelled) return;
+        try {
+          await fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" });
+        } catch {
+          // ignore
+        }
+      }
+      if (!cancelled) {
+        setNotifications((prev) => prev.filter((x) => !unreadIds.has(x.id)));
+        setUnreadCount(0);
+        setTotalNotificationCount((prev) => Math.max(0, prev - unread.length));
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [showNotificationDropdown, notifications]);
+
   const handleNotificationClick = async (n: UserNotification) => {
     if (!n.read) {
       try {
         await fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" });
-        setNotifications((prev) => prev.map((x) => (x.id === n.id ? { ...x, read: true } : x)));
+        setNotifications((prev) => prev.filter((x) => x.id !== n.id));
         setUnreadCount((c) => Math.max(0, c - 1));
+        setTotalNotificationCount((c) => Math.max(0, c - 1));
       } catch {
         // ignore
       }
@@ -109,6 +161,41 @@ export default function Header() {
       }
     } catch {
       // ignore
+    }
+  };
+
+  const [markingAllRead, setMarkingAllRead] = useState(false);
+  const [clearingAll, setClearingAll] = useState(false);
+  const handleMarkAllRead = async () => {
+    const unread = notifications.filter((n) => !n.read);
+    if (unread.length === 0) return;
+    setMarkingAllRead(true);
+    try {
+      await Promise.all(
+        unread.map((n) => fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" }))
+      );
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+      setUnreadCount(0);
+    } catch {
+      // ignore
+    } finally {
+      setMarkingAllRead(false);
+    }
+  };
+  const handleClearAllNotifications = async () => {
+    if (notifications.length === 0) return;
+    setClearingAll(true);
+    try {
+      await Promise.all(
+        notifications.map((n) => fetch(`/api/notifications/${n.id}`, { method: "DELETE", credentials: "include" }))
+      );
+      setNotifications([]);
+      setUnreadCount(0);
+      setTotalNotificationCount(0);
+    } catch {
+      // ignore
+    } finally {
+      setClearingAll(false);
     }
   };
 
@@ -248,6 +335,28 @@ export default function Header() {
                       <div className="max-h-[20rem] overflow-y-auto bg-white rounded-xl shadow-lg py-2 border border-gray-200 w-full">
                         <div className="px-4 py-2 border-b border-gray-100">
                           <h3 className="font-medium text-gray-900">Notifications</h3>
+                          {notifications.length > 0 && (
+                            <div className="flex items-center gap-3 mt-2">
+                              <button
+                                type="button"
+                                onClick={handleMarkAllRead}
+                                disabled={markingAllRead || notifications.every((n) => n.read)}
+                                className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                <CheckCheck className="w-3.5 h-3.5" />
+                                {markingAllRead ? "Marking…" : "Mark all read"}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={handleClearAllNotifications}
+                                disabled={clearingAll}
+                                className="text-xs text-gray-500 hover:text-gray-700 font-medium flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                                {clearingAll ? "Clearing…" : "Clear all"}
+                              </button>
+                            </div>
+                          )}
                         </div>
                         {notifications.length === 0 ? (
                           <p className="px-4 py-6 text-sm text-gray-500 text-center">No notifications yet</p>
@@ -258,6 +367,8 @@ export default function Header() {
                                 <button
                                   type="button"
                                   onClick={() => handleNotificationClick(n)}
+                                  onMouseEnter={() => handleNotificationHover(n)}
+                                  onMouseLeave={handleNotificationHoverEnd}
                                   className={`w-full text-left px-4 py-3 pr-10 hover:bg-gray-50 ${!n.read ? "bg-primary-50/50" : ""}`}
                                 >
                                   <div className="flex items-start justify-between gap-2">

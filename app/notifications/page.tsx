@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { Bell, CheckCircle2, Trash2 } from "lucide-react";
+import { Bell, CheckCircle2, Trash2, CheckCheck } from "lucide-react";
 
 interface UserNotification {
   id: string;
@@ -19,11 +19,76 @@ interface UserNotification {
 
 const NOTIFICATIONS_PAGE_LIMIT = 200;
 
+function NotificationListItem({
+  notification: n,
+  onMarkReadAndRemove,
+  onHover,
+  onHoverEnd,
+  onClick,
+  onRemove,
+  formatDate,
+}: {
+  notification: UserNotification;
+  onMarkReadAndRemove: (n: UserNotification) => void;
+  onHover: (n: UserNotification) => void;
+  onHoverEnd: () => void;
+  onClick: (n: UserNotification) => void;
+  onRemove: (e: React.MouseEvent, n: UserNotification) => void;
+  formatDate: (iso: string) => string;
+}) {
+  const ref = useRef<HTMLLIElement>(null);
+  useEffect(() => {
+    if (n.read) return;
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) onMarkReadAndRemove(n);
+      },
+      { threshold: 0.5, rootMargin: "0px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [n.id, n.read, onMarkReadAndRemove, n]);
+
+  return (
+    <li ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => onClick(n)}
+        onMouseEnter={() => onHover(n)}
+        onMouseLeave={onHoverEnd}
+        className={`w-full text-left bg-white rounded-xl border border-gray-200 p-4 pr-12 transition-colors hover:bg-primary-50/30 hover:border-primary-200 ${!n.read ? "border-primary-200 bg-primary-50/20" : ""}`}
+      >
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-success-100 flex items-center justify-center text-success-600">
+            <CheckCircle2 className="w-5 h-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="font-medium text-gray-900">{n.title}</p>
+            <p className="text-sm text-gray-600 mt-0.5">{n.body}</p>
+            <p className="text-xs text-gray-400 mt-2">{formatDate(n.createdAt)}</p>
+          </div>
+        </div>
+      </button>
+      <button
+        type="button"
+        onClick={(e) => onRemove(e, n)}
+        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+        aria-label="Remove notification"
+      >
+        <Trash2 className="w-4 h-4" />
+      </button>
+    </li>
+  );
+}
+
 export default function NotificationsPage() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const [notifications, setNotifications] = useState<UserNotification[]>([]);
   const [loading, setLoading] = useState(true);
+  const hoverRemoveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -41,12 +106,35 @@ export default function NotificationsPage() {
     return () => { cancelled = true; };
   }, [user, isLoading, router]);
 
+  const markReadAndRemove = useCallback(async (n: UserNotification) => {
+    if (n.read) return;
+    try {
+      await fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" });
+      setNotifications((prev) => prev.filter((x) => x.id !== n.id));
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const handleNotificationHover = useCallback(
+    (n: UserNotification) => {
+      if (hoverRemoveTimeoutRef.current) clearTimeout(hoverRemoveTimeoutRef.current);
+      hoverRemoveTimeoutRef.current = setTimeout(() => markReadAndRemove(n), 400);
+    },
+    [markReadAndRemove]
+  );
+  const handleNotificationHoverEnd = useCallback(() => {
+    if (hoverRemoveTimeoutRef.current) {
+      clearTimeout(hoverRemoveTimeoutRef.current);
+      hoverRemoveTimeoutRef.current = null;
+    }
+  }, []);
+
   const handleClick = async (n: UserNotification) => {
-    // Mark as read when user views (clicks) the notification; it stays in the list
     if (!n.read) {
       try {
         await fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" });
-        setNotifications((prev) => prev.map((x) => (x.id === n.id ? { ...x, read: true } : x)));
+        setNotifications((prev) => prev.filter((x) => x.id !== n.id));
       } catch {
         // ignore
       }
@@ -67,6 +155,39 @@ export default function NotificationsPage() {
       if (res.ok) setNotifications((prev) => prev.filter((x) => x.id !== n.id));
     } catch {
       // ignore
+    }
+  };
+
+  const [markingAllRead, setMarkingAllRead] = useState(false);
+  const [clearingAll, setClearingAll] = useState(false);
+  const unreadCount = notifications.filter((n) => !n.read).length;
+  const handleMarkAllRead = async () => {
+    if (unreadCount === 0) return;
+    setMarkingAllRead(true);
+    try {
+      const unread = notifications.filter((n) => !n.read);
+      await Promise.all(
+        unread.map((n) => fetch(`/api/notifications/${n.id}`, { method: "PATCH", credentials: "include" }))
+      );
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    } catch {
+      // ignore
+    } finally {
+      setMarkingAllRead(false);
+    }
+  };
+  const handleClearAll = async () => {
+    if (notifications.length === 0) return;
+    setClearingAll(true);
+    try {
+      await Promise.all(
+        notifications.map((n) => fetch(`/api/notifications/${n.id}`, { method: "DELETE", credentials: "include" }))
+      );
+      setNotifications([]);
+    } catch {
+      // ignore
+    } finally {
+      setClearingAll(false);
     }
   };
 
@@ -96,9 +217,33 @@ export default function NotificationsPage() {
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-2xl font-semibold text-gray-900">Notifications</h1>
-            <Link href="/my-campaigns" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
-              My Campaigns
-            </Link>
+            <div className="flex items-center gap-3">
+              {notifications.length > 0 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleMarkAllRead}
+                    disabled={markingAllRead || unreadCount === 0}
+                    className="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <CheckCheck className="w-4 h-4" />
+                    {markingAllRead ? "Marking…" : "Mark all read"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleClearAll}
+                    disabled={clearingAll}
+                    className="text-sm text-gray-600 hover:text-gray-800 font-medium flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    {clearingAll ? "Clearing…" : "Clear all"}
+                  </button>
+                </>
+              )}
+              <Link href="/my-campaigns" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
+                My Campaigns
+              </Link>
+            </div>
           </div>
           <p className="text-gray-500 text-sm mb-6">Your notification history. Newest first.</p>
 
@@ -121,32 +266,16 @@ export default function NotificationsPage() {
           ) : (
             <ul className="space-y-2">
               {notifications.map((n) => (
-                <li key={n.id} className="relative">
-                  <button
-                    type="button"
-                    onClick={() => handleClick(n)}
-                    className={`w-full text-left bg-white rounded-xl border border-gray-200 p-4 pr-12 transition-colors hover:bg-primary-50/30 hover:border-primary-200 ${!n.read ? "border-primary-200 bg-primary-50/20" : ""}`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-success-100 flex items-center justify-center text-success-600">
-                        <CheckCircle2 className="w-5 h-5" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="font-medium text-gray-900">{n.title}</p>
-                        <p className="text-sm text-gray-600 mt-0.5">{n.body}</p>
-                        <p className="text-xs text-gray-400 mt-2">{formatDate(n.createdAt)}</p>
-                      </div>
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => handleRemove(e, n)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                    aria-label="Remove notification"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </li>
+                <NotificationListItem
+                  key={n.id}
+                  notification={n}
+                  onMarkReadAndRemove={markReadAndRemove}
+                  onHover={handleNotificationHover}
+                  onHoverEnd={handleNotificationHoverEnd}
+                  onClick={handleClick}
+                  onRemove={handleRemove}
+                  formatDate={formatDate}
+                />
               ))}
             </ul>
           )}
