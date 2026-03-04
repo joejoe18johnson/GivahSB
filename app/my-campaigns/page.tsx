@@ -545,7 +545,7 @@ export default function MyCampaignsPage() {
                         <ArrowRight className="w-4 h-4" />
                         View Campaign Donations
                       </Link>
-                      {!isStopped && (
+                      {!isStopped && !goalReached && (
                         <Link
                           href={`/my-campaigns/${campaign.id}/edit`}
                           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary-50 text-primary-700 hover:bg-primary-100 text-sm font-medium transition-colors"
@@ -555,7 +555,16 @@ export default function MyCampaignsPage() {
                           Edit campaign
                         </Link>
                       )}
-                      {!isStopped && (
+                      {goalReached && (
+                        <span
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed"
+                          title="Not available after goal is reached"
+                        >
+                          <FileText className="w-4 h-4" />
+                          Edit campaign
+                        </span>
+                      )}
+                      {!isStopped && !goalReached && (
                         <button
                           type="button"
                           onClick={(e) => handleStop(e, campaign.id)}
@@ -565,14 +574,33 @@ export default function MyCampaignsPage() {
                           Stop campaign
                         </button>
                       )}
-                      <button
-                        type="button"
-                        onClick={(e) => handleDelete(e, campaign.id)}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 text-sm font-medium transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        Delete campaign
-                      </button>
+                      {goalReached && (
+                        <span
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed"
+                          title="Not available after goal is reached"
+                        >
+                          <StopCircle className="w-4 h-4" />
+                          Stop campaign
+                        </span>
+                      )}
+                      {!goalReached ? (
+                        <button
+                          type="button"
+                          onClick={(e) => handleDelete(e, campaign.id)}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 text-sm font-medium transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Delete campaign
+                        </button>
+                      ) : (
+                        <span
+                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed"
+                          title="Not available after goal is reached"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Delete campaign
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
