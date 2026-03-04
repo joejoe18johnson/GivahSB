@@ -382,13 +382,15 @@ export async function recordDonationAndUpdateCampaign(
 ): Promise<string> {
   const { data: camp, error: campErr } = await supabase
     .from("campaigns")
-    .select("goal, raised, backers, reference_number")
+    .select("goal, raised, backers, reference_number, creator_id, title")
     .eq("id", campaignId)
     .single();
   if (campErr || !camp) throw new Error("Campaign not found");
   const goal = Number(camp.goal) || 0;
   const raised = Number(camp.raised) || 0;
   const backers = Number((camp as { backers?: number }).backers) || 0;
+  const creatorId = (camp as { creator_id?: string | null }).creator_id ?? null;
+  const campaignTitle = (camp as { title?: string | null }).title ?? "Your campaign";
   if (goal > 0 && raised >= goal) {
     throw new Error("Campaign has been fully funded. No further donations are accepted.");
   }
@@ -418,6 +420,16 @@ export async function recordDonationAndUpdateCampaign(
     })
     .eq("id", campaignId);
   if (updateErr) throw updateErr;
+  const newRaised = raised + donation.amount;
+  if (creatorId && goal > 0 && raised < goal && newRaised >= goal) {
+    await addNotification(supabase, creatorId, {
+      type: "goal_reached",
+      title: "Campaign Goal Has Been Reached",
+      body: `Congratulations! Your campaign "${campaignTitle}" has reached its fundraising goal. You can go to My Campaigns and request a payout to receive your funds.`,
+      campaignId,
+      read: false,
+    });
+  }
   return don.id;
 }
 
@@ -444,12 +456,15 @@ export async function approveDonation(
 
   const { data: camp, error: campFetchErr } = await supabase
     .from("campaigns")
-    .select("raised, backers")
+    .select("raised, backers, goal, creator_id, title")
     .eq("id", campaignId)
     .single();
   if (campFetchErr || !camp) throw new Error("Campaign not found or could not be read");
   const currentRaised = Number(camp.raised) || 0;
   const currentBackers = Number(camp.backers) || 0;
+  const goal = Number((camp as { goal?: number }).goal) || 0;
+  const creatorId = (camp as { creator_id?: string | null }).creator_id ?? null;
+  const campaignTitle = (camp as { title?: string | null }).title ?? "Your campaign";
   const newRaised = currentRaised + amount;
   const newBackers = currentBackers + 1;
 
@@ -462,6 +477,16 @@ export async function approveDonation(
     })
     .eq("id", campaignId);
   if (campUpdateErr) throw new Error(`Failed to update campaign totals: ${campUpdateErr.message}`);
+
+  if (creatorId && goal > 0 && currentRaised < goal && newRaised >= goal) {
+    await addNotification(supabase, creatorId, {
+      type: "goal_reached",
+      title: "Campaign Goal Has Been Reached",
+      body: `Congratulations! Your campaign "${campaignTitle}" has reached its fundraising goal. You can go to My Campaigns and request a payout to receive your funds.`,
+      campaignId,
+      read: false,
+    });
+  }
 }
 
 // Campaigns under review

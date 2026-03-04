@@ -404,9 +404,11 @@ export default function MyCampaignsPage() {
       ) : (
         <div className="space-y-6">
           {myCampaigns.map((campaign) => {
-            const progress = Math.min((campaign.raised / campaign.goal) * 100, 100);
+            const goal = Number(campaign.goal) || 0;
+            const raised = Number(campaign.raised) || 0;
+            const progress = goal > 0 ? Math.min((raised / goal) * 100, 100) : 0;
             const isStopped = stoppedIds.has(campaign.id);
-            const goalReached = campaign.goal > 0 && campaign.raised >= campaign.goal;
+            const goalReached = goal > 0 && raised >= goal - 0.01;
             return (
               <div
                 key={campaign.id}
@@ -477,9 +479,9 @@ export default function MyCampaignsPage() {
                       <div className="flex items-center gap-1.5 text-gray-700">
                         <DollarSign className="w-4 h-4 text-success-600" />
                         <span className="font-medium text-success-600">
-                          {formatCurrency(campaign.raised)}
+                          {formatCurrency(raised)}
                         </span>
-                        <span className="text-gray-500">/ {formatCurrency(campaign.goal)}</span>
+                        <span className="text-gray-500">/ {formatCurrency(goal)}</span>
                       </div>
                       <div className="flex items-center gap-1.5 text-gray-600">
                         <Users className="w-4 h-4" />

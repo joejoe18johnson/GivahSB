@@ -91,6 +91,7 @@ export default function Header() {
     setMobileMenuOpen(false);
     if (n.campaignId && n.type === "donation") router.push(`/my-campaigns/${n.campaignId}/donations`);
     else if (n.campaignId && n.type === "payout_completed") router.push("/my-campaigns");
+    else if (n.type === "goal_reached") router.push("/my-campaigns");
     else if (n.type === "verification_approved" || n.type === "verification_rejected") router.push("/verification-center");
     else if (n.campaignId) router.push(`/campaigns/${n.campaignId}`);
     else router.push("/my-campaigns");
