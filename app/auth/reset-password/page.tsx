@@ -131,7 +131,6 @@ function ResetPasswordContent() {
         return;
       }
       setStep("success");
-      setTimeout(() => router.replace("/auth/login?reset=success"), 2000);
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Something went wrong.");
     }
@@ -175,77 +174,89 @@ function ResetPasswordContent() {
     );
   }
 
-  if (step === "success") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
-          <h1 className="text-2xl font-medium text-gray-900 mb-4">Password updated</h1>
-          <p className="text-gray-600 mb-6">You can now sign in with your new password. Redirecting…</p>
-          <Link href="/auth/login" className="text-primary-600 hover:text-primary-700 font-medium">
-            Sign in
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  const showSuccessDialog = step === "success";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-medium text-gray-900 mb-2">Set new password</h1>
-          <p className="text-gray-600">Choose a secure password for your account.</p>
+    <>
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-medium text-gray-900 mb-2">Set new password</h1>
+            <p className="text-gray-600">Choose a secure password for your account.</p>
+          </div>
+
+          {message && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
+              {message}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium mb-2">
+                New password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                autoComplete="new-password"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+              />
+            </div>
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
+                Confirm new password
+              </label>
+              <input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                minLength={6}
+                autoComplete="new-password"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-primary-600 text-white px-8 py-3 rounded-full font-medium hover:bg-primary-700 transition-colors"
+            >
+              Update password
+            </button>
+          </form>
+          <p className="mt-6 text-center text-sm text-gray-500">
+            <Link href="/auth/login" className="text-primary-600 hover:text-primary-700">Back to sign in</Link>
+          </p>
         </div>
-
-        {message && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-sm">
-            {message}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-2">
-              New password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              autoComplete="new-password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
-            />
-          </div>
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
-              Confirm new password
-            </label>
-            <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              minLength={6}
-              autoComplete="new-password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900"
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-primary-600 text-white px-8 py-3 rounded-full font-medium hover:bg-primary-700 transition-colors"
-          >
-            Update password
-          </button>
-        </form>
-        <p className="mt-6 text-center text-sm text-gray-500">
-          <Link href="/auth/login" className="text-primary-600 hover:text-primary-700">Back to sign in</Link>
-        </p>
       </div>
-    </div>
+
+      {showSuccessDialog && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="success-dialog-title"
+        >
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8 text-center border border-gray-200">
+            <h2 id="success-dialog-title" className="text-xl font-semibold text-gray-900 mb-3">
+              Password has been reset
+            </h2>
+            <p className="text-gray-600 mb-6">You can now sign in with your new password.</p>
+            <Link
+              href="/auth/login?reset=success"
+              className="inline-block w-full py-3 px-6 bg-success-600 hover:bg-success-700 text-white font-medium rounded-full transition-colors"
+            >
+              Go to Sign In
+            </Link>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
