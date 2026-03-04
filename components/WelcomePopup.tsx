@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Heart, X } from "lucide-react";
+import Image from "next/image";
+import { X } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 const STORAGE_KEY = "givahbz_welcome_dismissed";
@@ -50,8 +51,14 @@ export default function WelcomePopup() {
             <X className="w-5 h-5" />
           </button>
           <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 rounded-full bg-primary-100 flex items-center justify-center">
-              <Heart className="w-7 h-7 text-primary-600" />
+            <div className="w-16 h-16 rounded-full bg-success-100 flex items-center justify-center overflow-hidden">
+              <Image
+                src="/givah-logo.png"
+                alt="Givah"
+                width={48}
+                height={48}
+                className="object-contain"
+              />
             </div>
           </div>
           <h2 id="welcome-title" className="text-2xl font-semibold text-center text-gray-900 mb-3">
@@ -66,7 +73,7 @@ export default function WelcomePopup() {
           <Link
             href="/campaigns/create"
             onClick={dismiss}
-            className="block w-full py-3 px-4 text-center font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-xl transition-colors"
+            className="block w-full py-3 px-4 text-center font-medium text-white bg-success-600 hover:bg-success-700 rounded-xl transition-colors"
           >
             Start your first campaign
           </Link>

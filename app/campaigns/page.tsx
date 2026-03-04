@@ -8,6 +8,13 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { TrendingUp } from "lucide-react";
 
+// Map filter label to DB category values (create form uses "Medical expenses" etc.; seed/legacy use "Medical", "Education", etc.)
+const CATEGORY_FILTER_MAP: Record<string, string[]> = {
+  "Medical expenses": ["Medical expenses", "Medical"],
+  "Educational support": ["Educational support", "Education"],
+  Other: ["Other", "Emergency", "Community"],
+};
+
 function CampaignsContent() {
   const categories = ["All", "Medical expenses", "Educational support", "Other"];
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -49,10 +56,14 @@ function CampaignsContent() {
     loadCampaigns();
   }, [filterParam]);
 
+  const allowedCategories =
+    selectedCategory === "All" ? null : CATEGORY_FILTER_MAP[selectedCategory];
   let filteredCampaigns =
-    selectedCategory === "All"
+    !allowedCategories
       ? campaigns
-      : campaigns.filter((c) => c.category === selectedCategory);
+      : campaigns.filter((c) =>
+          allowedCategories.includes(c.category?.trim() ?? "")
+        );
 
   // Apply search filter (title, description, creator, category)
   if (searchQuery) {
