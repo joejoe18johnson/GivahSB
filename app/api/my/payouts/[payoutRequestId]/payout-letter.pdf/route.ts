@@ -9,7 +9,10 @@ import {
   rgb,
   PDFPage,
   PDFFont,
+  PDFImage,
 } from "pdf-lib";
+import fs from "node:fs/promises";
+import path from "node:path";
 import { getSiteDomain } from "@/lib/siteConfig";
 
 export const dynamic = "force-dynamic";
@@ -22,14 +25,6 @@ const LINE_HEIGHT = 14;
 const PAYOUT_TITLE_SIZE = 22; // "PAYOUT DETAILS"
 const BODY_SIZE = 11;
 const SMALL_SIZE = 9;
-
-function safeFileName(s: string): string {
-  const cleaned = (s || "payout-letter")
-    .replace(/[^\w\s.-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-");
-  return cleaned || "payout-letter";
-}
 
 function drawWrappedText(
   page: PDFPage,
@@ -114,7 +109,8 @@ export async function GET(
   const bankLine = payout.account_type
     ? `${payout.bank_name} · ${payout.account_type}`
     : payout.bank_name;
-  const refDisplay = `REF: #${String(payoutRequestId).slice(-6).padStart(6, "0")}`;
+  const refNumber = String(payoutRequestId).slice(-6).padStart(6, "0");
+  const refDisplay = `REF: #${refNumber}`;
 
   const doc = await PDFDocument.create();
   const page = doc.addPage([LETTER_WIDTH, LETTER_HEIGHT]);
@@ -126,7 +122,25 @@ export async function GET(
   let y = LETTER_HEIGHT - MARGIN;
   const contentWidth = LETTER_WIDTH - 2 * MARGIN;
 
-  // Header: REF top right only
+  // Header: logo (top left) + REF (top right)
+  let logoImage: PDFImage | null = null;
+  try {
+    const logoPath = path.join(process.cwd(), "public", "givah-logo.png");
+    const logoBytes = await fs.readFile(logoPath);
+    logoImage = await doc.embedPng(logoBytes);
+  } catch {
+    // no logo
+  }
+  const logoH = 36;
+  if (logoImage) {
+    const logoW = (logoImage.width / logoImage.height) * logoH;
+    page.drawImage(logoImage, {
+      x: MARGIN,
+      y: y - logoH,
+      width: logoW,
+      height: logoH,
+    });
+  }
   const refWidth = helvetica.widthOfTextAtSize(refDisplay, BODY_SIZE);
   page.drawText(refDisplay, {
     x: LETTER_WIDTH - MARGIN - refWidth,
@@ -135,7 +149,7 @@ export async function GET(
     font: helvetica,
     color: dark,
   });
-  y -= 80; // space below REF + extra space above PAYOUT DETAILS
+  y -= 80; // space below header + extra space above PAYOUT DETAILS
 
   // PAYOUT DETAILS (large title) + thin gray line
   page.drawText("PAYOUT DETAILS", {
@@ -244,7 +258,7 @@ export async function GET(
   });
 
   const pdfBytes = await doc.save();
-  const fileName = `payout-letter-${safeFileName(campaignTitle)}.pdf`;
+  const fileName = `Givahbz_Payout-Letter-${refNumber}.pdf`;
   const body = Buffer.from(pdfBytes);
 
   return new NextResponse(body, {
