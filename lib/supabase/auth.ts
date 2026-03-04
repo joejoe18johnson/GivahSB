@@ -117,10 +117,17 @@ export async function signUpWithEmailSupabase(
   name: string,
   phoneNumber?: string
 ): Promise<UserProfile> {
+  const emailRedirectTo =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/auth/login`
+      : undefined;
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { name, phone_number: phoneNumber?.trim() || null } },
+    options: {
+      data: { name, phone_number: phoneNumber?.trim() || null },
+      ...(emailRedirectTo ? { emailRedirectTo } : {}),
+    },
   });
   if (error) throw error;
   if (!data.user) throw new Error("Sign up failed");

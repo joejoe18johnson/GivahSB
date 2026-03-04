@@ -67,13 +67,8 @@ function SignupContent() {
       return;
     }
     
-    const success = await signup(
-      formData.email,
-      formData.password,
-      formData.name
-    );
-    
-    if (success) {
+    try {
+      await signup(formData.email, formData.password, formData.name);
       if (typeof window !== "undefined") {
         sessionStorage.setItem("signup_redirect_profile", "1");
       }
@@ -83,8 +78,21 @@ function SignupContent() {
           { title: "Verify to create campaigns", variant: "info" }
         );
       }, 300);
-    } else {
-      setError("Account creation failed. Please try again.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "";
+      const raw =
+        err && typeof err === "object" && "message" in err && typeof (err as { message: string }).message === "string"
+          ? (err as { message: string }).message
+          : msg || "Account creation failed. Please try again.";
+
+      // Supabase often throws: "Error sending confirmation email" when SMTP is not configured.
+      if (/confirmation email/i.test(raw) || /Error sending confirmation email/i.test(raw)) {
+        setError(
+          "Email sign-up is failing because the verification email can’t be sent. Fix this in Supabase Dashboard → Authentication → SMTP settings (configure a provider), or disable “Confirm email” for testing."
+        );
+      } else {
+        setError(raw);
+      }
     }
   };
 

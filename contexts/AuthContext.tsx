@@ -173,16 +173,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
     name: string,
     phoneNumber?: string
-  ): Promise<boolean> => {
-    try {
-      const supabase = createClient();
-      const profile = await signUpWithEmailSupabase(supabase, email, password, name, phoneNumber);
-      setUser(profileToUser(profile));
-      return true;
-    } catch (e) {
-      console.error("Signup error:", e);
-      return false;
-    }
+  ): Promise<void> => {
+    const supabase = createClient();
+    const profile = await signUpWithEmailSupabase(supabase, email, password, name, phoneNumber);
+    setUser(profileToUser(profile));
   };
 
   const requestPasswordReset = async (email: string): Promise<void> => {
