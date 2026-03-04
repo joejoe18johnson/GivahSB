@@ -316,8 +316,8 @@ export default function VerificationCenterPage() {
     setAddressDocumentFile(file);
   };
 
-  const idRejected = !!(user?.idDocument && !user.idVerified && !user.idPending);
-  const addressRejected = !!(user?.addressDocument && !user.addressVerified && !user.addressPending);
+  const idRejected = !!(!user?.idVerified && !user?.idPending && idRejectionReason);
+  const addressRejected = !!(!user?.addressVerified && !user?.addressPending && addressRejectionReason);
   const idBlocked = user?.idVerified || (user?.idPending === true && !!user?.idDocument);
 
   if (isLoading) {

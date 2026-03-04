@@ -1071,10 +1071,17 @@ export async function setIdVerified(
   userId: string,
   verified: boolean
 ): Promise<void> {
-  await supabase
-    .from("profiles")
-    .update({ id_verified: verified, id_pending: false, updated_at: new Date().toISOString() })
-    .eq("id", userId);
+  const update: Record<string, unknown> = {
+    id_verified: verified,
+    id_pending: false,
+    updated_at: new Date().toISOString(),
+  };
+  if (!verified) {
+    // When ID is rejected, clear the stored document so the user must upload a new one.
+    update.id_document = null;
+    update.id_document_type = null;
+  }
+  await supabase.from("profiles").update(update).eq("id", userId);
 }
 
 export async function setAddressVerified(
@@ -1082,10 +1089,16 @@ export async function setAddressVerified(
   userId: string,
   verified: boolean
 ): Promise<void> {
-  await supabase
-    .from("profiles")
-    .update({ address_verified: verified, address_pending: false, updated_at: new Date().toISOString() })
-    .eq("id", userId);
+  const update: Record<string, unknown> = {
+    address_verified: verified,
+    address_pending: false,
+    updated_at: new Date().toISOString(),
+  };
+  if (!verified) {
+    // When address is rejected, clear the stored document so the user must upload a new one.
+    update.address_document = null;
+  }
+  await supabase.from("profiles").update(update).eq("id", userId);
 }
 
 export async function setUserStatus(
