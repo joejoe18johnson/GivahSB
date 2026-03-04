@@ -158,10 +158,10 @@ export async function GET(
   // Key-value fields
   const meta = [
     { label: "Campaign", value: campaignTitle },
-    { label: "Amount paid out", value: amount },
+    { label: "Amount Paid Out", value: amount },
     { label: "Bank", value: bankLine },
-    { label: "Account holder", value: payout.account_holder_name },
-    { label: "Account number", value: maskedAccount },
+    { label: "Account Holder", value: payout.account_holder_name },
+    { label: "Account Number", value: maskedAccount },
     { label: "Branch", value: payout.branch || "—" },
   ];
   for (const { label, value } of meta) {
