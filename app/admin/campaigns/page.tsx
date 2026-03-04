@@ -316,7 +316,7 @@ export default function AdminCampaignsPage() {
                   </button>
                 </th>
                 <th className="px-5 py-3 font-medium">Actions</th>
-                <th className="px-5 py-3 font-medium">ID</th>
+                <th className="px-5 py-3 font-medium">UUID</th>
               </tr>
             </thead>
             <tbody>
@@ -435,7 +435,7 @@ export default function AdminCampaignsPage() {
             {campaigns.map((c) => (
               <div key={c.id} className="px-5 py-4">
                 <p className="font-medium text-gray-900 mb-2">
-                  {c.title} <span className="text-gray-500 font-normal">(ID: {c.id})</span>
+                  {c.title} <span className="text-gray-500 font-normal">(Campaign ID: {c.id.slice(-6).toUpperCase()})</span>
                 </p>
                 {c.proofDocuments && c.proofDocuments.length > 0 ? (
                   <ul className="text-sm text-gray-600 space-y-1">
