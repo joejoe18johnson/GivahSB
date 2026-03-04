@@ -18,7 +18,10 @@ interface BaseEmailParams {
 
 async function sendEmailViaResend(params: BaseEmailParams): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM ?? "noreply@example.com";
+  const fromEnv = process.env.EMAIL_FROM ?? "noreply@example.com";
+  // Some users accidentally configure multiple addresses (e.g. "a@example.com,b@example.com").
+  // Resend requires a single from address, optionally with a name, so we take the first entry.
+  const from = fromEnv.split(",")[0].trim();
 
   const toArray = Array.isArray(params.to) ? params.to.filter(Boolean) : [params.to].filter(Boolean);
   if (!toArray.length) return;

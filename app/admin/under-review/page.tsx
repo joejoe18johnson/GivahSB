@@ -247,15 +247,15 @@ export default function AdminUnderReviewPage() {
               </div>
 
               <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-1">Short description</h4>
+                <h4 className="text-sm font-medium text-gray-700 mb-1">Short summary</h4>
                 <p className="text-gray-600 text-sm">{selectedCampaign.description}</p>
               </div>
-              {(selectedCampaign.fullDescription || "") !== (selectedCampaign.description || "") && selectedCampaign.fullDescription && (
-                <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-1">Full description</h4>
-                  <p className="text-gray-600 text-sm whitespace-pre-wrap">{selectedCampaign.fullDescription}</p>
-                </div>
-              )}
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-1">Full story</h4>
+                <p className="text-gray-600 text-sm whitespace-pre-wrap">
+                  {selectedCampaign.fullDescription || selectedCampaign.description}
+                </p>
+              </div>
 
               <div>
                 <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
