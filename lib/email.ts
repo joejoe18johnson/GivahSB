@@ -319,6 +319,43 @@ export async function sendCampaignGoalReachedEmail(
   });
 }
 
+// Creator-facing: someone donated to your campaign
+
+export interface DonationReceivedEmailParams {
+  to: string;
+  creatorName: string;
+  campaignTitle: string;
+  amount: number;
+  /** "Anonymous" or donor name (never expose donor email to creator). */
+  donorDisplay: string;
+  status: "pending" | "completed";
+}
+
+export async function sendDonationReceivedEmail(
+  params: DonationReceivedEmailParams
+): Promise<void> {
+  const { to, creatorName, campaignTitle, amount, donorDisplay, status } = params;
+  if (!to) return;
+
+  const amountStr = `BZ$${Number(amount || 0).toLocaleString()}`;
+  const statusNote =
+    status === "pending"
+      ? " This donation is pending and will count toward your campaign once an admin approves it."
+      : "";
+
+  await sendEmailViaResend({
+    to,
+    subject: `New donation to ${campaignTitle}`,
+    html: wrapEmailWithTemplate(`
+      <p style="margin:0 0 1em;">Hi ${creatorName || "there"},</p>
+      <p style="margin:0 0 1em;">Someone just donated to your campaign &quot;${campaignTitle}&quot;.</p>
+      <p style="margin:0 0 1em;"><strong>Amount:</strong> ${amountStr}<br/><strong>From:</strong> ${donorDisplay}</p>
+      <p style="margin:0 0 1em;">You can see all donations and track your progress in My Campaigns.${statusNote}</p>
+      <p style="margin:0;">Thank you for using Givah to share your cause with the community.</p>
+    `),
+  });
+}
+
 // Donor-facing: donation receipt (single donation)
 
 export interface DonationReceiptEmailParams {
