@@ -337,6 +337,9 @@ export default function CreateCampaignPage() {
       }
       const createData = await res.json().catch(() => ({})) as { id?: string };
       const underReviewId = typeof createData.id === "string" ? createData.id : null;
+      if (!underReviewId) {
+        throw new Error("Campaign was created but no review reference was returned. Please try again or contact support.");
+      }
 
       const proofUploadUrl = typeof window !== "undefined" ? `${window.location.origin}/api/upload-proof-document` : "/api/upload-proof-document";
       const proofUrls: string[] = [];
