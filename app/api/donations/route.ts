@@ -43,7 +43,9 @@ export async function POST(request: NextRequest) {
   const method = (body.method === "bank" || body.method === "digiwallet" || body.method === "ekyash")
     ? body.method
     : "bank";
-  const status = (body.status === "completed" || body.status === "pending") ? body.status : "pending";
+  // All incoming donations are initially recorded as pending.
+  // Campaign totals are only updated when an admin explicitly approves the donation.
+  const status: "pending" = "pending";
   const note = typeof body.note === "string" ? body.note.trim().slice(0, 100) : undefined;
   const referenceNumber = typeof body.referenceNumber === "string" ? body.referenceNumber.trim() : undefined;
   const campaignTitle = typeof body.campaignTitle === "string" ? body.campaignTitle : "";
@@ -71,12 +73,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const supabase = getSupabaseAdmin()!;
-    let donationId: string;
-    if (status === "pending") {
-      donationId = await createDonation(supabase, donation);
-    } else {
-      donationId = await recordDonationAndUpdateCampaign(supabase, donation, campaignId);
-    }
+    const donationId = await createDonation(supabase, donation);
     // Notify campaign creator about the new donation (one notification per donation)
     const { data: camp } = await supabase.from("campaigns").select("creator_id, title").eq("id", campaignId).single();
     const creatorId = camp && typeof (camp as { creator_id: string | null }).creator_id === "string" ? (camp as { creator_id: string }).creator_id : null;
