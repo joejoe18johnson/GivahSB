@@ -244,7 +244,7 @@ export default function Header() {
                   </button>
                   {showNotificationDropdown && (
                     <div className="absolute right-0 top-full mt-1 w-80 z-[100]">
-                      <div className="max-h-[20rem] overflow-y-auto bg-white rounded-xl shadow-lg py-2 gradient-border-1 w-full">
+                      <div className="max-h-[20rem] overflow-y-auto bg-white rounded-xl shadow-lg py-2 border border-gray-200 w-full">
                         <div className="px-4 py-2 border-b border-gray-100">
                           <h3 className="font-medium text-gray-900">Notifications</h3>
                         </div>
