@@ -250,10 +250,10 @@ export default function Header() {
   }, [heartedIds.length]);
 
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
     setShowUserMenu(false);
     setMobileMenuOpen(false);
+    await logout();
   };
 
   const closeMobileMenu = () => setMobileMenuOpen(false);

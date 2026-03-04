@@ -51,15 +51,13 @@ export default function WelcomePopup() {
             <X className="w-5 h-5" />
           </button>
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 rounded-full bg-success-100 flex items-center justify-center overflow-hidden">
-              <Image
-                src="/givah-logo.png"
-                alt="Givah"
-                width={48}
-                height={48}
-                className="object-contain"
-              />
-            </div>
+            <Image
+              src="/givah-logo.png"
+              alt="Givah"
+              width={144}
+              height={144}
+              className="object-contain"
+            />
           </div>
           <h2 id="welcome-title" className="text-2xl font-semibold text-center text-gray-900 mb-3">
             Welcome to {content.siteName}

@@ -225,9 +225,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const supabase = createClient();
       await signOutSupabase(supabase);
       setUser(null);
+      router.refresh();
       router.push("/");
     } catch (e) {
       console.error("Logout error:", e);
+      setUser(null);
+      router.refresh();
+      router.push("/");
     }
   };
 
