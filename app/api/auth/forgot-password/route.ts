@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
 
   const email = typeof body.email === "string" ? body.email.trim() : "";
   if (!email) {
+    console.warn("[forgot-password] 400: Email is required.");
     return NextResponse.json(
       { error: "Email is required." },
       { status: 400 }
@@ -47,18 +48,49 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
-      const msg = error.message || "Failed to send reset email.";
+      const raw = error.message || "";
+      console.error("[forgot-password] 400 Supabase:", raw, "| redirectTo:", redirectTo);
       // Don't reveal whether the email exists; treat rate limit and other errors consistently
-      if (error.message?.toLowerCase().includes("rate limit") || error.message?.toLowerCase().includes("too many")) {
+      if (raw.toLowerCase().includes("rate limit") || raw.toLowerCase().includes("too many")) {
         return NextResponse.json(
           { error: "Too many attempts. Please try again in a few minutes." },
           { status: 429 }
         );
       }
-      return NextResponse.json(
-        { error: msg },
-        { status: 400 }
-      );
+      // Redirect URL not whitelisted in Supabase → show actionable message
+      if (
+        raw.toLowerCase().includes("redirect") ||
+        raw.toLowerCase().includes("redirect_to") ||
+        (raw.toLowerCase().includes("url") && raw.toLowerCase().includes("allow"))
+      ) {
+        return NextResponse.json(
+          {
+            error:
+              "Password reset is misconfigured: the reset link URL is not allowed. Add " +
+              redirectTo +
+              " to Supabase Dashboard → Authentication → URL Configuration → Redirect URLs, then try again.",
+          },
+          { status: 400 }
+        );
+      }
+      // Supabase couldn't send the email (SMTP not configured or failing, e.g. Resend)
+      if (
+        raw.toLowerCase().includes("recovery email") ||
+        (raw.toLowerCase().includes("sending") && raw.toLowerCase().includes("email")) ||
+        (raw.toLowerCase().includes("send") && raw.toLowerCase().includes("mail"))
+      ) {
+        return NextResponse.json(
+          {
+            error:
+              "The reset email could not be sent. In Supabase Dashboard go to Project Settings → Auth → SMTP, enable Custom SMTP, and add your Resend credentials (see docs/SUPABASE_RESEND_SMTP.md in the repo).",
+          },
+          { status: 503 }
+        );
+      }
+      // User-friendly message for other Supabase errors (e.g. invalid email format)
+      const msg = raw || "Could not send reset email. Please check the email address and try again.";
+      console.error("[forgot-password] 400 returning:", msg);
+      return NextResponse.json({ error: msg }, { status: 400 });
     }
 
     return NextResponse.json({ success: true });

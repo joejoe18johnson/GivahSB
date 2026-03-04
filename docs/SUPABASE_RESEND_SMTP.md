@@ -58,3 +58,16 @@ The default templates use Supabase placeholders (e.g. `{{ .ConfirmationURL }}`).
 - **Resend API** (app code): used by the app for donation receipts, payout emails, etc. (see `lib/email.ts` and `RESEND_API_KEY` / `EMAIL_FROM` in `.env`).
 
 Both can use the same Resend account and domain; one is configured in Supabase, the other in your app env.
+
+---
+
+## Troubleshooting: "Error sending recovery email"
+
+If you see **"Error sending recovery email"** when using forgot password (or similar when confirming signup), Supabase is trying to send the email but failing. Fix it by:
+
+1. **Enabling Custom SMTP** in Supabase: **Project Settings** → **Auth** → **SMTP Settings** → turn on **Custom SMTP**.
+2. **Using Resend’s SMTP** with the values in the table above (Host `smtp.resend.com`, Username `resend`, Password = your Resend API key, Port `465` or `587`).
+3. **Sender email** must use a domain you’ve **verified in Resend** (e.g. `noreply@givahbz.com`). If the domain isn’t verified, Resend will reject the send.
+4. **Save** the SMTP settings in Supabase and try the forgot-password flow again.
+
+Until Custom SMTP is set up and working, Supabase cannot send recovery or confirmation emails.
