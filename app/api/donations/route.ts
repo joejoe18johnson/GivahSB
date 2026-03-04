@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseUserFromRequest } from "@/lib/supabase/auth-server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { recordDonationAndUpdateCampaign, createDonation, addNotification } from "@/lib/supabase/database";
+import { sendDonationReceiptEmail } from "@/lib/email";
 import type { AdminDonation } from "@/lib/adminData";
 
 export const dynamic = "force-dynamic";
@@ -90,6 +91,21 @@ export async function POST(request: NextRequest) {
         read: false,
       });
     }
+
+    // Donor-facing email receipt (optional)
+    if (donorEmail) {
+      await sendDonationReceiptEmail({
+        to: donorEmail,
+        donorName,
+        campaignTitle: titleForNotification || campaignTitle || "Campaign",
+        amount,
+        method,
+        referenceNumber,
+        note,
+        status,
+      });
+    }
+
     return NextResponse.json({ success: true, donationId });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Failed to record donation.";
