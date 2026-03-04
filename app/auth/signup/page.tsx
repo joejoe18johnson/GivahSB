@@ -121,6 +121,7 @@ function SignupContent() {
                 try {
                   if (typeof window !== "undefined") {
                     sessionStorage.setItem("auth_callback_url", "/my-campaigns");
+                    document.cookie = `auth_redirect_path=${encodeURIComponent("/my-campaigns")}; path=/; max-age=600; SameSite=Lax`;
                   }
                   await loginWithGoogle();
                   // Redirect is handled by useEffect when user and adminCheckDone update (admins → /admin, others → /my-campaigns)

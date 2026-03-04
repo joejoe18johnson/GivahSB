@@ -101,14 +101,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     (async () => {
       const supabase = createClient();
       const timeout = setTimeout(() => setIsLoading(false), 10000); // safety: stop loading after 10s
+      const delays = [0, 400, 1000]; // retry so OAuth redirect cookies are visible
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          try {
-            const profile = await supabaseUserToProfile(supabase, session.user);
-            if (profile) setUser(profileToUser(profile));
-          } catch {
-            // ignore
+        for (const delay of delays) {
+          if (delay > 0) await new Promise((r) => setTimeout(r, delay));
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user) {
+            try {
+              const profile = await supabaseUserToProfile(supabase, session.user);
+              if (profile) setUser(profileToUser(profile));
+            } catch {
+              // ignore
+            }
+            break;
           }
         }
       } finally {
