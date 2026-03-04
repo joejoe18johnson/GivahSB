@@ -274,6 +274,9 @@ export default function MyCampaignsPage() {
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                      Campaign ID: {c.id.slice(-6).toUpperCase()}
+                    </span>
                     <span className="bg-amber-200 text-amber-900 px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5" />
                       Under review
@@ -348,6 +351,9 @@ export default function MyCampaignsPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                        Campaign ID: {campaign.id.slice(-6).toUpperCase()}
+                      </span>
                       <span className="bg-amber-200 text-amber-900 px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1">
                         <PauseCircle className="w-3.5 h-3.5" />
                         On hold
@@ -460,12 +466,17 @@ export default function MyCampaignsPage() {
                   </Link>
                   <div className="flex-1 p-5 md:p-6 flex flex-col">
                     <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
-                      <Link
-                        href={`/campaigns/${campaign.id}`}
-                        className="text-lg font-medium text-gray-900 hover:text-primary-600 transition-colors"
-                      >
-                        {campaign.title}
-                      </Link>
+                      <div>
+                        <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                          Campaign ID: {campaign.id.slice(-6).toUpperCase()}
+                        </span>
+                        <Link
+                          href={`/campaigns/${campaign.id}`}
+                          className="block text-lg font-medium text-gray-900 hover:text-primary-600 transition-colors"
+                        >
+                          {campaign.title}
+                        </Link>
+                      </div>
                       <Link
                         href={`/campaigns/${campaign.id}`}
                         className="inline-flex items-center text-gray-500 text-sm hover:text-primary-600"

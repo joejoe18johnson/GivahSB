@@ -10,6 +10,7 @@ import { formatCurrency } from "@/lib/utils";
 interface UserPayout {
   id: string;
   campaignId: string;
+  campaignDisplayId: string;
   campaignTitle: string;
   raised: number;
   bankName: string;
@@ -146,6 +147,7 @@ export default function MyPayoutsPage() {
                 <table className="min-w-full text-sm">
                   <thead className="bg-gray-50">
                     <tr>
+                      <th className="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">Campaign ID</th>
                       <th className="px-4 py-2 text-left font-medium text-gray-600">Campaign</th>
                       <th className="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">Requested on</th>
                       <th className="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">Amount</th>
@@ -156,6 +158,9 @@ export default function MyPayoutsPage() {
                   <tbody className="divide-y divide-gray-100">
                     {nonCompleted.map((p) => (
                       <tr key={p.id} className="hover:bg-gray-50/60">
+                        <td className="px-4 py-2 align-top whitespace-nowrap font-medium text-gray-900">
+                          {p.campaignDisplayId}
+                        </td>
                         <td className="px-4 py-2 align-top">
                           <div className="font-medium text-gray-900 line-clamp-2">{p.campaignTitle || "Campaign"}</div>
                         </td>
@@ -214,6 +219,7 @@ export default function MyPayoutsPage() {
                 <table className="min-w-full text-sm">
                   <thead className="bg-gray-50">
                     <tr>
+                      <th className="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">Campaign ID</th>
                       <th className="px-4 py-2 text-left font-medium text-gray-600">Campaign</th>
                       <th className="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">Completed on</th>
                       <th className="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">Amount paid out</th>
@@ -224,6 +230,9 @@ export default function MyPayoutsPage() {
                   <tbody className="divide-y divide-gray-100">
                     {completed.map((p) => (
                       <tr key={p.id} className="hover:bg-gray-50/60">
+                        <td className="px-4 py-2 align-top whitespace-nowrap font-medium text-gray-900">
+                          {p.campaignDisplayId}
+                        </td>
                         <td className="px-4 py-2 align-top">
                           <div className="font-medium text-gray-900 line-clamp-2">{p.campaignTitle || "Campaign"}</div>
                         </td>

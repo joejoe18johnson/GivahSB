@@ -101,10 +101,9 @@ export async function GET(
     .eq("id", payout.campaign_id)
     .single();
 
-  const campaignTitle =
-    (camp as { title?: string } | null)?.title ?? "Campaign";
   const raised = Number((camp as { raised?: number } | null)?.raised ?? 0);
   const amount = formatCurrency(raised);
+  const campaignDisplayId = String(payout.campaign_id).slice(-6).toUpperCase();
   const maskedAccount = `****${String(payout.account_number).slice(-4)}`;
   const bankLine = payout.account_type
     ? `${payout.bank_name} · ${payout.account_type}`
@@ -171,7 +170,7 @@ export async function GET(
 
   // Key-value fields
   const meta = [
-    { label: "Campaign", value: campaignTitle },
+    { label: "Campaign", value: campaignDisplayId },
     { label: "Amount Paid Out", value: amount },
     { label: "Bank", value: bankLine },
     { label: "Account Holder", value: payout.account_holder_name },

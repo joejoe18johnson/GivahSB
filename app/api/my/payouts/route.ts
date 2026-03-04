@@ -8,6 +8,7 @@ export const runtime = "nodejs";
 interface UserPayout {
   id: string;
   campaignId: string;
+  campaignDisplayId: string;
   campaignTitle: string;
   raised: number;
   bankName: string;
@@ -51,9 +52,11 @@ export async function GET(request: Request) {
     const accountNumber = String(p.account_number ?? "");
     const accountLast4 = accountNumber ? accountNumber.slice(-4) : "";
 
+    const campaignDisplayId = String(p.campaign_id).slice(-6).toUpperCase();
     payouts.push({
       id: p.id,
       campaignId: p.campaign_id,
+      campaignDisplayId,
       campaignTitle: title,
       raised,
       bankName: p.bank_name,
