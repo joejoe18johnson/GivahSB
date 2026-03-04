@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseUserFromRequest } from "@/lib/supabase/auth-server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { recordDonationAndUpdateCampaign, createDonation, addNotification } from "@/lib/supabase/database";
-import { sendDonationReceiptEmail, sendDonationReceivedEmail } from "@/lib/email";
+import { sendDonationReceiptEmail } from "@/lib/email";
 import type { AdminDonation } from "@/lib/adminData";
 
 export const dynamic = "force-dynamic";
@@ -87,23 +87,6 @@ export async function POST(request: NextRequest) {
         campaignId,
         read: false,
       });
-      // Email campaign creator that someone donated
-      const { data: creatorProfile } = await supabase
-        .from("profiles")
-        .select("email, name")
-        .eq("id", creatorId)
-        .single();
-      const creatorEmail = (creatorProfile as { email?: string } | null)?.email;
-      if (creatorEmail) {
-        await sendDonationReceivedEmail({
-          to: creatorEmail,
-          creatorName: (creatorProfile as { name?: string } | null)?.name ?? "there",
-          campaignTitle: titleForNotification || campaignTitle || "your campaign",
-          amount,
-          donorDisplay: anonymous ? "Anonymous" : (donorName || "Anonymous"),
-          status,
-        });
-      }
     }
 
     // Donor-facing email receipt (optional)

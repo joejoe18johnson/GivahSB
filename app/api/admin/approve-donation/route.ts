@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseUserFromRequest, getAdminEmails } from "@/lib/supabase/auth-server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { approveDonation } from "@/lib/supabase/database";
+import { sendDonationReceivedEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -59,6 +60,42 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = getSupabaseAdmin()!;
     await approveDonation(supabase, donationId);
+
+    // Notify campaign creator by email (only after admin approval)
+    const { data: don } = await supabase
+      .from("donations")
+      .select("campaign_id, amount, anonymous, donor_name")
+      .eq("id", donationId)
+      .single();
+    if (don) {
+      const camp = (await supabase
+        .from("campaigns")
+        .select("creator_id, title")
+        .eq("id", (don as { campaign_id: string }).campaign_id)
+        .single()).data as { creator_id?: string | null; title?: string } | null;
+      const creatorId = camp?.creator_id ?? null;
+      if (creatorId) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("email, name")
+          .eq("id", creatorId)
+          .single();
+        const creatorEmail = (profile as { email?: string } | null)?.email;
+        if (creatorEmail) {
+          await sendDonationReceivedEmail({
+            to: creatorEmail,
+            creatorName: (profile as { name?: string } | null)?.name ?? "there",
+            campaignTitle: camp?.title ?? "your campaign",
+            amount: Number((don as { amount: number }).amount),
+            donorDisplay: (don as { anonymous?: boolean }).anonymous
+              ? "Anonymous"
+              : ((don as { donor_name?: string }).donor_name || "Anonymous").trim() || "Anonymous",
+            status: "completed",
+          });
+        }
+      }
+    }
+
     return NextResponse.json({ success: true });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Failed to approve donation.";
