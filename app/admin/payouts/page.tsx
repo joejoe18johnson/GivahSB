@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useThemedModal } from "@/components/ThemedModal";
 import { Banknote, CheckCircle, Loader2, X, FileDown } from "lucide-react";
+import { SITE_DOMAIN } from "@/lib/siteConfig";
 
 interface PayoutRow {
   id: string;
@@ -40,7 +41,7 @@ function formatAmount(n: number) {
 
 function formatDate(s: string) {
   try {
-    return new Date(s).toLocaleDateString(undefined, {
+    return new Date(s).toLocaleString(undefined, {
       dateStyle: "medium",
       timeStyle: "short",
     });
@@ -130,7 +131,7 @@ function buildPayoutLetterHtml(p: PayoutRow, donations: DonationRow[]): string {
       </div>
     </div>
     <div class="contact">
-      <div>givahbz.com</div>
+      <div>${SITE_DOMAIN}</div>
       <div>Belmopan City, Belize</div>
     </div>
   </header>

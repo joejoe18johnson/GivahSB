@@ -31,10 +31,10 @@ To enable **Sign in with Google** and **Continue with Google** on the login and 
    - Name: e.g. **GivahBz Web**.
    - **Authorized JavaScript origins**:
      - Local: `http://localhost:3000`
-     - Production: `https://givahbz.vercel.app` (or your live URL).
+     - Production: `https://www.givahbz.com` (or your live URL).
    - **Authorized redirect URIs** (must match exactly):
      - Local: `http://localhost:3000/api/auth/callback/google`
-     - Production: `https://givahbz.vercel.app/api/auth/callback/google` (use your real domain).
+     - Production: `https://www.givahbz.com/api/auth/callback/google` (use your real domain).
 5. Click **Create**.
 6. Copy the **Client ID** and **Client secret**; you’ll add them to your app.
 
@@ -55,7 +55,7 @@ In your hosting dashboard (e.g. Vercel → Project → Settings → Environment 
 
 - `GOOGLE_CLIENT_ID` = your Client ID  
 - `GOOGLE_CLIENT_SECRET` = your Client secret  
-- `NEXTAUTH_URL` = your live URL (e.g. `https://givahbz.vercel.app`, no trailing slash)  
+- `NEXTAUTH_URL` = your live URL (e.g. `https://www.givahbz.com`, no trailing slash)  
 - `NEXTAUTH_SECRET` = same secret you use for NextAuth  
 
 Redeploy after changing environment variables.
@@ -67,7 +67,7 @@ Redeploy after changing environment variables.
 3. Click **Sign in with Google** or **Continue with Google**.
 4. Sign in with a Google account; you should be redirected back and be logged in.
 
-If you see “Access blocked” or “redirect_uri_mismatch”, double-check that the redirect URI in Google Console exactly matches `NEXTAUTH_URL` + `/api/auth/callback/google` (e.g. `https://givahbz.vercel.app/api/auth/callback/google`).
+If you see “Access blocked” or “redirect_uri_mismatch”, double-check that the redirect URI in Google Console exactly matches `NEXTAUTH_URL` + `/api/auth/callback/google` (e.g. `https://www.givahbz.com/api/auth/callback/google`).
 
 ### Troubleshooting
 

@@ -39,7 +39,7 @@ export default function AdminMessagesPage() {
   const formatDate = (s: string) => {
     const d = new Date(s);
     if (Number.isNaN(d.getTime())) return s;
-    return d.toLocaleDateString(undefined, {
+    return d.toLocaleString(undefined, {
       dateStyle: "short",
       timeStyle: "short",
     });

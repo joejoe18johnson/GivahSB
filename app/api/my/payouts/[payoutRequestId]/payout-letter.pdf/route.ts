@@ -13,6 +13,7 @@ import {
 } from "pdf-lib";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { getSiteDomain } from "@/lib/siteConfig";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -168,8 +169,9 @@ export async function GET(
       font: helvetica,
       color: gray,
     });
-    page.drawText("givahbz.com", {
-      x: LETTER_WIDTH - MARGIN - helvetica.widthOfTextAtSize("givahbz.com", 9),
+    const siteDomain = getSiteDomain();
+    page.drawText(siteDomain, {
+      x: LETTER_WIDTH - MARGIN - helvetica.widthOfTextAtSize(siteDomain, 9),
       y: y - 18,
       size: SMALL_SIZE,
       font: helvetica,

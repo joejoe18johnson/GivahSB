@@ -21,7 +21,7 @@ interface UserPayout {
 
 function formatDate(s: string) {
   try {
-    return new Date(s).toLocaleDateString(undefined, {
+    return new Date(s).toLocaleString(undefined, {
       dateStyle: "medium",
       timeStyle: "short",
     });

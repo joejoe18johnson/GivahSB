@@ -11,7 +11,11 @@ import WelcomePopup from "@/components/WelcomePopup";
 import VerifyAccountBanner from "@/components/VerifyAccountBanner";
 const siteFont = Funnel_Display({ weight: ["300", "400", "700"], subsets: ["latin"] });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://www.givahbz.com";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "GivahBz - Supporting Communities in Need",
   description: "A Belizean crowdfunding platform helping organizations, charities, and individuals in need. Verified campaigns with proof of need.",
   icons: {

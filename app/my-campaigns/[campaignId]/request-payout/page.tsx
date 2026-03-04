@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, DollarSign, Building2, Printer, Download } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatCurrency } from "@/lib/utils";
+import { SITE_DOMAIN } from "@/lib/siteConfig";
 
 const BELIZE_BANKS = [
   "Atlantic Bank Limited",
@@ -113,7 +114,7 @@ function buildCreatorPayoutLetterHtml(campaign: CampaignInfo, payout: PayoutRequ
       </div>
     </div>
     <div class="contact">
-      <div>givahbz.com</div>
+      <div>${SITE_DOMAIN}</div>
       <div>Belmopan City, Belize</div>
     </div>
   </header>

@@ -1,4 +1,4 @@
-# Get GivahBz showing on Vercel (https://givahbz.vercel.app)
+# Get GivahBz showing on Vercel (https://www.givahbz.com)
 
 You're deploying **from GitHub**: when you push to your connected repo, Vercel automatically builds and deploys. Your local `.env` is not in GitHub (it's gitignored), so you must add the same Supabase (and admin) variables in Vercel.
 
@@ -30,6 +30,8 @@ Vercel will detect the push and start a new deployment. In the Vercel dashboard,
 
    | Name | Value (from your .env) |
    |------|------------------------|
+   | `NEXT_PUBLIC_SITE_URL` | `https://www.givahbz.com` (canonical site URL for PDFs, metadata) |
+   | `NEXTAUTH_URL` | `https://www.givahbz.com` (same as site URL for auth redirects) |
    | `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL |
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon (public) key |
    | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (keep secret) |
@@ -58,16 +60,16 @@ Wait for the new deployment to finish.
 Open these URLs (use your real domain if different):
 
 1. **Campaigns API**  
-   https://givahbz.vercel.app/api/campaigns  
+   https://www.givahbz.com/api/campaigns  
    - You should see a JSON array of campaigns (from Supabase).  
    - If you see an error, check Supabase env vars and that the migration has been run.
 
 2. **Homepage**  
-   https://givahbz.vercel.app  
+   https://www.givahbz.com  
    - Trending campaigns should load.
 
 3. **Campaigns page**  
-   https://givahbz.vercel.app/campaigns  
+   https://www.givahbz.com/campaigns  
    - Should show the same campaigns as the API.
 
 ---
