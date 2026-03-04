@@ -35,6 +35,7 @@ function ResetPasswordContent() {
   const [message, setMessage] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -114,6 +115,7 @@ function ResetPasswordContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting || step === "success") return;
     if (password !== confirmPassword) {
       setMessage("Passwords do not match.");
       return;
@@ -123,18 +125,30 @@ function ResetPasswordContent() {
       return;
     }
     setMessage("");
+    setIsSubmitting(true);
     try {
       const supabase = createClient();
       const { error } = await supabase.auth.updateUser({ password });
       if (error) {
         setMessage(error.message || "Failed to update password.");
+        setIsSubmitting(false);
         return;
       }
       setStep("success");
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Something went wrong.");
+      setIsSubmitting(false);
     }
   };
+
+  // Auto-redirect to sign-in after success so user can't click Update password again
+  useEffect(() => {
+    if (step !== "success") return;
+    const t = setTimeout(() => {
+      router.replace("/auth/login?reset=success");
+    }, 2500);
+    return () => clearTimeout(t);
+  }, [step, router]);
 
   if (step === "verifying") {
     return (
@@ -224,9 +238,10 @@ function ResetPasswordContent() {
             </div>
             <button
               type="submit"
-              className="w-full bg-primary-600 text-white px-8 py-3 rounded-full font-medium hover:bg-primary-700 transition-colors"
+              disabled={isSubmitting || step === "success"}
+              className="w-full bg-primary-600 text-white px-8 py-3 rounded-full font-medium hover:bg-primary-700 transition-colors disabled:opacity-70 disabled:pointer-events-none"
             >
-              Update password
+              {isSubmitting ? "Updating…" : "Update password"}
             </button>
           </form>
           <p className="mt-6 text-center text-sm text-gray-500">
@@ -244,9 +259,9 @@ function ResetPasswordContent() {
         >
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8 text-center border border-gray-200">
             <h2 id="success-dialog-title" className="text-xl font-semibold text-gray-900 mb-3">
-              Password has been reset
+              Password has been updated
             </h2>
-            <p className="text-gray-600 mb-6">You can now sign in with your new password.</p>
+            <p className="text-gray-600 mb-6">You can now sign in with your new password. Redirecting you shortly…</p>
             <Link
               href="/auth/login?reset=success"
               className="inline-block w-full py-3 px-6 bg-success-600 hover:bg-success-700 text-white font-medium rounded-full transition-colors"
