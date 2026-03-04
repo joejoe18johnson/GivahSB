@@ -36,12 +36,14 @@ In **Authentication** → **URL Configuration**:
   - `https://www.givahbz.com/auth/callback`
   - `https://www.givahbz.com/auth/confirm`
   - `https://www.givahbz.com/auth/reset-password`
+  - `https://www.givahbz.com/api/auth/reset-callback` (used by the password reset email link so the server can exchange the token without client lock issues)
 
 For local dev add:
 
 - `http://localhost:3000/auth/callback`
 - `http://localhost:3000/auth/confirm`
 - `http://localhost:3000/auth/reset-password`
+- `http://localhost:3000/api/auth/reset-callback`
 
 ## 4. Optional: email templates
 

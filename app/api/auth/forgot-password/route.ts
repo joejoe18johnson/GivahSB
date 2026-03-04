@@ -41,7 +41,8 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
     const baseUrl = SITE_URL.replace(/\/$/, "");
-    const redirectTo = `${baseUrl}/auth/reset-password`;
+    // Send user to server callback so we exchange code/token on server (avoids client lock timeout)
+    const redirectTo = `${baseUrl}/api/auth/reset-callback`;
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo,

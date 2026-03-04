@@ -39,9 +39,6 @@ function ResetPasswordContent() {
   useEffect(() => {
     let cancelled = false;
     const supabase = createClient();
-    const tokenHash = searchParams.get("token_hash");
-    const type = searchParams.get("type");
-    const code = searchParams.get("code");
 
     // Safety: if still verifying after 14s, show helpful error
     const timeoutId = setTimeout(() => {
@@ -49,13 +46,35 @@ function ResetPasswordContent() {
       setStep((s) => {
         if (s !== "verifying") return s;
         setMessage(
-          "Verification is taking too long. Try opening this link in a private/incognito window, or request a new reset link."
+          "Verification is taking too long. Open the link in a new private/incognito window (copy the full link from your email, including the part after # if present), or request a new reset link."
         );
         return "error";
       });
     }, 14000);
 
+    async function tryHashRecovery(): Promise<boolean> {
+      if (typeof window === "undefined") return false;
+      const hash = window.location.hash || window.location.href.split("#")[1] || "";
+      if (!hash) return false;
+      const hashParams = parseHash("#" + hash.replace(/^#/, ""));
+      const accessToken = hashParams.access_token;
+      const refreshToken = hashParams.refresh_token;
+      if (!accessToken || !refreshToken) return false;
+      const { error } = await supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      });
+      if (cancelled || error) return false;
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      setStep("form");
+      return true;
+    }
+
     async function run() {
+      const tokenHash = searchParams.get("token_hash");
+      const type = searchParams.get("type");
+      const code = searchParams.get("code");
+
       // 1) Query params: token_hash + type=recovery
       if (tokenHash && type === "recovery") {
         try {
@@ -97,40 +116,40 @@ function ResetPasswordContent() {
         return;
       }
 
-      // 3) Tokens in URL hash (#access_token=...&refresh_token=...&type=recovery)
-      // Supabase often sends recovery links this way. setSession() avoids lock timeouts.
-      if (typeof window !== "undefined" && window.location.hash) {
-        const hashParams = parseHash(window.location.hash);
-        const accessToken = hashParams.access_token;
-        const refreshToken = hashParams.refresh_token;
-        const hashType = hashParams.type;
-        if (hashType === "recovery" && accessToken && refreshToken) {
-          try {
-            const { error } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken,
-            });
-            if (cancelled) return;
-            if (error) {
-              setStep("error");
-              setMessage(error.message || "This link has expired. Please request a new password reset.");
-              return;
-            }
-            // Clear hash from URL so refresh doesn't reprocess
-            window.history.replaceState(null, "", window.location.pathname + window.location.search);
-            setStep("form");
-            return;
-          } catch (err) {
-            if (cancelled) return;
-            setStep("error");
-            setMessage(err instanceof Error ? err.message : "Something went wrong.");
-            return;
-          }
+      // 3) Tokens in URL hash — try immediately, then once after a short delay (hash can appear late in SPAs)
+      const recovered = await tryHashRecovery();
+      if (cancelled || recovered) return;
+      await new Promise((r) => setTimeout(r, 400));
+      if (cancelled) return;
+      const recoveredDelayed = await tryHashRecovery();
+      if (cancelled || recoveredDelayed) return;
+
+      // 4) No params and no hash: maybe we were redirected from /api/auth/reset-callback with session in cookies
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (cancelled) return;
+        if (session) {
+          setStep("form");
+          return;
         }
+      } catch {
+        // ignore
       }
 
+      const errorParam = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("error") : null;
+      if (errorParam === "invalid_code" || errorParam === "invalid_token") {
+        setMessage("This link has expired or was already used. Please request a new password reset link.");
+      } else if (errorParam === "server_error") {
+        setMessage("Something went wrong on our side. Please request a new reset link and try again.");
+      } else {
+        setMessage(
+          "We couldn't read the reset link. Use the exact link from the email (open it directly; if you copy-paste, the part after # can be lost). Or request a new reset link and open it in a private/incognito window."
+        );
+      }
       setStep("error");
-      setMessage("Invalid or expired reset link. Please request a new password reset from the sign-in page.");
+      setMessage(
+        "We couldn’t read the reset link. Use the exact link from the email (open it directly; if you copy-paste, the part after # can be lost). Or request a new reset link and open it in a private/incognito window."
+      );
     }
 
     run();
@@ -178,13 +197,17 @@ function ResetPasswordContent() {
 
   if (step === "error") {
     const isTimeout = message.includes("Verification is taking too long");
+    const isCantRead = message.includes("We couldn't read the reset link");
+    const title = isTimeout
+      ? "Verification timed out"
+      : isCantRead
+        ? "Reset link couldn't be used"
+        : "Invalid or expired link";
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
         <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
-          <h1 className="text-2xl font-medium text-gray-900 mb-4">
-            {isTimeout ? "Verification timed out" : "Invalid or expired link"}
-          </h1>
-          <p className="text-gray-600 mb-6">{message}</p>
+          <h1 className="text-2xl font-medium text-gray-900 mb-4">{title}</h1>
+          <p className="text-gray-600 mb-6 whitespace-pre-line">{message}</p>
           <Link
             href="/auth/forgot-password"
             className="inline-block bg-primary-600 text-white px-6 py-3 rounded-full font-medium hover:bg-primary-700 transition-colors"
