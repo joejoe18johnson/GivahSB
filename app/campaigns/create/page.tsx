@@ -384,10 +384,10 @@ export default function CreateCampaignPage() {
         userMessage = "Permission denied. Please check that you're signed in and have permission to create campaigns.";
       } else if (errorMessage.includes("upload") || errorMessage.includes("Upload")) {
         userMessage = errorMessage.length > 120 ? `Upload failed: ${errorMessage.slice(0, 120)}…` : errorMessage;
-      } else if (errorMessage.includes("Supabase") || errorMessage.includes("campaign")) {
-        userMessage = "Failed to save campaign data. Please check your connection and try again.";
-      } else if (errorMessage.length < 200) {
+      } else if (errorMessage.length <= 220) {
         userMessage = errorMessage;
+      } else {
+        userMessage = "Failed to save campaign data. Please check your connection and try again.";
       }
 
       alert(userMessage, { title: "Submission Failed", variant: "error" });

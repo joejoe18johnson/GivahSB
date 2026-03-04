@@ -77,17 +77,29 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const id = await addCampaignUnderReview(supabase, {
-    title,
-    description,
-    fullDescription,
-    goal,
-    category,
-    creatorName,
-    creatorId: user.id,
-    image: image || undefined,
-    image2: image2 || undefined,
-    daysLeft,
-  });
-  return NextResponse.json({ success: true, id });
+  try {
+    const id = await addCampaignUnderReview(supabase, {
+      title,
+      description,
+      fullDescription,
+      goal,
+      category,
+      creatorName,
+      creatorId: user.id,
+      image: image || undefined,
+      image2: image2 || undefined,
+      daysLeft,
+    });
+    return NextResponse.json({ success: true, id });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Database error";
+    console.error("[campaigns-under-review] Insert failed:", msg);
+    const isColumnError = /column .* does not exist|relation .* does not exist/i.test(msg);
+    const safeMessage = isColumnError
+      ? "Campaign could not be saved (database may need a migration). Please try again later or contact support."
+      : msg.length <= 200
+        ? msg
+        : "Failed to save campaign. Please try again.";
+    return NextResponse.json({ error: safeMessage }, { status: 500 });
+  }
 }
