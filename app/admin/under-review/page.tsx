@@ -37,6 +37,14 @@ export default function AdminUnderReviewPage() {
   }, []);
 
   const handleApprove = async (id: string) => {
+    const campaign = list.find((c) => c.id === id);
+    if (campaign && (!campaign.proofDocumentUrls || campaign.proofDocumentUrls.length === 0)) {
+      alert("Proof of need is required. This campaign has no proof documents. Ask the creator to resubmit with proof documents, or reject this submission.", {
+        title: "Proof required",
+        variant: "warning",
+      });
+      return;
+    }
     const ok = await confirm("Approve this campaign? It will go live immediately and the creator will be notified.", {
       title: "Approve campaign",
       confirmLabel: "Approve",
@@ -166,7 +174,9 @@ export default function AdminUnderReviewPage() {
                         <button
                           type="button"
                           onClick={() => handleApprove(c.id)}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-verified-100 text-verified-700 hover:bg-verified-200 text-xs font-medium"
+                          disabled={!c.proofDocumentUrls || c.proofDocumentUrls.length === 0}
+                          title={!c.proofDocumentUrls || c.proofDocumentUrls.length === 0 ? "Proof of need required" : undefined}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-verified-100 text-verified-700 hover:bg-verified-200 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           <CheckCircle2 className="w-3.5 h-3.5" />
                           Approve
@@ -331,7 +341,9 @@ export default function AdminUnderReviewPage() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-gray-500 py-2">No proof documents uploaded for this campaign.</p>
+                  <p className="text-sm text-gray-500 py-2">
+                    No proof documents uploaded for this campaign. If the creator says they uploaded files, the campaign may have been submitted before proof documents were supported, or the save may have failed—ask them to resubmit the campaign with proof documents if needed.
+                  </p>
                 )}
               </div>
             </div>
@@ -355,7 +367,9 @@ export default function AdminUnderReviewPage() {
               <button
                 type="button"
                 onClick={() => handleApprove(selectedCampaign.id)}
-                className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-verified-100 text-verified-700 hover:bg-verified-200 font-medium text-sm"
+                disabled={!selectedCampaign.proofDocumentUrls || selectedCampaign.proofDocumentUrls.length === 0}
+                title={!selectedCampaign.proofDocumentUrls || selectedCampaign.proofDocumentUrls.length === 0 ? "Proof of need is required to approve" : undefined}
+                className="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-verified-100 text-verified-700 hover:bg-verified-200 font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 Approve

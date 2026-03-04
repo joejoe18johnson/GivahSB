@@ -28,7 +28,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, campaignId });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Failed to approve campaign.";
-    const status = message.includes("must be approved") || message.includes("must be verified") ? 400 : 500;
+    const status =
+      message.includes("must be approved") ||
+      message.includes("must be verified") ||
+      message.includes("Proof of need is required")
+        ? 400
+        : 500;
     return NextResponse.json({ error: message }, { status });
   }
 }

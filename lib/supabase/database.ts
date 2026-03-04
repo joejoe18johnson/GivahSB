@@ -487,9 +487,19 @@ function toUnderReview(r: CampaignUnderReviewRow): CampaignUnderReviewDoc {
   const daysLeft = r.days_left !== null && r.days_left !== undefined && Number(r.days_left) === 0
     ? 0
     : (Number(r.days_left) || 30);
-  const proofDocumentUrls = Array.isArray(r.proof_document_urls)
-    ? r.proof_document_urls.filter((u): u is string => typeof u === "string")
-    : undefined;
+  let proofDocumentUrls: string[] | undefined;
+  if (Array.isArray(r.proof_document_urls)) {
+    proofDocumentUrls = r.proof_document_urls.filter((u): u is string => typeof u === "string");
+  } else if (typeof r.proof_document_urls === "string") {
+    try {
+      const parsed = JSON.parse(r.proof_document_urls) as unknown;
+      proofDocumentUrls = Array.isArray(parsed) ? parsed.filter((u): u is string => typeof u === "string") : undefined;
+    } catch {
+      proofDocumentUrls = undefined;
+    }
+  } else {
+    proofDocumentUrls = undefined;
+  }
   return {
     id: r.id,
     title: r.title,
@@ -589,6 +599,8 @@ export async function approveAndPublishCampaign(
   const underReview = await getCampaignUnderReviewById(supabase, underReviewId);
   if (!underReview) throw new Error("Campaign under review not found");
   if (underReview.status !== "pending") throw new Error("Campaign is no longer pending");
+  const hasProof = Array.isArray(underReview.proofDocumentUrls) && underReview.proofDocumentUrls.length > 0;
+  if (!hasProof) throw new Error("Proof of need is required. This campaign has no proof documents. Ask the creator to resubmit with proof documents.");
   const { data: profile } = await supabase
     .from("profiles")
     .select("phone_verified, id_verified, address_verified")

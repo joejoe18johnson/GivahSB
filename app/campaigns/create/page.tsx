@@ -358,7 +358,8 @@ export default function CreateCampaignPage() {
             body: JSON.stringify({ urls: proofUrls }),
           });
           if (!putRes.ok) {
-            console.warn("Could not save proof document URLs to campaign under review");
+            const putData = await putRes.json().catch(() => ({})) as { error?: string };
+            throw new Error(putData.error ?? "Proof documents were uploaded but could not be saved. Please try again or contact support.");
           }
         }
       }
