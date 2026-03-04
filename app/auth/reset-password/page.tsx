@@ -126,18 +126,25 @@ function ResetPasswordContent() {
     }
     setMessage("");
     setIsSubmitting(true);
+    let didSucceed = false;
     try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.updateUser({ password });
-      if (error) {
-        setMessage(error.message || "Failed to update password.");
-        setIsSubmitting(false);
+      const res = await fetch("/api/auth/update-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+        credentials: "include",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setMessage((data.error as string) || "Failed to update password.");
         return;
       }
+      didSucceed = true;
       setStep("success");
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Something went wrong.");
-      setIsSubmitting(false);
+    } finally {
+      if (!didSucceed) setIsSubmitting(false);
     }
   };
 
