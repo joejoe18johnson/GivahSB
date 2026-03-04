@@ -270,13 +270,13 @@ export default function AdminCampaignsPage() {
 
       <div className="bg-white rounded-xl gradient-border-1 shadow-sm min-w-0">
         <p className="px-5 py-2 text-xs text-gray-500 border-b border-gray-100 md:sr-only" aria-hidden="true">
-          Scroll horizontally to view Status, Verified, Actions, and ID columns.
+          Scroll horizontally to view Status, Verified, Actions, and Campaign ID columns.
         </p>
         <div className="overflow-x-auto min-w-0 w-full" style={{ WebkitOverflowScrolling: "touch" }}>
           <table className="w-full text-sm min-w-[1100px]">
             <thead>
               <tr className="bg-gray-50 text-left text-gray-500">
-                <th className="px-5 py-3 font-medium">Ref #</th>
+                <th className="px-5 py-3 font-medium">Campaign ID</th>
                 <th className="px-5 py-3 font-medium">
                   <button type="button" onClick={() => toggleSort("title")} className="inline-flex items-center gap-1">
                     Title <span className="text-xs">{sortIndicator("title")}</span>
@@ -327,8 +327,8 @@ export default function AdminCampaignsPage() {
               ) : (
                 paginatedCampaigns.map((c) => (
                 <tr key={c.id} className="border-t border-gray-100 hover:bg-gray-50">
-                  <td className="px-5 py-3 font-mono text-gray-700 whitespace-nowrap" title={c.referenceNumber ?? undefined}>
-                    {c.referenceNumber ?? "—"}
+                  <td className="px-5 py-3 font-mono text-gray-700 whitespace-nowrap" title={c.id}>
+                    {c.id.slice(-6).toUpperCase()}
                   </td>
                   <td className="px-5 py-3">
                     <Link href={`/campaigns/${c.id}`} className="text-primary-600 hover:underline max-w-[200px] truncate block" title={c.title}>

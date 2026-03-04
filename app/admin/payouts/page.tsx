@@ -138,6 +138,7 @@ function buildPayoutLetterHtml(p: PayoutRow, donations: DonationRow[]): string {
   <hr class="divider" />
   <h1>Payout Summary</h1>
   <div class="meta">
+    <p><strong>Campaign ID:</strong> ${p.campaignId && p.campaignId.length >= 6 ? escapeHtml(p.campaignId.slice(-6).toUpperCase()) : "—"}</p>
     <p><strong>Campaign:</strong> ${escapeHtml(p.campaignTitle)}</p>
     <p><strong>Amount:</strong> <span class="amount">${formatAmount(p.raised)}</span></p>
     <p><strong>Creator:</strong> ${escapeHtml(p.creatorName)} · ${escapeHtml(p.creatorEmail)}</p>
@@ -151,7 +152,7 @@ function buildPayoutLetterHtml(p: PayoutRow, donations: DonationRow[]): string {
   <p>Total from ${completedDonations.length} completed donation(s): ${formatAmount(totalFromDonations)}</p>
   <table>
     <thead>
-      <tr><th>Date</th><th>Donor</th><th>Amount</th><th>Method</th><th>Reference</th></tr>
+      <tr><th>Date</th><th>Donor</th><th>Amount</th><th>Method</th><th>Campaign ID</th></tr>
     </thead>
     <tbody>
       ${completedDonations.map((d) => `
@@ -372,6 +373,7 @@ export default function AdminPayoutsPage() {
             <table className="w-full text-sm min-w-[980px] divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Campaign ID</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Campaign</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
@@ -389,6 +391,9 @@ export default function AdminPayoutsPage() {
                     className="hover:bg-gray-50/50 cursor-pointer"
                     onClick={(e) => openPayoutDetail(p, e)}
                   >
+                    <td className="px-4 py-3 whitespace-nowrap font-mono text-gray-700 font-medium">
+                      {p.campaignId && p.campaignId.length >= 6 ? p.campaignId.slice(-6).toUpperCase() : "—"}
+                    </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${

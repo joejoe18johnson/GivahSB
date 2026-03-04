@@ -108,8 +108,7 @@ export async function GET(
   const bankLine = payout.account_type
     ? `${payout.bank_name} · ${payout.account_type}`
     : payout.bank_name;
-  const refNumber = String(payoutRequestId).slice(-6).padStart(6, "0");
-  const refDisplay = `REF: #${refNumber}`;
+  const headerLabel = `Campaign ID: ${campaignDisplayId}`;
 
   const doc = await PDFDocument.create();
   const page = doc.addPage([LETTER_WIDTH, LETTER_HEIGHT]);
@@ -140,9 +139,9 @@ export async function GET(
       height: logoH,
     });
   }
-  const refWidth = helvetica.widthOfTextAtSize(refDisplay, BODY_SIZE);
-  page.drawText(refDisplay, {
-    x: LETTER_WIDTH - MARGIN - refWidth,
+  const headerLabelWidth = helvetica.widthOfTextAtSize(headerLabel, BODY_SIZE);
+  page.drawText(headerLabel, {
+    x: LETTER_WIDTH - MARGIN - headerLabelWidth,
     y: y - 18,
     size: BODY_SIZE,
     font: helvetica,
@@ -257,7 +256,7 @@ export async function GET(
   });
 
   const pdfBytes = await doc.save();
-  const fileName = `Givahbz_Payout-Letter-${refNumber}.pdf`;
+  const fileName = `Givahbz_Payout-Letter-${campaignDisplayId}.pdf`;
   const body = Buffer.from(pdfBytes);
 
   return new NextResponse(body, {
