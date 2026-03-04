@@ -46,6 +46,18 @@ export async function PUT(
   if ((row as { status: string }).status !== "pending") {
     return NextResponse.json({ error: "Cannot update proof documents after review." }, { status: 400 });
   }
-  await updateCampaignUnderReviewProofUrls(supabase, id, urls);
-  return NextResponse.json({ ok: true });
+  try {
+    await updateCampaignUnderReviewProofUrls(supabase, id, urls);
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Update failed";
+    console.error("[proof] updateCampaignUnderReviewProofUrls failed:", msg);
+    const isColumnError = /column .* does not exist|relation .* does not exist/i.test(msg);
+    const errorMessage = isColumnError
+      ? "Proof documents could not be saved. The database may need the proof_document_urls migration. Contact support or try again later."
+      : msg.length <= 200
+        ? msg
+        : "Proof documents could not be saved. Please try again.";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
+  }
 }

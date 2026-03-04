@@ -261,6 +261,9 @@ export default function CreateCampaignPage() {
       if (!user) {
         throw new Error("You must be signed in to submit. Please sign in and try again.");
       }
+      if (proofFiles.length === 0) {
+        throw new Error("At least one proof of need document is required. Please upload proof documents before submitting for review.");
+      }
 
       // Compress images to speed up upload and avoid timeouts
       const [file1, file2] = await Promise.all([
@@ -335,9 +338,9 @@ export default function CreateCampaignPage() {
       const createData = await res.json().catch(() => ({})) as { id?: string };
       const underReviewId = typeof createData.id === "string" ? createData.id : null;
 
-      if (underReviewId && proofFiles.length > 0) {
-        const proofUploadUrl = typeof window !== "undefined" ? `${window.location.origin}/api/upload-proof-document` : "/api/upload-proof-document";
-        const proofUrls: string[] = [];
+      const proofUploadUrl = typeof window !== "undefined" ? `${window.location.origin}/api/upload-proof-document` : "/api/upload-proof-document";
+      const proofUrls: string[] = [];
+      try {
         for (let i = 0; i < proofFiles.length; i++) {
           const form = new FormData();
           form.append("file", proofFiles[i]!);
@@ -350,18 +353,22 @@ export default function CreateCampaignPage() {
           }
           if (typeof proofData.url === "string") proofUrls.push(proofData.url);
         }
-        if (proofUrls.length > 0) {
-          const putRes = await fetch(`/api/my/campaigns-under-review/${underReviewId}/proof`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ urls: proofUrls }),
-          });
-          if (!putRes.ok) {
-            const putData = await putRes.json().catch(() => ({})) as { error?: string };
-            throw new Error(putData.error ?? "Proof documents were uploaded but could not be saved. Please try again or contact support.");
-          }
+        if (proofUrls.length === 0) {
+          throw new Error("Proof documents could not be uploaded.");
         }
+        const putRes = await fetch(`/api/my/campaigns-under-review/${underReviewId}/proof`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ urls: proofUrls }),
+        });
+        if (!putRes.ok) {
+          const putData = await putRes.json().catch(() => ({})) as { error?: string };
+          throw new Error(putData.error ?? "Proof documents were uploaded but could not be saved. Please try again or contact support.");
+        }
+      } catch (proofErr) {
+        await fetch(`/api/admin/campaigns-under-review/${underReviewId}`, { method: "DELETE", credentials: "include" }).catch(() => {});
+        throw proofErr;
       }
 
       router.push("/my-campaigns");
@@ -780,10 +787,10 @@ export default function CreateCampaignPage() {
         <div className="flex gap-4 pt-4">
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || proofFiles.length === 0}
             className="bg-success-500 text-white px-8 py-3 rounded-full font-medium hover:bg-success-600 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "Uploading images & submitting…" : "Submit for Review"}
+            {isSubmitting ? "Uploading images & submitting…" : proofFiles.length === 0 ? "Add proof documents to submit" : "Submit for Review"}
           </button>
           <button
             type="button"
