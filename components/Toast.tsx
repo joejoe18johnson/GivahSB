@@ -33,7 +33,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           role="status"
           aria-live="polite"
         >
-          <div className="bg-gray-900 text-white text-sm font-medium px-4 py-2.5 rounded-lg shadow-lg">
+          <div className="bg-success-600 text-white text-sm font-medium px-4 py-2.5 rounded-lg shadow-lg border border-success-500">
             {message}
           </div>
         </div>
