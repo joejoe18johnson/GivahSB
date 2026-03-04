@@ -8,11 +8,8 @@ import {
   StandardFonts,
   rgb,
   PDFPage,
-  PDFImage,
   PDFFont,
 } from "pdf-lib";
-import fs from "node:fs/promises";
-import path from "node:path";
 import { getSiteDomain } from "@/lib/siteConfig";
 
 export const dynamic = "force-dynamic";
@@ -123,49 +120,13 @@ export async function GET(
   const page = doc.addPage([LETTER_WIDTH, LETTER_HEIGHT]);
   const helvetica = await doc.embedFont(StandardFonts.Helvetica);
   const helveticaBold = await doc.embedFont(StandardFonts.HelveticaBold);
-  const green = rgb(0.06, 0.67, 0.29);
   const dark = rgb(0.07, 0.07, 0.15);
-  const gray = rgb(0.29, 0.34, 0.39);
   const lineGray = rgb(0.55, 0.55, 0.55);
 
   let y = LETTER_HEIGHT - MARGIN;
   const contentWidth = LETTER_WIDTH - 2 * MARGIN;
 
-  // Header: logo + GivahBZ + tagline left; REF top right
-  let logoImage: PDFImage | null = null;
-  try {
-    const logoPath = path.join(process.cwd(), "public", "givah-logo.png");
-    const logoBytes = await fs.readFile(logoPath);
-    logoImage = await doc.embedPng(logoBytes);
-  } catch {
-    // no logo
-  }
-
-  const logoH = 36;
-  if (logoImage) {
-    const logoW = (logoImage.width / logoImage.height) * logoH;
-    page.drawImage(logoImage, {
-      x: MARGIN,
-      y: y - logoH,
-      width: logoW,
-      height: logoH,
-    });
-    page.drawText("GivahBZ", {
-      x: MARGIN + logoW + 10,
-      y: y - 24,
-      size: 14,
-      font: helveticaBold,
-      color: green,
-    });
-  } else {
-    page.drawText("GivahBZ", {
-      x: MARGIN,
-      y: y - 20,
-      size: 14,
-      font: helveticaBold,
-      color: green,
-    });
-  }
+  // Header: REF top right only
   const refWidth = helvetica.widthOfTextAtSize(refDisplay, BODY_SIZE);
   page.drawText(refDisplay, {
     x: LETTER_WIDTH - MARGIN - refWidth,
@@ -174,8 +135,7 @@ export async function GET(
     font: helvetica,
     color: dark,
   });
-  y -= logoH + 24;
-  y -= 50; // extra space above PAYOUT DETAILS
+  y -= 80; // space below REF + extra space above PAYOUT DETAILS
 
   // PAYOUT DETAILS (large title) + thin gray line
   page.drawText("PAYOUT DETAILS", {
