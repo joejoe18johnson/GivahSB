@@ -226,12 +226,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await signOutSupabase(supabase);
       setUser(null);
       router.refresh();
-      router.push("/");
+      router.push("/auth/login");
     } catch (e) {
       console.error("Logout error:", e);
       setUser(null);
       router.refresh();
-      router.push("/");
+      router.push("/auth/login");
     }
   };
 
