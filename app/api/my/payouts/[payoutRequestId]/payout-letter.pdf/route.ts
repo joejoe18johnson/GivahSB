@@ -190,6 +190,7 @@ export async function GET(
     color: dark,
   });
   y -= logoH + 24;
+  y -= 50; // extra space above PAYOUT DETAILS
 
   // PAYOUT DETAILS (large title) + thin gray line
   page.drawText("PAYOUT DETAILS", {
@@ -250,7 +251,7 @@ export async function GET(
       );
       y -= 4;
     }
-    y -= LINE_HEIGHT;
+    y -= LINE_HEIGHT * 2; // double spacing between items
   }
 
   y -= 16;
