@@ -9,6 +9,7 @@ import {
   rgb,
   PDFPage,
   PDFImage,
+  PDFFont,
 } from "pdf-lib";
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -300,7 +301,7 @@ export async function GET(
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="${fileName}"`,
       "Cache-Control": "no-store, max-age=0",
- "Content-Length": String(pdfBytes.length),
+      "Content-Length": String(pdfBytes.length),
     },
   });
 }
