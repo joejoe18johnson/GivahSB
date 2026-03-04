@@ -22,9 +22,10 @@ const LETTER_WIDTH = 612;
 const LETTER_HEIGHT = 792;
 const MARGIN = 54; // 0.75in
 const LINE_HEIGHT = 14;
-const TITLE_SIZE = 16;
+const PAYOUT_TITLE_SIZE = 22; // "PAYOUT DETAILS"
 const BODY_SIZE = 11;
 const SMALL_SIZE = 9;
+const TAGLINE_SIZE = 10;
 
 function safeFileName(s: string): string {
   const cleaned = (s || "payout-letter")
@@ -113,17 +114,11 @@ export async function GET(
     (camp as { title?: string } | null)?.title ?? "Campaign";
   const raised = Number((camp as { raised?: number } | null)?.raised ?? 0);
   const amount = formatCurrency(raised);
-  const createdDate = new Date(payout.created_at).toLocaleDateString(
-    undefined,
-    { dateStyle: "medium" }
-  );
   const maskedAccount = `****${String(payout.account_number).slice(-4)}`;
   const bankLine = payout.account_type
     ? `${payout.bank_name} · ${payout.account_type}`
     : payout.bank_name;
-  const accountLine = payout.branch
-    ? `${maskedAccount} · Branch: ${payout.branch}`
-    : maskedAccount;
+  const refDisplay = `REF: #${String(payoutRequestId).slice(-6).padStart(6, "0")}`;
 
   const doc = await PDFDocument.create();
   const page = doc.addPage([LETTER_WIDTH, LETTER_HEIGHT]);
@@ -132,11 +127,12 @@ export async function GET(
   const green = rgb(0.06, 0.67, 0.29);
   const dark = rgb(0.07, 0.07, 0.15);
   const gray = rgb(0.29, 0.34, 0.39);
+  const lineGray = rgb(0.55, 0.55, 0.55);
 
   let y = LETTER_HEIGHT - MARGIN;
   const contentWidth = LETTER_WIDTH - 2 * MARGIN;
 
-  // Logo (optional)
+  // Header: logo + GivahBZ + tagline left; REF top right
   let logoImage: PDFImage | null = null;
   try {
     const logoPath = path.join(process.cwd(), "public", "givah-logo.png");
@@ -146,8 +142,8 @@ export async function GET(
     // no logo
   }
 
+  const logoH = 36;
   if (logoImage) {
-    const logoH = 40;
     const logoW = (logoImage.width / logoImage.height) * logoH;
     page.drawImage(logoImage, {
       x: MARGIN,
@@ -155,112 +151,100 @@ export async function GET(
       width: logoW,
       height: logoH,
     });
-    page.drawText("GivahBz", {
-      x: MARGIN + logoW + 12,
-      y: y - 28,
+    page.drawText("GivahBZ", {
+      x: MARGIN + logoW + 10,
+      y: y - 24,
       size: 14,
       font: helveticaBold,
       color: green,
     });
-    page.drawText("Sharing Burdens. Together.", {
-      x: MARGIN + logoW + 12,
-      y: y - 42,
-      size: 10,
+    page.drawText("SHARING BURDENS. TOGETHER.", {
+      x: MARGIN + logoW + 10,
+      y: y - 38,
+      size: TAGLINE_SIZE,
       font: helvetica,
-      color: gray,
+      color: green,
     });
-    const siteDomain = getSiteDomain();
-    page.drawText(siteDomain, {
-      x: LETTER_WIDTH - MARGIN - helvetica.widthOfTextAtSize(siteDomain, 9),
-      y: y - 18,
-      size: SMALL_SIZE,
-      font: helvetica,
-      color: gray,
-    });
-    page.drawText("Belmopan City, Belize", {
-      x:
-        LETTER_WIDTH -
-        MARGIN -
-        helvetica.widthOfTextAtSize("Belmopan City, Belize", 9),
-      y: y - 30,
-      size: SMALL_SIZE,
-      font: helvetica,
-      color: gray,
-    });
-    y -= logoH + 16;
   } else {
-    page.drawText("GivahBz", {
+    page.drawText("GivahBZ", {
       x: MARGIN,
-      y: y - 18,
+      y: y - 20,
       size: 14,
       font: helveticaBold,
       color: green,
     });
-    page.drawText("Sharing Burdens. Together.", {
+    page.drawText("SHARING BURDENS. TOGETHER.", {
       x: MARGIN,
-      y: y - 32,
-      size: 10,
+      y: y - 34,
+      size: TAGLINE_SIZE,
       font: helvetica,
-      color: gray,
+      color: green,
     });
-    y -= 48;
   }
-
-  // Divider line
-  page.drawLine({
-    start: { x: MARGIN, y },
-    end: { x: LETTER_WIDTH - MARGIN, y },
-    thickness: 2,
-    color: green,
+  const refWidth = helvetica.widthOfTextAtSize(refDisplay, BODY_SIZE);
+  page.drawText(refDisplay, {
+    x: LETTER_WIDTH - MARGIN - refWidth,
+    y: y - 18,
+    size: BODY_SIZE,
+    font: helvetica,
+    color: dark,
   });
-  y -= 20;
+  y -= logoH + 24;
 
-  // Title
-  page.drawText("Payout confirmation", {
+  // PAYOUT DETAILS (large title) + thin gray line
+  page.drawText("PAYOUT DETAILS", {
     x: MARGIN,
     y,
-    size: TITLE_SIZE,
+    size: PAYOUT_TITLE_SIZE,
     font: helveticaBold,
     color: dark,
   });
-  y -= LINE_HEIGHT * 1.5;
+  y -= LINE_HEIGHT * 1.2;
+  const lineWidth = contentWidth * (2 / 3);
+  page.drawLine({
+    start: { x: MARGIN, y },
+    end: { x: MARGIN + lineWidth, y },
+    thickness: 0.5,
+    color: lineGray,
+  });
+  y -= LINE_HEIGHT * 1.8;
 
-  // Meta lines
+  // Key-value fields
   const meta = [
-    { label: "Campaign:", value: campaignTitle },
-    { label: "Amount paid out:", value: amount },
-    { label: "Bank:", value: bankLine },
-    { label: "Account holder:", value: payout.account_holder_name },
-    { label: "Account number:", value: accountLine },
-    { label: "Status:", value: payout.status },
-    { label: "Payout requested:", value: createdDate },
+    { label: "Campaign", value: campaignTitle },
+    { label: "Amount paid out", value: amount },
+    { label: "Bank", value: bankLine },
+    { label: "Account holder", value: payout.account_holder_name },
+    { label: "Account number", value: maskedAccount },
+    { label: "Branch", value: payout.branch || "—" },
   ];
   for (const { label, value } of meta) {
-    const full = `${label} ${value}`;
-    if (helvetica.widthOfTextAtSize(full, BODY_SIZE) <= contentWidth) {
-      page.drawText(label, {
-        x: MARGIN,
-        y,
-        size: BODY_SIZE,
-        font: helveticaBold,
-        color: dark,
-      });
-      page.drawText(` ${value}`, {
-        x: MARGIN + helveticaBold.widthOfTextAtSize(label, BODY_SIZE),
+    const labelText = `${label}:`;
+    const labelW = helveticaBold.widthOfTextAtSize(labelText, BODY_SIZE);
+    page.drawText(labelText, {
+      x: MARGIN,
+      y,
+      size: BODY_SIZE,
+      font: helveticaBold,
+      color: dark,
+    });
+    const valueStr = String(value);
+    if (helvetica.widthOfTextAtSize(valueStr, BODY_SIZE) <= contentWidth - labelW - 8) {
+      page.drawText(` ${valueStr}`, {
+        x: MARGIN + labelW,
         y,
         size: BODY_SIZE,
         font: helvetica,
         color: dark,
       });
     } else {
-      page.drawText(label, { x: MARGIN, y, size: BODY_SIZE, font: helveticaBold, color: dark });
       y -= LINE_HEIGHT;
       y = drawWrappedText(
         page,
-        value,
-        MARGIN,
+        valueStr,
+        MARGIN + labelW + 4,
         y,
-        contentWidth,
+        contentWidth - labelW - 4,
         BODY_SIZE,
         helvetica
       );
@@ -269,7 +253,27 @@ export async function GET(
     y -= LINE_HEIGHT;
   }
 
-  y -= 8;
+  y -= 16;
+  page.drawLine({
+    start: { x: MARGIN, y },
+    end: { x: LETTER_WIDTH - MARGIN, y },
+    thickness: 0.5,
+    color: lineGray,
+  });
+  y -= LINE_HEIGHT * 1.5;
+
+  const footerNote =
+    "Generated from your GivahBz account. Paper size: Letter (8.5\" x 11\").";
+  const noteWidth = helvetica.widthOfTextAtSize(footerNote, SMALL_SIZE);
+  page.drawText(footerNote, {
+    x: (LETTER_WIDTH - noteWidth) / 2,
+    y,
+    size: SMALL_SIZE,
+    font: helvetica,
+    color: lineGray,
+  });
+  y -= LINE_HEIGHT * 2;
+
   const thankYou =
     "Thank you for using GivahBz to raise funds for your cause. This letter confirms that the payout for your campaign has been processed to the bank account details you provided.";
   y = drawWrappedText(
@@ -281,19 +285,17 @@ export async function GET(
     BODY_SIZE,
     helvetica
   );
-  y -= LINE_HEIGHT;
+  y -= LINE_HEIGHT * 2;
 
-  const footerNote =
-    "Generated from your GivahBz account. Paper size: Letter (8.5\" × 11\").";
-  y = drawWrappedText(
-    page,
-    footerNote,
-    MARGIN,
+  const siteDomain = getSiteDomain();
+  const domainWidth = helvetica.widthOfTextAtSize(siteDomain, BODY_SIZE);
+  page.drawText(siteDomain, {
+    x: (LETTER_WIDTH - domainWidth) / 2,
     y,
-    contentWidth,
-    SMALL_SIZE,
-    helvetica
-  );
+    size: BODY_SIZE,
+    font: helvetica,
+    color: dark,
+  });
 
   const pdfBytes = await doc.save();
   const fileName = `payout-letter-${safeFileName(campaignTitle)}.pdf`;
