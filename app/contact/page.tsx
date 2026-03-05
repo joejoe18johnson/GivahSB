@@ -65,13 +65,13 @@ export default function ContactPage() {
       </section>
 
       {/* Contact Content */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Contact Form */}
               <div>
-                <h2 className="text-3xl font-medium mb-6">Send Us a Message</h2>
+                <h2 className="text-3xl font-medium mb-6 text-gray-900 dark:text-gray-100">Send Us a Message</h2>
                 {error && (
                   <div className="mb-4 p-4 rounded-lg bg-red-50 border border-red-200 text-red-800 text-sm">
                     {error}
@@ -162,14 +162,14 @@ export default function ContactPage() {
 
               {/* Contact Information */}
               <div>
-                <h2 className="text-3xl font-medium mb-6">Get in Touch</h2>
+                <h2 className="text-3xl font-medium mb-6 text-gray-900 dark:text-gray-100">Get in Touch</h2>
                 <div className="space-y-6 mb-8">
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0 w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center text-primary-600">
                       <Mail className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-900 mb-1">Email</h3>
+                      <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-1">Email</h3>
                       <a
                         href="mailto:info@belizefund.bz"
                         className="text-primary-600 hover:text-primary-700"
@@ -190,11 +190,11 @@ export default function ContactPage() {
                       <Phone className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-900 mb-1">Phone</h3>
-                      <p className="text-gray-700">
+                      <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-1">Phone</h3>
+                      <p className="text-gray-700 dark:text-gray-300">
                         +501 XXX-XXXX
                       </p>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         Monday - Friday, 9:00 AM - 5:00 PM BZT
                       </p>
                     </div>
@@ -204,7 +204,7 @@ export default function ContactPage() {
                       <MapPin className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-900 mb-1">Address</h3>
+                      <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-1">Address</h3>
                       <p className="text-gray-700">
                         GivahBz<br />
                         Belize City, Belize<br />
@@ -215,9 +215,9 @@ export default function ContactPage() {
                 </div>
 
                 {/* FAQ Link */}
-                <div className="bg-white rounded-lg p-6">
-                  <h3 className="font-medium text-gray-900 mb-2">Before You Contact Us</h3>
-                  <p className="text-gray-700 text-sm mb-4">
+                <div className="bg-white dark:bg-gray-700 rounded-lg p-6">
+                  <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Before You Contact Us</h3>
+                  <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">
                     Many common questions are answered in our FAQ section. Check there first for quick answers.
                   </p>
                   <a

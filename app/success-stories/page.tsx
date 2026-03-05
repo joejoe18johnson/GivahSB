@@ -33,11 +33,11 @@ export default function SuccessStoriesPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-medium flex items-center gap-3 text-gray-900">
+        <h1 className="text-4xl font-medium flex items-center gap-3 text-gray-900 dark:text-gray-100">
           <Trophy className="w-10 h-10 text-verified-600" />
           Success Stories
         </h1>
-        <p className="text-gray-600 mt-2 max-w-2xl">
+        <p className="text-gray-600 dark:text-gray-400 mt-2 max-w-2xl">
           Campaigns that reached their full funding goal thanks to our community. Celebrate their success and get inspired.
         </p>
       </div>
@@ -60,7 +60,7 @@ export default function SuccessStoriesPage() {
       {!isLoading && !error && campaigns.length === 0 && (
         <div className="rounded-xl bg-gray-50 gradient-border-1 p-12 text-center">
           <Trophy className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h2 className="text-xl font-medium text-gray-900 mb-2">No success stories yet</h2>
+          <h2 className="text-xl font-medium text-gray-900 dark:text-gray-100 mb-2">No success stories yet</h2>
           <p className="text-gray-600 mb-6 max-w-md mx-auto">
             When campaigns reach their full funding goal, they’ll appear here. Be the first to help a campaign get fully funded.
           </p>
@@ -112,7 +112,7 @@ export default function SuccessStoriesPage() {
                         <Users className="w-3.5 h-3.5" />
                         {(campaign.backers ?? 0).toLocaleString()} donors
                       </p>
-                      <h3 className="font-semibold text-gray-900 line-clamp-2 mt-1">
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mt-1">
                         {campaign.title}
                       </h3>
                       <p className="text-base font-bold bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent mt-1">
@@ -124,7 +124,7 @@ export default function SuccessStoriesPage() {
                           style={{ width: `${pct}%` }}
                         />
                       </div>
-                      <p className="text-sm font-semibold text-gray-900 mt-2">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-2">
                         {formatCurrency(raised)} raised
                       </p>
                     </div>

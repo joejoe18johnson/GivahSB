@@ -196,7 +196,7 @@ export default function AdminCreateCampaignPage() {
       </div>
       <div className="flex items-center gap-2 mb-2">
         <Shield className="w-6 h-6 text-primary-600" />
-        <h1 className="text-3xl font-semibold text-gray-900">Create Admin-Backed Campaign</h1>
+        <h1 className="text-3xl font-semibold text-gray-900 dark:text-gray-100">Create Admin-Backed Campaign</h1>
       </div>
       <p className="text-gray-600 mb-8">
         This campaign will be published immediately and show the &quot;Givah Approved Campaign&quot; badge so supporters know it&apos;s trusted by Givah.

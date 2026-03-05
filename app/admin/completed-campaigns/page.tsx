@@ -78,7 +78,7 @@ export default function AdminCompletedCampaignsPage() {
   if (loadError) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl md:text-3xl font-semibold text-gray-900">Completed Campaigns</h1>
+        <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-gray-100">Completed Campaigns</h1>
         <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
           <p className="text-red-800 font-medium mb-2">Could not load campaigns</p>
           <p className="text-red-700 text-sm mb-4">{loadError}</p>
@@ -97,7 +97,7 @@ export default function AdminCompletedCampaignsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 flex items-center gap-2">
+        <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
           <Trophy className="w-8 h-8 text-verified-600" />
           Completed Campaigns
         </h1>

@@ -28,7 +28,7 @@ export default function FeesPayoutsPage() {
               <div className="flex items-start gap-4">
                 <CheckCircle2 className="w-8 h-8 text-success-600 flex-shrink-0 mt-1" />
                 <div>
-                  <h2 className="text-3xl font-medium text-gray-900 mb-4">
+                  <h2 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-4">
                     No Platform Fees
                   </h2>
                   <p className="text-lg text-gray-700 leading-relaxed">
@@ -40,13 +40,13 @@ export default function FeesPayoutsPage() {
 
             {/* Payment Processing Fees */}
             <div className="mb-12">
-              <h2 className="text-3xl font-medium mb-6">Payment Processing Fees</h2>
+              <h2 className="text-3xl font-medium mb-6 text-gray-900 dark:text-gray-100">Payment Processing Fees</h2>
               <div className="bg-white rounded-lg p-8">
                 <p className="text-gray-700 mb-4">
                   While we don&apos;t charge platform fees, third-party payment processors may apply small fees for handling transactions. These fees are standard across the industry and help ensure secure, reliable payment processing.
                 </p>
                 <div className="bg-white rounded-lg p-6 mt-6">
-                  <h3 className="text-xl font-medium mb-4">Typical Payment Processing Fees:</h3>
+                  <h3 className="text-xl font-medium mb-4 text-gray-900 dark:text-gray-100">Typical Payment Processing Fees:</h3>
                   <ul className="space-y-3">
                     <li className="flex items-start gap-3">
                       <CheckCircle2 className="w-5 h-5 text-primary-600 mt-1 flex-shrink-0" />
@@ -106,19 +106,19 @@ export default function FeesPayoutsPage() {
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="bg-white p-4 rounded-lg">
-                    <h4 className="font-medium text-gray-900 mb-2">Credit & Debit Cards</h4>
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Credit & Debit Cards</h4>
                     <p className="text-sm text-gray-600">Visa, Mastercard, and other major cards</p>
                   </div>
                   <div className="bg-white p-4 rounded-lg">
-                    <h4 className="font-medium text-gray-900 mb-2">Bank Transfers</h4>
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Bank Transfers</h4>
                     <p className="text-sm text-gray-600">Direct transfers from Belizean banks</p>
                   </div>
                   <div className="bg-white p-4 rounded-lg">
-                    <h4 className="font-medium text-gray-900 mb-2">Mobile Payments</h4>
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Mobile Payments</h4>
                     <p className="text-sm text-gray-600">Mobile money and digital wallets</p>
                   </div>
                   <div className="bg-white p-4 rounded-lg">
-                    <h4 className="font-medium text-gray-900 mb-2">Other Methods</h4>
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Other Methods</h4>
                     <p className="text-sm text-gray-600">Additional payment options available</p>
                   </div>
                 </div>
@@ -162,7 +162,7 @@ export default function FeesPayoutsPage() {
               <div className="flex items-start gap-4">
                 <AlertCircle className="w-8 h-8 text-yellow-600 flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="text-xl font-medium text-gray-900 mb-3">Important Notes</h3>
+                  <h3 className="text-xl font-medium text-gray-900 dark:text-gray-100 mb-3">Important Notes</h3>
                   <ul className="space-y-2 text-gray-700">
                     <li>• All payouts are processed in Belizean Dollars (BZ$)</li>
                     <li>• You&apos;ll receive a detailed payout summary via email each month</li>

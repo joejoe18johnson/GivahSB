@@ -179,7 +179,7 @@ function ResetPasswordContent() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
         <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
-          <h1 className="text-2xl font-medium text-gray-900 mb-4">{title}</h1>
+          <h1 className="text-2xl font-medium text-gray-900 dark:text-gray-100 mb-4">{title}</h1>
           <p className="text-gray-600 mb-6 whitespace-pre-line">{message}</p>
           <Link
             href="/auth/forgot-password"
@@ -202,7 +202,7 @@ function ResetPasswordContent() {
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
         <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-medium text-gray-900 mb-2">Set new password</h1>
+            <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-2">Set new password</h1>
             <p className="text-gray-600">Choose a secure password for your account.</p>
           </div>
 
@@ -265,7 +265,7 @@ function ResetPasswordContent() {
           aria-labelledby="success-dialog-title"
         >
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-8 text-center border border-gray-200">
-            <h2 id="success-dialog-title" className="text-xl font-semibold text-gray-900 mb-3">
+            <h2 id="success-dialog-title" className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
               Password has been updated
             </h2>
             <p className="text-gray-600 mb-6">You can now sign in with your new password. Redirecting you shortly…</p>

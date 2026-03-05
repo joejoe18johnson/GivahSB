@@ -100,7 +100,7 @@ function ConfirmContent() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
         <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
-          <h1 className="text-2xl font-medium text-gray-900 mb-4">Email confirmed</h1>
+          <h1 className="text-2xl font-medium text-gray-900 dark:text-gray-100 mb-4">Email confirmed</h1>
           <p className="text-gray-600 mb-6">Your account is ready. Redirecting you…</p>
           <Link href="/my-campaigns" className="text-primary-600 hover:text-primary-700 font-medium">
             Go to My Campaigns
@@ -113,7 +113,7 @@ function ConfirmContent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
-        <h1 className="text-2xl font-medium text-gray-900 mb-4">Confirmation failed</h1>
+        <h1 className="text-2xl font-medium text-gray-900 dark:text-gray-100 mb-4">Confirmation failed</h1>
         <p className="text-gray-600 mb-6">{message}</p>
         <Link
           href="/auth/signup"

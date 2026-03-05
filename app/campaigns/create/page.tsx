@@ -68,7 +68,7 @@ export default function CreateCampaignPage() {
           <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-red-600" />
           </div>
-          <h1 className="text-xl font-semibold text-gray-900 mb-2">Account disabled</h1>
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Account disabled</h1>
           <p className="text-gray-600 mb-6">
             Your account has been disabled by an administrator. You cannot create or edit campaigns. Contact support if you believe this is an error.
           </p>
@@ -90,7 +90,7 @@ export default function CreateCampaignPage() {
           <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-amber-600" />
           </div>
-          <h1 className="text-xl font-semibold text-gray-900 mb-2">Account on hold</h1>
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Account on hold</h1>
           <p className="text-gray-600 mb-6">
             Your account is currently on hold. You cannot create or edit campaigns until an administrator removes the hold. Contact support if you have questions.
           </p>
@@ -136,12 +136,12 @@ export default function CreateCampaignPage() {
           <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-8 h-8 text-amber-600" />
           </div>
-          <h1 className="text-xl font-semibold text-gray-900 mb-2">Verification required to create a campaign</h1>
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Verification required to create a campaign</h1>
           <p className="text-gray-600 mb-4">
             To create a campaign, your <strong>phone number</strong>, <strong>ID document</strong>, and <strong>address document</strong> must be verified by our team. This helps keep the platform safe for donors and creators.
           </p>
           <div className="bg-gray-50 rounded-lg p-4 text-left text-sm text-gray-700 mb-6">
-            <p className="font-medium text-gray-900 mb-2">Your status:</p>
+            <p className="font-medium text-gray-900 dark:text-gray-100 mb-2">Your status:</p>
             <ul className="space-y-1">
               {user.phoneVerified ? (
                 <li className="flex items-center gap-2 text-verified-600">

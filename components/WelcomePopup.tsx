@@ -65,7 +65,7 @@ export default function WelcomePopup() {
               className="object-contain"
             />
           </div>
-          <h2 id="welcome-title" className="text-2xl font-semibold text-center text-gray-900 mb-3">
+          <h2 id="welcome-title" className="text-2xl font-semibold text-center text-gray-900 dark:text-gray-100 mb-3">
             Welcome to {content.siteName}
           </h2>
           <p className="text-center text-gray-600 mb-4">

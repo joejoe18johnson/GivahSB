@@ -16,7 +16,7 @@ function CheckEmailContent() {
           <MailCheck className="w-10 h-10 text-success-600" />
         </div>
 
-        <h1 className="text-3xl font-medium text-gray-900 mb-4">Check your email</h1>
+        <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-4">Check your email</h1>
 
         <p className="text-gray-600 mb-4">
           We&apos;ve sent a confirmation link to
@@ -59,7 +59,7 @@ function CheckEmailFallback() {
         <div className="w-20 h-20 bg-success-100 rounded-full flex items-center justify-center mx-auto mb-6">
           <MailCheck className="w-10 h-10 text-success-600" />
         </div>
-        <h1 className="text-3xl font-medium text-gray-900 mb-4">Check your email</h1>
+        <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-4">Check your email</h1>
         <p className="text-gray-600 mb-6">We&apos;ve sent a confirmation link to your email address.</p>
         <div className="animate-pulse h-4 bg-gray-200 rounded w-3/4 mx-auto mb-6" />
         <Link

@@ -103,7 +103,7 @@ export default function MyCampaignDonationsPage() {
         </div>
       ) : campaign ? (
         <>
-          <h1 className="text-2xl md:text-3xl font-medium text-gray-900 mb-2">Campaign Donations</h1>
+          <h1 className="text-2xl md:text-3xl font-medium text-gray-900 dark:text-gray-100 mb-2">Campaign Donations</h1>
           <p className="text-gray-600 mb-8">{campaign.title}</p>
 
           {/* Status bar: raised / goal, how much to go */}
@@ -111,12 +111,12 @@ export default function MyCampaignDonationsPage() {
             <div className="px-5 py-4 border-b border-gray-200 flex flex-wrap items-center gap-6">
               <div className="flex items-center gap-2">
                 <DollarSign className="w-5 h-5 text-verified-600" />
-                <span className="font-semibold text-gray-900">{formatCurrency(raised)}</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">{formatCurrency(raised)}</span>
                 <span className="text-gray-500">raised</span>
               </div>
               <div className="text-gray-400">/</div>
               <div>
-                <span className="font-semibold text-gray-900">{formatCurrency(goal)}</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">{formatCurrency(goal)}</span>
                 <span className="text-gray-500"> goal</span>
               </div>
               <div className="flex-1" />
@@ -155,7 +155,7 @@ export default function MyCampaignDonationsPage() {
                     <div key={d.id} className="px-5 py-4 hover:bg-gray-50 transition-colors">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                         <div className="min-w-0">
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-gray-900 dark:text-gray-100">
                             {d.anonymous ? "Anonymous Donor" : d.donorName}
                           </p>
                           <p className="text-sm text-gray-500">

@@ -347,7 +347,7 @@ export default function AdminPayoutsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 flex items-center gap-2">
+          <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
             <Banknote className="w-8 h-8 text-primary-600" />
             Payouts
           </h1>
@@ -412,13 +412,13 @@ export default function AdminPayoutsPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-gray-900 font-medium">{p.campaignTitle || "—"}</span>
+                      <span className="text-gray-900 dark:text-gray-100 font-medium">{p.campaignTitle || "—"}</span>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-gray-700 font-medium">
                       {formatAmount(p.raised)}
                     </td>
                     <td className="px-4 py-3">
-                      <div className="text-sm text-gray-900">{p.creatorName || "—"}</div>
+                      <div className="text-sm text-gray-900 dark:text-gray-100">{p.creatorName || "—"}</div>
                       <div className="text-xs text-gray-500">{p.creatorEmail || ""}</div>
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700">
@@ -480,7 +480,7 @@ export default function AdminPayoutsPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Payout details</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Payout details</h2>
               <button
                 type="button"
                 onClick={() => setSelectedPayout(null)}

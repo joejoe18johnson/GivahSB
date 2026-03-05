@@ -131,7 +131,7 @@ function LoginForm() {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-medium text-gray-900 mb-2">Welcome Back</h1>
+          <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-2">Welcome Back</h1>
           <p className="text-gray-600">Sign in to your GivahBz account</p>
         </div>
 

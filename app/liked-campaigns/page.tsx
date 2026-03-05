@@ -47,7 +47,7 @@ export default function LikedCampaignsPage() {
       <div className="mb-8">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+          className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Home
@@ -55,7 +55,7 @@ export default function LikedCampaignsPage() {
         <div className="flex items-center gap-3">
           <Heart className="w-8 h-8 text-red-500 fill-red-500" />
           <div>
-            <h1 className="text-3xl md:text-4xl font-medium text-gray-900">Liked Campaigns</h1>
+            <h1 className="text-3xl md:text-4xl font-medium text-gray-900 dark:text-gray-100">Liked Campaigns</h1>
             {heartedCampaigns.length > 0 && (
               <p className="text-gray-600 mt-1">{heartedCampaigns.length} {heartedCampaigns.length === 1 ? "campaign" : "campaigns"}</p>
             )}

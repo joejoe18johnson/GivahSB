@@ -111,7 +111,7 @@ export default function AdminSiteInfoPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 flex items-center gap-2">
+        <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
           <FileText className="w-8 h-8 text-primary-600" />
           Edit site info
         </h1>

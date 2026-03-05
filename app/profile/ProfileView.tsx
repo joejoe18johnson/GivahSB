@@ -112,11 +112,11 @@ export default function ProfileView(props: ProfileViewProps) {
         </div>
       )}
 
-      <h1 className="text-2xl md:text-3xl font-medium text-gray-900 mb-8">Account</h1>
+      <h1 className="text-2xl md:text-3xl font-medium text-gray-900 dark:text-gray-100 mb-8">Account</h1>
 
-      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">Profile Photo</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl gradient-border-1 shadow-sm mb-6">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Profile Photo</h2>
         </div>
         <div className="px-6 py-6">
           <div className="flex items-center gap-6">
@@ -172,9 +172,9 @@ export default function ProfileView(props: ProfileViewProps) {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="text-lg font-medium text-gray-900">Name</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl gradient-border-1 shadow-sm mb-6">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600 flex items-center justify-between">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Name</h2>
           {!editingName && (
             <button
               onClick={() => setEditingName(true)}
@@ -209,36 +209,36 @@ export default function ProfileView(props: ProfileViewProps) {
               </button>
             </div>
           ) : (
-            <p className="text-gray-900">{name}</p>
+            <p className="text-gray-900 dark:text-gray-100">{name}</p>
           )}
         </div>
       </div>
 
 
-      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">Connected app permissions</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl gradient-border-1 shadow-sm mb-6">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Connected app permissions</h2>
         </div>
         <div className="px-6 py-4">
           <p className="text-gray-600">No connected apps yet</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center gap-3">
-          <Mail className="w-5 h-5 text-gray-600" />
-          <h2 className="text-lg font-medium text-gray-900">Email address</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl gradient-border-1 shadow-sm mb-6">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600 flex items-center gap-3">
+          <Mail className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Email address</h2>
         </div>
         <div className="px-6 py-4">
-          <p className="text-gray-900">{user.email || "joejoe18johnson@gmail.com"}</p>
+          <p className="text-gray-900 dark:text-gray-100">{user.email || "joejoe18johnson@gmail.com"}</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+      <div className="bg-white dark:bg-gray-800 rounded-xl gradient-border-1 shadow-sm mb-6">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Calendar className="w-5 h-5 text-gray-600" />
-            <h2 className="text-lg font-medium text-gray-900">Birthday</h2>
+            <Calendar className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Birthday</h2>
           </div>
           {!editingBirthday && (
             <button onClick={() => setEditingBirthday(true)} className="flex items-center gap-2 text-primary-600 hover:text-primary-700 text-sm font-medium">
@@ -257,18 +257,18 @@ export default function ProfileView(props: ProfileViewProps) {
               </button>
             </div>
           ) : birthday ? (
-            <p className="text-gray-900">{new Date(birthday).toLocaleDateString()}</p>
+            <p className="text-gray-900 dark:text-gray-100">{new Date(birthday).toLocaleDateString()}</p>
           ) : (
             <p className="text-gray-600">Add your birthday</p>
           )}
         </div>
       </div>
 
-      <div className="bg-white rounded-xl gradient-border-1 shadow-sm mb-6">
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+      <div className="bg-white dark:bg-gray-800 rounded-xl gradient-border-1 shadow-sm mb-6">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Lock className="w-5 h-5 text-gray-600" />
-            <h2 className="text-lg font-medium text-gray-900">Password</h2>
+            <Lock className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Password</h2>
           </div>
           {!editingPassword && (
             <button onClick={() => setEditingPassword(true)} className="flex items-center gap-2 text-primary-600 hover:text-primary-700 text-sm font-medium">
@@ -299,7 +299,7 @@ export default function ProfileView(props: ProfileViewProps) {
             </div>
           ) : (
             <div className="flex items-center justify-between">
-              <p className="text-gray-900">●●●●●●●●●●●●</p>
+              <p className="text-gray-900 dark:text-gray-100">●●●●●●●●●●●●</p>
               <button
                 onClick={() => {
                   const userEmail = user?.email || "";
@@ -324,12 +324,12 @@ export default function ProfileView(props: ProfileViewProps) {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-red-200 shadow-sm mb-6">
-        <div className="px-6 py-4 border-b border-red-200">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-red-200 dark:border-red-800 shadow-sm mb-6">
+        <div className="px-6 py-4 border-b border-red-200 dark:border-red-800">
           <div className="flex items-start gap-3">
             <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5" />
             <div className="flex-1">
-              <h2 className="text-lg font-medium text-gray-900 mb-2">Deactivate account</h2>
+              <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Deactivate account</h2>
               <p className="text-sm text-gray-600 mb-4">If you deactivate your account, you won&apos;t be able to log in anymore, and your fundraisers will no longer appear on the platform.</p>
               <p className="text-sm text-gray-600 mb-4">
                 To learn more about your account management options,{" "}

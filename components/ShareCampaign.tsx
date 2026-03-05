@@ -46,7 +46,7 @@ function ShareModalContent({
       >
         <div className="rounded-xl gradient-border-1 bg-white p-5 shadow-xl">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900">Share this campaign</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Share this campaign</h3>
           <button
             type="button"
             onClick={onClose}

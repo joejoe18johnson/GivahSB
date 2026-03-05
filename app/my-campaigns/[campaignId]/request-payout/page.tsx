@@ -294,7 +294,7 @@ export default function RequestPayoutPage() {
         </div>
       ) : campaign ? (
         <>
-          <h1 className="text-2xl md:text-3xl font-medium text-gray-900 mb-2">Request Payout</h1>
+          <h1 className="text-2xl md:text-3xl font-medium text-gray-900 dark:text-gray-100 mb-2">Request Payout</h1>
           <p className="text-gray-600 mb-8">{campaign.title}</p>
 
           <div className="bg-verified-50 border border-verified-200 rounded-xl p-4 mb-8 flex items-center gap-3">
@@ -319,7 +319,7 @@ export default function RequestPayoutPage() {
             <div className="bg-white rounded-xl gradient-border-1 shadow-sm p-6 md:p-8">
               <div className="flex items-center gap-3 text-verified-600 mb-4">
                 <Building2 className="w-8 h-8" />
-                <h2 className="text-xl font-semibold">Payout request submitted</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Payout request submitted</h2>
               </div>
               <p className="text-gray-600 mb-4">
                 Your request to deposit {formatCurrency(campaign.raised)} to your Belize bank account has been received.
@@ -376,7 +376,7 @@ export default function RequestPayoutPage() {
           ) : (
             <form onSubmit={handleSubmit} className="bg-white rounded-xl gradient-border-1 shadow-sm overflow-hidden">
               <div className="px-5 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Where to deposit the money</h2>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Where to deposit the money</h2>
                 <p className="text-sm text-gray-600 mt-1">Select your bank in Belize and enter the account details.</p>
               </div>
               <div className="p-5 md:p-6 space-y-5">

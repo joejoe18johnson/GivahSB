@@ -22,7 +22,7 @@ export default function ProofDocuments({ documents }: ProofDocumentsProps) {
     <div className="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
       <div className="flex items-center gap-2 mb-4">
         <FileText className="w-5 h-5 text-blue-600" />
-        <h2 className="text-xl font-medium text-gray-900">Proof of Need</h2>
+        <h2 className="text-xl font-medium text-gray-900 dark:text-gray-100">Proof of Need</h2>
       </div>
       <p className="text-sm text-gray-600 mb-4">
         This campaign has been verified with supporting documentation. All documents have been reviewed to confirm the need for assistance.

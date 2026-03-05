@@ -100,14 +100,14 @@ export default function HowItWorksPage() {
       </section>
 
       {/* Steps */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-medium text-center mb-12">How It Works</h2>
+          <h2 className="text-4xl font-medium text-center mb-12 text-gray-900 dark:text-gray-100">How It Works</h2>
           <div className="max-w-5xl mx-auto space-y-12">
             {steps.map((step, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg gradient-border-1 p-8 md:p-10 flex flex-col md:flex-row gap-8 items-start"
+                className="bg-white dark:bg-gray-700 rounded-lg gradient-border-1 p-8 md:p-10 flex flex-col md:flex-row gap-8 items-start"
               >
                 <div className="flex-shrink-0">
                   <div className="w-20 h-20 bg-success-500 rounded-full flex items-center justify-center text-white">
@@ -117,12 +117,12 @@ export default function HowItWorksPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-4 mb-4">
                     <span className="text-4xl font-medium text-primary-600">{step.number}</span>
-                    <h3 className="text-2xl font-medium text-gray-900">{step.title}</h3>
+                    <h3 className="text-2xl font-medium text-gray-900 dark:text-gray-100">{step.title}</h3>
                   </div>
-                  <p className="text-lg text-gray-700 mb-4">{step.description}</p>
+                  <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">{step.description}</p>
                   <ul className="space-y-2">
                     {step.details.map((detail, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-gray-600">
+                      <li key={idx} className="flex items-start gap-2 text-gray-600 dark:text-gray-400">
                         <CheckCircle2 className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
                         <span>{detail}</span>
                       </li>
@@ -136,22 +136,22 @@ export default function HowItWorksPage() {
       </section>
 
       {/* Benefits */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-medium text-center mb-12">Why Choose GivahBz?</h2>
+          <h2 className="text-4xl font-medium text-center mb-12 text-gray-900 dark:text-gray-100">Why Choose GivahBz?</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {benefits.map((benefit, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg p-6 gradient-border-1 transition-shadow"
+                className="bg-white dark:bg-gray-700 rounded-lg p-6 gradient-border-1 transition-shadow"
               >
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0 w-12 h-12 bg-success-500 rounded-full flex items-center justify-center text-white">
                     {benefit.icon}
                   </div>
                   <div>
-                    <h3 className="text-xl font-medium text-gray-900 mb-2">{benefit.title}</h3>
-                    <p className="text-gray-600">{benefit.text}</p>
+                    <h3 className="text-xl font-medium text-gray-900 dark:text-gray-100 mb-2">{benefit.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300">{benefit.text}</p>
                   </div>
                 </div>
               </div>
@@ -199,11 +199,11 @@ export default function HowItWorksPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-4xl font-medium mb-4 text-gray-900">Ready to Get Started?</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-700 mb-8">
+            <h2 className="text-4xl font-medium mb-4 text-gray-900 dark:text-gray-100">Ready to Get Started?</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
               Create your campaign today and start receiving support from the Belizean community
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

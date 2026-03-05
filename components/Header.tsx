@@ -65,7 +65,7 @@ function NotificationDropdownRow({
         className={`w-full text-left px-4 py-3 pr-10 hover:bg-gray-50 ${!n.read ? "bg-primary-50/50" : ""}`}
       >
         <div className="flex items-start justify-between gap-2">
-          <p className="text-sm font-medium text-gray-900 flex-1 min-w-0">{n.title}</p>
+          <p className="text-sm font-medium text-gray-900 dark:text-gray-100 flex-1 min-w-0">{n.title}</p>
           {!n.read && (
             <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-primary-600 bg-primary-100 px-1.5 py-0.5 rounded">
               New
@@ -322,9 +322,9 @@ export default function Header() {
               </button>
               {showCampaignsDropdown && (
                 <div className="absolute left-0 top-full mt-1 w-56 z-[100]">
-                  <div className="bg-white rounded-xl shadow-lg py-2 gradient-border-1 w-full overflow-hidden">
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <h3 className="font-medium text-gray-900">Campaigns</h3>
+                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg py-2 gradient-border-1 w-full overflow-hidden">
+                    <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-600">
+                      <h3 className="font-medium text-gray-900 dark:text-gray-100">Campaigns</h3>
                     </div>
                     <Link
                       href="/campaigns"
@@ -380,10 +380,10 @@ export default function Header() {
                     <div className="absolute right-0 top-full mt-1 w-80 z-[100]">
                       <div
                         ref={notificationScrollContainerRef}
-                        className="max-h-[20rem] overflow-y-auto bg-white rounded-xl shadow-lg py-2 border border-gray-200 w-full"
+                        className="max-h-[20rem] overflow-y-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg py-2 border border-gray-200 dark:border-gray-600 w-full"
                       >
-                        <div className="px-4 py-2 border-b border-gray-100">
-                          <h3 className="font-medium text-gray-900">Notifications</h3>
+                        <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-600">
+                          <h3 className="font-medium text-gray-900 dark:text-gray-100">Notifications</h3>
                           {notifications.length > 0 && (
                             <div className="flex items-center gap-3 mt-2">
                               <button
@@ -461,14 +461,14 @@ export default function Header() {
                   </button>
                   {showUserMenu && (
                     <div className="absolute right-0 top-full mt-2 w-48 z-[100]">
-                      <div className="bg-white rounded-lg shadow-lg gradient-border-1 py-2 w-full">
-                      <div className="px-4 py-2 border-b border-gray-200 flex items-center gap-3">
+                      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg gradient-border-1 py-2 w-full">
+                      <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-600 flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0">
                           <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={40} className="w-full h-full" />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
-                          <p className="text-xs text-gray-600 truncate">{user.email}</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{user.name}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 truncate">{user.email}</p>
                         </div>
                       </div>
                       <Link

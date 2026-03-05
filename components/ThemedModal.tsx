@@ -181,7 +181,7 @@ export function ThemedModalProvider({ children }: { children: React.ReactNode })
                   <AlertIcon className="w-5 h-5" />
                 </div>
                 <div className="min-w-0 flex-1 pt-0.5">
-                  <h3 className="text-sm font-semibold text-gray-900">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                     {alertState.title ?? alertStyle.title}
                   </h3>
                   <p className="mt-0.5 text-sm text-gray-600">{alertState.message}</p>
@@ -213,7 +213,7 @@ export function ThemedModalProvider({ children }: { children: React.ReactNode })
                 <ConfirmIcon className="w-6 h-6" />
               </div>
               <div className="min-w-0 flex-1 pt-0.5">
-                <h3 id="confirm-title" className="text-lg font-semibold text-gray-900">
+                <h3 id="confirm-title" className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   {confirmState.title}
                 </h3>
                 <p className="mt-1 text-gray-600">{confirmState.message}</p>

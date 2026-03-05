@@ -303,7 +303,7 @@ export default function AdminUsersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-semibold text-gray-900">All Users</h1>
+        <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-gray-100">All Users</h1>
         <p className="text-gray-600 mt-1">
           Review and approve phone numbers and ID verification. Users cannot create or edit campaigns until both their phone number and ID are approved by an admin.
         </p>
@@ -635,7 +635,7 @@ export default function AdminUsersPage() {
             className="bg-white rounded-xl shadow-xl max-w-md w-full p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               Reject {rejectModal.type === "id" ? "ID document" : "Address document"}
             </h3>
             <p className="mt-1 text-sm text-gray-600">

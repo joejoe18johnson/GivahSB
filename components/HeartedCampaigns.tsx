@@ -194,7 +194,7 @@ export default function HeartedCampaigns({ isOpen, onClose }: HeartedCampaignsPr
           <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Heart className="w-6 h-6 text-red-500 fill-red-500" />
-              <h2 className="text-2xl font-medium text-gray-900">Hearted Campaigns</h2>
+              <h2 className="text-2xl font-medium text-gray-900 dark:text-gray-100">Hearted Campaigns</h2>
               {heartedCampaigns.length > 0 && (
                 <span className="text-sm text-gray-500">({heartedCampaigns.length})</span>
               )}
@@ -287,7 +287,7 @@ export default function HeartedCampaigns({ isOpen, onClose }: HeartedCampaignsPr
                         {/* Content */}
                         <div className="flex-1 p-6 flex flex-col justify-between min-w-0">
                           <div>
-                            <h3 className="text-xl font-medium text-gray-900 mb-2 line-clamp-1">
+                            <h3 className="text-xl font-medium text-gray-900 dark:text-gray-100 mb-2 line-clamp-1">
                               {campaign.title}
                             </h3>
                             <p className="text-gray-600 text-sm mb-4 line-clamp-2">

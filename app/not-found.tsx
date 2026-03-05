@@ -4,8 +4,8 @@ export default function NotFound() {
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <div className="text-center max-w-lg">
-        <h1 className="text-4xl font-medium text-gray-900 mb-2">Page not found</h1>
-        <p className="text-gray-600 mb-6">
+        <h1 className="text-4xl font-medium text-gray-900 dark:text-gray-100 mb-2">Page not found</h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">
           The page you’re looking for doesn’t exist. It may have been moved, deleted, or the URL might have a typo.
         </p>
         <div className="flex flex-wrap justify-center gap-3">

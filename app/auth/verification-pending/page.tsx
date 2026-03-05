@@ -14,7 +14,7 @@ export default function VerificationPendingPage() {
           <Clock className="w-10 h-10 text-yellow-600" />
         </div>
         
-        <h1 className="text-3xl font-medium text-gray-900 mb-4">
+        <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-4">
           Verification Pending
         </h1>
         

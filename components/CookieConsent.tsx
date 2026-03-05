@@ -114,9 +114,9 @@ export default function CookieConsent() {
           aria-modal="true"
           aria-labelledby="cookie-settings-title"
         >
-          <div className="rounded-xl bg-white shadow-xl border border-gray-200 overflow-hidden">
-            <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
-              <h2 id="cookie-settings-title" className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+          <div className="rounded-xl bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-600 overflow-hidden">
+            <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-600 flex items-center justify-between bg-gray-50 dark:bg-gray-700">
+              <h2 id="cookie-settings-title" className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                 <Settings className="w-5 h-5 text-primary-600" />
                 Cookie settings
               </h2>
@@ -137,7 +137,7 @@ export default function CookieConsent() {
               {/* Necessary */}
               <div className="flex items-start justify-between gap-4 py-2 border-b border-gray-100">
                 <div>
-                  <p className="font-medium text-gray-900">Necessary</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">Necessary</p>
                   <p className="text-sm text-gray-500 mt-0.5">Required for login, security, and core features. Cannot be disabled.</p>
                 </div>
                 <span className="shrink-0 rounded-full bg-primary-100 text-primary-700 px-2.5 py-1 text-xs font-medium">Always on</span>
@@ -146,7 +146,7 @@ export default function CookieConsent() {
               {/* Preferences */}
               <div className="flex items-start justify-between gap-4 py-2 border-b border-gray-100">
                 <div>
-                  <p className="font-medium text-gray-900">Preferences</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">Preferences</p>
                   <p className="text-sm text-gray-500 mt-0.5">Remember your settings (e.g. language, display options).</p>
                 </div>
                 <button
@@ -180,7 +180,7 @@ export default function CookieConsent() {
               {/* Marketing */}
               <div className="flex items-start justify-between gap-4 py-2">
                 <div>
-                  <p className="font-medium text-gray-900">Marketing</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">Marketing</p>
                   <p className="text-sm text-gray-500 mt-0.5">Used to show relevant campaigns or measure ad effectiveness (if we use such tools).</p>
                 </div>
                 <button
@@ -223,7 +223,7 @@ export default function CookieConsent() {
 
       {/* Banner */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-[199] bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
+        className="fixed bottom-0 left-0 right-0 z-[199] bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-600 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
         role="region"
         aria-label="Cookie consent"
       >
@@ -234,7 +234,7 @@ export default function CookieConsent() {
                 <Cookie className="w-5 h-5 text-primary-600" />
               </div>
               <div className="min-w-0">
-                <h3 className="font-semibold text-gray-900">We use cookies</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100">We use cookies</h3>
                 <p className="text-sm text-gray-600 mt-0.5">
                   We use cookies to keep you signed in, remember your choices, and improve the site. By clicking &quot;Accept all&quot; you allow all categories; or choose &quot;Settings&quot; to pick which cookies we use.{" "}
                   <Link href="/privacy" className="text-primary-600 hover:underline font-medium">

@@ -350,7 +350,7 @@ export default function VerificationCenterPage() {
   return (
     <div className="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
       <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-2">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
           <Shield className="w-8 h-8 text-primary-600" />
           Verification Center
         </h1>
@@ -362,13 +362,13 @@ export default function VerificationCenterPage() {
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Phone className="w-5 h-5 text-gray-600" />
-            <h2 className="text-lg font-medium text-gray-900">Phone number</h2>
+            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Phone number</h2>
           </div>
         </div>
         <div className="px-6 py-4">
           {phoneNumber ? (
             <div className="space-y-2">
-              <p className="text-gray-900 font-medium">{phoneNumber}</p>
+              <p className="text-gray-900 dark:text-gray-100 font-medium">{phoneNumber}</p>
               {user?.phoneVerified ? (
                 <span className="inline-flex items-center gap-1 px-2 py-1 bg-verified-100 text-verified-700 rounded-full text-xs font-medium w-fit">
                   <CheckCircle2 className="w-3 h-3" />
@@ -429,7 +429,7 @@ export default function VerificationCenterPage() {
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Shield className="w-5 h-5 text-gray-600" />
-            <h2 className="text-lg font-medium text-gray-900">ID Verification</h2>
+            <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">ID Verification</h2>
           </div>
         </div>
         <div className="px-6 py-4">
@@ -437,7 +437,7 @@ export default function VerificationCenterPage() {
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-gray-600" />
-                <p className="text-gray-900 font-medium">{user.idDocumentType === "social_security" ? "Social Security Card" : "Passport"}</p>
+                <p className="text-gray-900 dark:text-gray-100 font-medium">{user.idDocumentType === "social_security" ? "Social Security Card" : "Passport"}</p>
               </div>
               {user?.idVerified ? (
                 <>

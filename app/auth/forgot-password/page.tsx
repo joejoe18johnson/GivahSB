@@ -43,7 +43,7 @@ export default function ForgotPasswordPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
         <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
-          <h1 className="text-2xl font-medium text-gray-900 mb-4">Check your email</h1>
+          <h1 className="text-2xl font-medium text-gray-900 dark:text-gray-100 mb-4">Check your email</h1>
           <p className="text-gray-600 mb-6">
             If an account exists for <strong>{email}</strong>, we&apos;ve sent a link to reset your password. Check your inbox and spam folder.
           </p>
@@ -62,7 +62,7 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-medium text-gray-900 mb-2">Reset password</h1>
+          <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-2">Reset password</h1>
           <p className="text-gray-600">Enter your email and we&apos;ll send you a link to reset your password.</p>
         </div>
 

@@ -66,7 +66,7 @@ export default function AdminMessagesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+      <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
         <Mail className="w-7 h-7 text-primary-600" />
         Messages
       </h1>
@@ -98,7 +98,7 @@ export default function AdminMessagesPage() {
                   )}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <span className="font-medium text-gray-900">{m.name}</span>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">{m.name}</span>
                   <span className="text-gray-500 mx-2">·</span>
                   <span className="text-gray-600 truncate">{m.email}</span>
                   <span className="text-gray-400 mx-2">·</span>

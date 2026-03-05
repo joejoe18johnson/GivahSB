@@ -113,7 +113,7 @@ export default function AdminUnderReviewPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-semibold text-gray-900">Campaigns under review</h1>
+          <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-gray-100">Campaigns under review</h1>
           <p className="text-gray-600 mt-1">
             New campaigns submitted by creators appear here. Withdrawn campaigns are removed automatically.
           </p>
@@ -213,7 +213,7 @@ export default function AdminUnderReviewPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 shrink-0">
-              <h2 id="campaign-detail-title" className="text-xl font-semibold text-gray-900">
+              <h2 id="campaign-detail-title" className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 Campaign details
               </h2>
               <button
@@ -227,7 +227,7 @@ export default function AdminUnderReviewPage() {
             </div>
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-1">{selectedCampaign.title}</h3>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-1">{selectedCampaign.title}</h3>
                 <p className="text-sm text-gray-500">{formatDate(selectedCampaign.submittedAt)}</p>
               </div>
 

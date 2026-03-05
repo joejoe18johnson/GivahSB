@@ -138,7 +138,7 @@ export default function CampaignPage() {
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_20rem] gap-4 lg:gap-6">
         {/* Cover section: title, media, creator — image height matches sidebar (~same as right card) */}
         <div className="min-w-0 flex flex-col gap-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
             {campaign.title}
           </h1>
 
@@ -372,7 +372,7 @@ export default function CampaignPage() {
             </div>
             <div className="grid grid-cols-2 gap-3 mb-5 pb-5 border-b border-gray-200">
               <div>
-                <div className="text-lg font-medium text-gray-900">{campaign.backers}</div>
+                <div className="text-lg font-medium text-gray-900 dark:text-gray-100">{campaign.backers}</div>
                 <div className="text-xs text-gray-600 flex items-center gap-1">
                   <Users className="w-3 h-3" />
                   donors

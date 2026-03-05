@@ -36,6 +36,14 @@ body {
   --dark-muted: #9ca3af;
 }
 
+/* Ensure headings are visible in dark mode when they use text-gray-900 (no dark: variant) */
+.dark main h1.text-gray-900,
+.dark main h2.text-gray-900,
+.dark main h3.text-gray-900,
+.dark main h4.text-gray-900 {
+  color: #f3f4f6;
+}
+
 /* All form inputs: always dark text + light background (mobile, desktop, dark mode) */
 input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
 textarea {
