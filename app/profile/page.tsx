@@ -113,9 +113,22 @@ export default function ProfilePage() {
     if (!user) return;
     setIsDeactivating(true);
     try {
-      await updateUser({ status: "deleted" });
+      const res = await fetch("/api/profile/delete", {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const message =
+          typeof (data as { error?: string }).error === "string"
+            ? (data as { error: string }).error
+            : "Failed to deactivate account. Please try again later.";
+        throw new Error(message);
+      }
       await logout();
-      window.location.href = "/";
+      if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
     } catch (error) {
       console.error("Error deactivating account:", error);
       alert("Failed to deactivate account. Please try again or contact support.", { variant: "error" });
