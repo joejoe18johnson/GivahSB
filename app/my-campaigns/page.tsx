@@ -424,14 +424,14 @@ export default function MyCampaignsPage() {
                 <div className="flex flex-col md:flex-row">
                   <Link
                     href={`/campaigns/${campaign.id}`}
-                    className="relative w-full md:w-64 h-48 md:h-auto md:min-h-[200px] bg-gray-200 flex-shrink-0 block"
+                    className="relative w-full md:w-48 h-32 md:h-auto md:min-h-[120px] bg-gray-200 flex-shrink-0 block"
                   >
                     <SafeImage
                       src={campaign.image}
                       alt={campaign.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      sizes="(max-width: 768px) 100vw, 256px"
+                      sizes="(max-width: 768px) 100vw, 192px"
                       fallback={
                         <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-200 to-primary-400">
                           <span className="text-primary-600 text-4xl font-medium">
@@ -464,152 +464,140 @@ export default function MyCampaignsPage() {
                       </span>
                     </div>
                   </Link>
-                  <div className="flex-1 p-5 md:p-6 flex flex-col">
-                    <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
-                      <div>
+                  <div className="flex-1 p-3 md:p-4 flex flex-col min-w-0">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                      <div className="min-w-0 flex-1">
                         <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                           Campaign ID: {campaign.id.slice(-6).toUpperCase()}
                         </span>
                         <Link
                           href={`/campaigns/${campaign.id}`}
-                          className="block text-lg font-medium text-gray-900 hover:text-primary-600 transition-colors"
+                          className="block text-base font-medium text-gray-900 hover:text-primary-600 transition-colors truncate"
+                          title={campaign.title}
                         >
                           {campaign.title}
                         </Link>
                       </div>
                       <Link
                         href={`/campaigns/${campaign.id}`}
-                        className="inline-flex items-center text-gray-500 text-sm hover:text-primary-600"
+                        className="inline-flex items-center text-gray-500 text-sm hover:text-primary-600 flex-shrink-0"
                       >
-                        <ArrowRight className="w-4 h-4 mr-1" />
-                        View campaign
+                        <ArrowRight className="w-4 h-4 mr-0.5" />
+                        View
                       </Link>
                     </div>
-                    <p className="text-gray-600 text-sm line-clamp-2 mb-4">{campaign.description}</p>
 
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 text-sm">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2 text-xs">
                       <div className="flex items-center gap-1.5 text-gray-700">
-                        <DollarSign className="w-4 h-4 text-success-600" />
+                        <DollarSign className="w-3.5 h-3.5 text-success-600" />
                         <span className="font-medium text-success-600">
                           {formatCurrency(raised)}
                         </span>
                         <span className="text-gray-500">/ {formatCurrency(goal)}</span>
                       </div>
                       <div className="flex items-center gap-1.5 text-gray-600">
-                        <Users className="w-4 h-4" />
+                        <Users className="w-3.5 h-3.5" />
                         <span>{campaign.backers} donors</span>
                       </div>
-                      <p className="text-base font-bold bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">
+                      <p className="text-sm font-bold bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">
                         {Math.round(progress)}% Funded
                       </p>
                       {campaign.location && (
                         <div className="flex items-center gap-1.5 text-gray-600">
-                          <MapPin className="w-4 h-4 flex-shrink-0" />
-                          <span className="truncate">{campaign.location}</span>
+                          <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span className="truncate text-xs">{campaign.location}</span>
                         </div>
                       )}
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500">
-                      <span>Created {campaign.createdAt}</span>
-                      <span className="capitalize">{campaign.creatorType}</span>
-                      {campaign.proofDocuments && campaign.proofDocuments.length > 0 && (
-                        <span className="flex items-center gap-1">
-                          <FileText className="w-3.5 h-3.5" />
-                          {campaign.proofDocuments.length} proof doc
-                          {campaign.proofDocuments.length !== 1 ? "s" : ""}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="mt-3">
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="mt-2">
+                      <div className="w-full bg-gray-200 rounded-full h-1.5">
                         <div
-                          className="bg-gradient-to-r from-primary-500 to-verified-500 h-2 rounded-full transition-all"
+                          className="bg-gradient-to-r from-primary-500 to-verified-500 h-1.5 rounded-full transition-all"
                           style={{ width: `${progress}%` }}
                         />
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-4 border-t border-gray-200 flex flex-wrap items-center gap-2">
+                    <div className="mt-2 pt-2 border-t border-gray-200 flex flex-wrap items-center gap-1.5">
                       {(campaign as { payoutStatus?: string | null }).payoutStatus === "completed" && (
-                        <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-verified-100 text-verified-800 text-sm font-medium">
-                          <CheckCircle2 className="w-4 h-4" />
-                          Successfully paid out
+                        <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-verified-100 text-verified-800 text-xs font-medium">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          Paid out
                         </span>
                       )}
                       {goalReached && !isStopped && (campaign as { payoutStatus?: string | null }).payoutStatus !== "completed" && (
                         <Link
                           href={`/my-campaigns/${campaign.id}/request-payout`}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700 text-sm font-medium transition-colors"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary-600 text-white hover:bg-primary-700 text-xs font-medium transition-colors"
                         >
-                          <DollarSign className="w-4 h-4" />
+                          <DollarSign className="w-3.5 h-3.5" />
                           {(campaign as { payoutStatus?: string | null }).payoutStatus === "pending"
-                            ? "View payout status"
+                            ? "View payout"
                             : "Request Payout"}
                         </Link>
                       )}
                       <Link
                         href={`/my-campaigns/${campaign.id}/donations`}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-verified-500 text-white hover:bg-verified-600 text-sm font-medium transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-verified-500 text-white hover:bg-verified-600 text-xs font-medium transition-colors"
                       >
-                        <ArrowRight className="w-4 h-4" />
-                        View Campaign Donations
+                        <ArrowRight className="w-3.5 h-3.5" />
+                        Donations
                       </Link>
                       {!isStopped && !goalReached && (
                         <Link
                           href={`/my-campaigns/${campaign.id}/edit`}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary-50 text-primary-700 hover:bg-primary-100 text-sm font-medium transition-colors"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary-50 text-primary-700 hover:bg-primary-100 text-xs font-medium transition-colors"
                           onClick={(e) => { e.stopPropagation(); }}
                         >
-                          <FileText className="w-4 h-4" />
-                          Edit campaign
+                          <FileText className="w-3.5 h-3.5" />
+                          Edit
                         </Link>
                       )}
                       {goalReached && (
                         <span
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-400 text-xs font-medium cursor-not-allowed"
                           title="Not available after goal is reached"
                         >
-                          <FileText className="w-4 h-4" />
-                          Edit campaign
+                          <FileText className="w-3.5 h-3.5" />
+                          Edit
                         </span>
                       )}
                       {!isStopped && !goalReached && (
                         <button
                           type="button"
                           onClick={(e) => handleStop(e, campaign.id)}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-100 text-amber-800 hover:bg-amber-200 text-sm font-medium transition-colors"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-100 text-amber-800 hover:bg-amber-200 text-xs font-medium transition-colors"
                         >
-                          <StopCircle className="w-4 h-4" />
-                          Stop campaign
+                          <StopCircle className="w-3.5 h-3.5" />
+                          Stop
                         </button>
                       )}
                       {goalReached && (
                         <span
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-400 text-xs font-medium cursor-not-allowed"
                           title="Not available after goal is reached"
                         >
-                          <StopCircle className="w-4 h-4" />
-                          Stop campaign
+                          <StopCircle className="w-3.5 h-3.5" />
+                          Stop
                         </span>
                       )}
                       {!goalReached ? (
                         <button
                           type="button"
                           onClick={(e) => handleDelete(e, campaign.id)}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 text-sm font-medium transition-colors"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 text-xs font-medium transition-colors"
                         >
-                          <Trash2 className="w-4 h-4" />
-                          Delete campaign
+                          <Trash2 className="w-3.5 h-3.5" />
+                          Delete
                         </button>
                       ) : (
                         <span
-                          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-400 text-xs font-medium cursor-not-allowed"
                           title="Not available after goal is reached"
                         >
-                          <Trash2 className="w-4 h-4" />
-                          Delete campaign
+                          <Trash2 className="w-3.5 h-3.5" />
+                          Delete
                         </span>
                       )}
                     </div>
