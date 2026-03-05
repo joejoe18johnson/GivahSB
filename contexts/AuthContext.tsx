@@ -83,17 +83,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const supabase = createClient();
     let cancelled = false;
 
+    // Helper: only treat as logged in if email is confirmed.
+    const confirmedAt = (u: SupabaseUser) =>
+      (u as unknown as { email_confirmed_at?: string | null }).email_confirmed_at;
+
     // 1) Subscribe to auth state changes (login, logout, token refresh).
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (cancelled) return;
       if (session?.user) {
-        try {
-          const profile = await supabaseUserToProfile(supabase, session.user);
-          if (!cancelled) setUser(profile ? profileToUser(profile) : null);
-        } catch {
+        if (!confirmedAt(session.user)) {
+          await signOutSupabase(supabase);
           if (!cancelled) setUser(null);
+        } else {
+          try {
+            const profile = await supabaseUserToProfile(supabase, session.user);
+            if (!cancelled) setUser(profile ? profileToUser(profile) : null);
+          } catch {
+            if (!cancelled) setUser(null);
+          }
         }
       } else {
         if (!cancelled) setUser(null);
@@ -107,11 +116,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { data: { session } } = await supabase.auth.getSession();
         if (cancelled) return;
         if (session?.user) {
-          try {
-            const profile = await supabaseUserToProfile(supabase, session.user);
-            if (profile) setUser(profileToUser(profile));
-          } catch {
-            // keep user null if profile lookup fails
+          if (!confirmedAt(session.user)) {
+            await signOutSupabase(supabase);
+            setUser(null);
+          } else {
+            try {
+              const profile = await supabaseUserToProfile(supabase, session.user);
+              if (profile) setUser(profileToUser(profile));
+            } catch {
+              // keep user null if profile lookup fails
+            }
           }
         } else {
           setUser(null);
@@ -182,8 +196,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     phoneNumber?: string
   ): Promise<void> => {
     const supabase = createClient();
-    const profile = await signUpWithEmailSupabase(supabase, email, password, name, phoneNumber);
-    setUser(profileToUser(profile));
+    await signUpWithEmailSupabase(supabase, email, password, name, phoneNumber);
+    // Do not set user: they must confirm email first. Session was cleared in signUpWithEmailSupabase.
   };
 
   const requestPasswordReset = async (email: string): Promise<void> => {
