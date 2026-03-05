@@ -195,12 +195,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     try {
       const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      const headers: Record<string, string> = { "Content-Type": "application/json" };
-      if (session?.access_token) headers.Authorization = `Bearer ${session.access_token}`;
       const res = await fetch("/api/profile/update", {
         method: "POST",
-        headers,
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify(updates),
       });
@@ -208,9 +205,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const data = await res.json().catch(() => ({}));
         throw new Error(typeof data.error === "string" ? data.error : "Failed to update profile");
       }
-      // Re-fetch profile so state matches DB (e.g. phone number persists on refresh)
-      if (session?.user) {
-        const profile = await supabaseUserToProfile(supabase, session.user);
+      // Re-fetch profile via the current auth user so state matches DB.
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (authUser) {
+        const profile = await supabaseUserToProfile(supabase, authUser);
         if (profile) setUser(profileToUser(profile));
         else setUser((prev) => (prev ? { ...prev, ...updates } : prev));
       } else {
