@@ -616,23 +616,23 @@ export default function Header() {
                 <button
                   type="button"
                   onClick={() => setMobileCampaignsOpen((v) => !v)}
-                  className="w-full px-4 py-3 text-left flex items-center justify-between text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300 ease-in-out"
+                  className="w-full px-4 py-3 text-left flex items-center justify-between bg-gradient-to-r from-primary-600 to-verified-500 text-white font-medium rounded-lg shadow-sm hover:opacity-95 active:opacity-90 transition-opacity duration-200"
                 >
                   Campaigns
                   <ChevronDown className={`w-4 h-4 transition-transform ${mobileCampaignsOpen ? "rotate-180" : ""}`} />
                 </button>
                 {mobileCampaignsOpen && (
-                  <div className="bg-white/50 rounded-lg mt-1 mx-2 border border-gray-200 shadow-sm overflow-hidden">
-                    <Link href="/campaigns" className="flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-50 border-b border-gray-100" onClick={closeMobileMenu}>
-                      <Megaphone className="w-4 h-4 text-primary-600 shrink-0" />
+                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-b-lg mt-1 border border-gray-200 dark:border-gray-600 shadow-sm overflow-hidden">
+                    <Link href="/campaigns" className="flex items-center gap-2 px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700/50 border-b border-gray-200 dark:border-gray-600" onClick={closeMobileMenu}>
+                      <Megaphone className="w-4 h-4 text-primary-600 dark:text-primary-400 shrink-0" />
                       View All Campaigns
                     </Link>
-                    <Link href="/success-stories" className="flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-50 border-b border-gray-100" onClick={closeMobileMenu}>
-                      <Trophy className="w-4 h-4 text-primary-600 shrink-0" />
+                    <Link href="/success-stories" className="flex items-center gap-2 px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700/50 border-b border-gray-200 dark:border-gray-600" onClick={closeMobileMenu}>
+                      <Trophy className="w-4 h-4 text-primary-600 dark:text-primary-400 shrink-0" />
                       Success Stories
                     </Link>
-                    <Link href="/how-it-works" className="flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-gray-50" onClick={closeMobileMenu}>
-                      <BookOpen className="w-4 h-4 text-primary-600 shrink-0" />
+                    <Link href="/how-it-works" className="flex items-center gap-2 px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700/50" onClick={closeMobileMenu}>
+                      <BookOpen className="w-4 h-4 text-primary-600 dark:text-primary-400 shrink-0" />
                       How It Works
                     </Link>
                   </div>
