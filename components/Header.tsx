@@ -288,9 +288,6 @@ export default function Header() {
             />
           </Link>
 
-          {/* Theme switcher - always visible on all breakpoints */}
-          <ThemeSwitcher />
-
           {/* Search Bar - desktop only */}
           <form onSubmit={handleSearch} className="hidden lg:block flex-1 max-w-md mx-4 min-w-0">
             <div className="relative">
@@ -585,6 +582,11 @@ export default function Header() {
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
+          </div>
+
+          {/* Theme switcher - always visible, far right */}
+          <div className="shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center">
+            <ThemeSwitcher />
           </div>
         </div>
       </div>
