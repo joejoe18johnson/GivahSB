@@ -29,6 +29,14 @@ function ConfirmContent() {
 
   useEffect(() => {
     let cancelled = false;
+
+    // If we're still loading after 12s, show error so the user isn't stuck.
+    const timeoutId = setTimeout(() => {
+      if (cancelled) return;
+      setStatus((s) => (s === "loading" ? "error" : s));
+      setMessage((m) => (m ? m : "This is taking longer than usual. Please open the link again from your email, or try signing in—if you already confirmed, you should get in."));
+    }, 12000);
+
     (async () => {
       const verified = searchParams.get("verified");
       const errorParam = searchParams.get("error");
@@ -45,10 +53,17 @@ function ConfirmContent() {
       try {
         // Server already exchanged code and set session; just run success path.
         if (verified === "1") {
-          const { data: { session } } = await supabase.auth.getSession();
+          let { data: { session } } = await supabase.auth.getSession();
+          // Cookies may not be available on first read after redirect; retry once.
+          if (!session?.user?.id) {
+            await new Promise((r) => setTimeout(r, 400));
+            if (cancelled) return;
+            const retry = await supabase.auth.getSession();
+            session = retry.data.session;
+          }
           const userId = session?.user?.id;
           if (userId) {
-            const { error: updateErr } = await supabase
+            await supabase
               .from("profiles")
               .update({ email_verified: true, updated_at: new Date().toISOString() })
               .eq("id", userId);
@@ -63,6 +78,7 @@ function ConfirmContent() {
               (profile as { id_verified?: boolean }).id_verified &&
               (profile as { address_verified?: boolean }).address_verified
             );
+            if (cancelled) return;
             setStatus("success");
             setTimeout(() => {
               if (cancelled) return;
@@ -70,7 +86,7 @@ function ConfirmContent() {
             }, 1500);
           } else {
             setStatus("error");
-            setMessage("Session not found. Please try signing in.");
+            setMessage("Session not found. Try signing in—if you already confirmed your email, you should get in.");
           }
           return;
         }
@@ -106,7 +122,16 @@ function ConfirmContent() {
             return;
           }
         } else if (code) {
-          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          const timeoutMs = 10000;
+          const { error } = await Promise.race([
+            supabase.auth.exchangeCodeForSession(code),
+            new Promise<{ data: null; error: { message: string } }>((resolve) =>
+              setTimeout(
+                () => resolve({ data: null, error: { message: "Verification timed out. Please open the link again from your email." } }),
+                timeoutMs
+              )
+            ),
+          ]);
           if (cancelled) return;
           if (error) {
             setStatus("error");
@@ -170,7 +195,10 @@ function ConfirmContent() {
         setMessage(err instanceof Error ? err.message : "Something went wrong.");
       }
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
   }, [searchParams, router]);
 
   if (status === "loading") {
