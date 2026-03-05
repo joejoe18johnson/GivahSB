@@ -81,48 +81,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const supabase = createClient();
+    let cancelled = false;
+
+    // 1) Subscribe to auth state changes (login, logout, token refresh).
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (cancelled) return;
       if (session?.user) {
         try {
           const profile = await supabaseUserToProfile(supabase, session.user);
-          if (profile) setUser(profileToUser(profile));
-          else setUser(null);
+          if (!cancelled) setUser(profile ? profileToUser(profile) : null);
         } catch {
-          setUser(null);
+          if (!cancelled) setUser(null);
         }
       } else {
-        setUser(null);
+        if (!cancelled) setUser(null);
       }
-      setIsLoading(false);
+      if (!cancelled) setIsLoading(false);
     });
 
+    // 2) On first load, read any existing session once.
     (async () => {
-      const supabase = createClient();
-      const timeout = setTimeout(() => setIsLoading(false), 10000); // safety: stop loading after 10s
-      const delays = [0, 400, 1000]; // retry so OAuth redirect cookies are visible
       try {
-        for (const delay of delays) {
-          if (delay > 0) await new Promise((r) => setTimeout(r, delay));
-          const { data: { session } } = await supabase.auth.getSession();
-          if (session?.user) {
-            try {
-              const profile = await supabaseUserToProfile(supabase, session.user);
-              if (profile) setUser(profileToUser(profile));
-            } catch {
-              // ignore
-            }
-            break;
+        const { data: { session } } = await supabase.auth.getSession();
+        if (cancelled) return;
+        if (session?.user) {
+          try {
+            const profile = await supabaseUserToProfile(supabase, session.user);
+            if (profile) setUser(profileToUser(profile));
+          } catch {
+            // keep user null if profile lookup fails
           }
+        } else {
+          setUser(null);
         }
       } finally {
-        clearTimeout(timeout);
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     })();
 
-    return () => subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
