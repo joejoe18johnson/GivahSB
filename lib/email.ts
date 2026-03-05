@@ -304,17 +304,13 @@ export async function sendCampaignRejectedEmail(
   const { to, creatorName, campaignTitle } = params;
   if (!to) return;
 
-  const base = getEmailBaseUrl();
-  const campaignGuideUrl = `${base}/campaign-guide`;
-
   await sendEmailViaResend({
     to,
     subject: `Campaign not approved: ${campaignTitle}`,
     html: wrapEmailWithTemplate(`
       <p style="margin:0 0 1em;">Hi ${creatorName || "there"},</p>
       <p style="margin:0 0 1em;">Your campaign &quot;${campaignTitle}&quot; could not be approved and will not go live.</p>
-      <p style="margin:0 0 1em;">You can submit a new campaign from your My Campaigns page. To improve your next submission, read our guide on how to create a good campaign (clear story, strong photos, no contact info on the page, and proof of need).</p>
-      <p style="margin:0;"><a href="${campaignGuideUrl}" style="color:${EMAIL_BRAND_GREEN}; font-weight:600;">View Campaign Guide &rarr;</a></p>
+      <p style="margin:0;">You can submit a new campaign from your My Campaigns page if you wish, making sure to include clear details and proof of need.</p>
     `),
   });
 }
