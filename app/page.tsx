@@ -289,9 +289,9 @@ export default function Home() {
               {allTrendingCampaigns.map((campaign) => (
                 <div
                   key={campaign.id}
-                  className="flex-shrink-0 w-[85vw] max-w-[340px] min-h-[580px] snap-center snap-always"
+                  className="flex-shrink-0 w-[85vw] max-w-[340px] snap-center snap-always"
                 >
-                  <div className="min-h-[580px] h-full rounded-lg gradient-border-1 active:scale-[0.98] transition-all duration-300 ease-in-out overflow-hidden bg-white flex flex-col">
+                  <div className="h-full rounded-lg gradient-border-1 active:scale-[0.98] transition-all duration-300 ease-in-out overflow-hidden bg-white flex flex-col">
                     <CampaignCard campaign={campaign} />
                   </div>
                 </div>

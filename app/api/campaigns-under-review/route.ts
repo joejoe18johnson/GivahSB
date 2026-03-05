@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseUserFromRequest } from "@/lib/supabase/auth-server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { addCampaignUnderReview, creatorHasCampaignWithTitle } from "@/lib/supabase/database";
+import { sendCampaignSubmittedForReviewEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -90,6 +91,14 @@ export async function POST(request: NextRequest) {
       image2: image2 || undefined,
       daysLeft,
     });
+    const creatorEmail = (user.email ?? "").trim();
+    if (creatorEmail) {
+      sendCampaignSubmittedForReviewEmail({
+        to: creatorEmail,
+        creatorName,
+        campaignTitle: title,
+      }).catch((e) => console.error("[campaigns-under-review] Submit confirmation email failed:", e));
+    }
     return NextResponse.json({ success: true, id });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Database error";

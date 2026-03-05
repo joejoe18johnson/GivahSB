@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseUserFromRequest, getAdminEmails } from "@/lib/supabase/auth-server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { updateCampaignUnderReviewStatus, deleteCampaignUnderReview, addNotification } from "@/lib/supabase/database";
+import { sendCampaignRejectedEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -29,11 +30,12 @@ export async function PATCH(
   if (status === "rejected") {
     const { data: row } = await supabase
       .from("campaigns_under_review")
-      .select("creator_id, title")
+      .select("creator_id, title, creator_name")
       .eq("id", id)
       .single();
     const creatorId = (row as { creator_id?: string } | null)?.creator_id;
     const title = (row as { title?: string } | null)?.title ?? "Your campaign";
+    const creatorName = (row as { creator_name?: string } | null)?.creator_name ?? "";
     if (creatorId) {
       await addNotification(supabase, creatorId, {
         type: "campaign_rejected",
@@ -41,6 +43,19 @@ export async function PATCH(
         body: `Your campaign "${title}" has been rejected and will not go live. You can submit a new campaign from My Campaigns if you wish.`,
         read: false,
       });
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("email")
+        .eq("id", creatorId)
+        .single();
+      const creatorEmail = (profile as { email?: string } | null)?.email?.trim();
+      if (creatorEmail) {
+        sendCampaignRejectedEmail({
+          to: creatorEmail,
+          creatorName,
+          campaignTitle: title,
+        }).catch((e) => console.error("[campaigns-under-review] Rejected email failed:", e));
+      }
     }
   }
 

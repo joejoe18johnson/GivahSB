@@ -241,6 +241,32 @@ export async function sendVerificationRejectedEmail(
   });
 }
 
+// Campaign submitted for review (creator)
+
+export interface CampaignSubmittedForReviewEmailParams {
+  to: string;
+  creatorName: string;
+  campaignTitle: string;
+}
+
+export async function sendCampaignSubmittedForReviewEmail(
+  params: CampaignSubmittedForReviewEmailParams
+): Promise<void> {
+  const { to, creatorName, campaignTitle } = params;
+  if (!to) return;
+
+  await sendEmailViaResend({
+    to,
+    subject: `Campaign submitted for review: ${campaignTitle}`,
+    html: wrapEmailWithTemplate(`
+      <p style="margin:0 0 1em;">Hi ${creatorName || "there"},</p>
+      <p style="margin:0 0 1em;">Your campaign &quot;${campaignTitle}&quot; has been submitted for review.</p>
+      <p style="margin:0 0 1em;">Our team will review it and you will receive a follow-up email once it has been approved or if we need any changes.</p>
+      <p style="margin:0;">You can check the status from your My Campaigns page.</p>
+    `),
+  });
+}
+
 // Campaign approval / rejection
 
 export interface CampaignApprovedEmailParams {

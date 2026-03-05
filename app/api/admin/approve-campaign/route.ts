@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseUserFromRequest, getAdminEmails } from "@/lib/supabase/auth-server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
-import { approveAndPublishCampaign } from "@/lib/supabase/database";
+import { approveAndPublishCampaign, getCampaignUnderReviewById } from "@/lib/supabase/database";
+import { sendCampaignApprovedEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -24,7 +25,24 @@ export async function POST(request: NextRequest) {
   }
   const supabase = getSupabaseAdmin()!;
   try {
+    const underReview = await getCampaignUnderReviewById(supabase, underReviewId);
+    if (!underReview) {
+      return NextResponse.json({ error: "Campaign under review not found" }, { status: 404 });
+    }
     const { campaignId } = await approveAndPublishCampaign(supabase, underReviewId);
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("email")
+      .eq("id", underReview.creatorId)
+      .single();
+    const creatorEmail = (profile as { email?: string } | null)?.email?.trim();
+    if (creatorEmail) {
+      sendCampaignApprovedEmail({
+        to: creatorEmail,
+        creatorName: underReview.creatorName,
+        campaignTitle: underReview.title,
+      }).catch((e) => console.error("[approve-campaign] Approved email failed:", e));
+    }
     return NextResponse.json({ success: true, campaignId });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Failed to approve campaign.";
