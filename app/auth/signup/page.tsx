@@ -61,6 +61,13 @@ function SignupContent() {
       setError("Password must be at least 8 characters long.");
       return;
     }
+
+    // Require lowercase, uppercase, digit and symbol
+    const complexity = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/;
+    if (!complexity.test(formData.password)) {
+      setError("Password must include lowercase, uppercase letters, digits, and symbols.");
+      return;
+    }
     
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
@@ -199,7 +206,7 @@ function SignupContent() {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 pr-10 text-gray-900 placeholder:text-gray-500"
-                  placeholder="Minimum 8 characters"
+                placeholder="Minimum 8 characters"
                 />
                 <button
                   type="button"
@@ -209,6 +216,9 @@ function SignupContent() {
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
+            <p className="mt-1 text-xs text-gray-600">
+              8+ characters, with lowercase, uppercase letters, digits, and symbols.
+            </p>
             </div>
 
             <div>

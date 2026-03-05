@@ -173,8 +173,24 @@ export async function signInWithEmailSupabase(
   password: string
 ): Promise<UserProfile> {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw error;
+  if (error) {
+    const msg = error.message || "";
+    // Friendly message when Supabase says the email is not confirmed yet.
+    if (/confirm(ed)?\s+email/i.test(msg) || /email.*not.*confirm/i.test(msg)) {
+      throw new Error("Please confirm your email first. Check your inbox for a confirmation link.");
+    }
+    throw error;
+  }
   if (!data.user) throw new Error("Sign in failed");
+
+  // Extra safety: if the project is not enforcing confirm-email in Supabase settings,
+  // still block login when email is not confirmed.
+  const confirmedAt = (data.user as unknown as { email_confirmed_at?: string | null }).email_confirmed_at;
+  if (!confirmedAt) {
+    await supabase.auth.signOut();
+    throw new Error("Please confirm your email first. We sent a confirmation link to your email address.");
+  }
+
   await ensureProfileExists(supabase, data.user);
   const profile = await supabaseUserToProfile(supabase, data.user);
   if (!profile) throw new Error("Could not load profile");
