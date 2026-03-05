@@ -617,7 +617,7 @@ export default function Header() {
                 <button
                   type="button"
                   onClick={() => setMobileCampaignsOpen((v) => !v)}
-                  className="w-full px-4 py-3 text-left flex items-center justify-between text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out"
+                  className="w-full px-4 py-3 text-left flex items-center justify-between text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300 ease-in-out"
                 >
                   Campaigns
                   <ChevronDown className={`w-4 h-4 transition-transform ${mobileCampaignsOpen ? "rotate-180" : ""}`} />
