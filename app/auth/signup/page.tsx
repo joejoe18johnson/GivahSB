@@ -27,6 +27,8 @@ function SignupContent() {
 
   useEffect(() => {
     if (!user) return;
+    // Never redirect away when email is not verified — they must confirm email first (check-email page).
+    if (user.emailVerified === false) return;
     if (!adminCheckDone) return;
     if (typeof window !== "undefined" && sessionStorage.getItem("signup_redirect_profile") === "1") {
       sessionStorage.removeItem("signup_redirect_profile");
@@ -76,7 +78,13 @@ function SignupContent() {
     
     try {
       await signup(formData.email, formData.password, formData.name);
-      router.replace(`/auth/check-email?email=${encodeURIComponent(formData.email)}`);
+      // Force full navigation so we always land on check-email; avoids race with any redirect effect.
+      const params = new URLSearchParams({ email: formData.email });
+      if (typeof window !== "undefined") {
+        window.location.href = `/auth/check-email?${params.toString()}`;
+      } else {
+        router.replace(`/auth/check-email?${params.toString()}`);
+      }
       return;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "";
