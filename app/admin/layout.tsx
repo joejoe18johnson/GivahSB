@@ -357,7 +357,7 @@ export default function AdminLayout({
       </aside>
 
       <main className="min-h-screen pt-4 md:pt-6 md:pl-56 min-w-0 flex-1 flex flex-col">
-        <div className="flex justify-end items-center pr-4 md:pr-6 lg:pr-8 pt-2 pb-1 shrink-0">
+        <div className="flex justify-end items-center pr-4 md:pr-6 lg:pr-8 pt-2 pb-1 shrink-0 min-h-[44px]">
           <ThemeSwitcher />
         </div>
         <div className="p-4 md:p-6 lg:p-8 min-w-0 flex-1">{children}</div>

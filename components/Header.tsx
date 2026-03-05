@@ -516,7 +516,7 @@ export default function Header() {
                     </div>
                   )}
                 </div>
-                <ThemeSwitcher />
+                <span className="flex-shrink-0"><ThemeSwitcher /></span>
               </>
             ) : (
               <>
@@ -532,13 +532,14 @@ export default function Header() {
                 >
                   Sign Up
                 </Link>
-                <ThemeSwitcher />
+                <span className="flex-shrink-0"><ThemeSwitcher /></span>
               </>
             )}
           </nav>
 
-          {/* Mobile: notifications, hearted campaigns, profile picture and menu button */}
+          {/* Mobile: theme switcher, notifications, hearted campaigns, profile picture and menu button */}
           <div className="lg:hidden flex items-center gap-2 shrink-0">
+            <ThemeSwitcher />
             {user && (
               <>
                 <Link
