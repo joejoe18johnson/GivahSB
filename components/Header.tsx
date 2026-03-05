@@ -288,6 +288,9 @@ export default function Header() {
             />
           </Link>
 
+          {/* Theme switcher - always visible on all breakpoints */}
+          <ThemeSwitcher />
+
           {/* Search Bar - desktop only */}
           <form onSubmit={handleSearch} className="hidden lg:block flex-1 max-w-md mx-4 min-w-0">
             <div className="relative">
@@ -516,7 +519,6 @@ export default function Header() {
                     </div>
                   )}
                 </div>
-                <span className="flex-shrink-0"><ThemeSwitcher /></span>
               </>
             ) : (
               <>
@@ -532,14 +534,12 @@ export default function Header() {
                 >
                   Sign Up
                 </Link>
-                <span className="flex-shrink-0"><ThemeSwitcher /></span>
               </>
             )}
           </nav>
 
-          {/* Mobile: theme switcher, notifications, hearted campaigns, profile picture and menu button */}
+          {/* Mobile: notifications, hearted campaigns, profile picture and menu button */}
           <div className="lg:hidden flex items-center gap-2 shrink-0">
-            <ThemeSwitcher />
             {user && (
               <>
                 <Link
@@ -597,6 +597,7 @@ export default function Header() {
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme</span>
               <ThemeSwitcher />
             </div>
+            {/* ThemeSwitcher also in mobile menu for convenience */}
             <form onSubmit={handleSearch} className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
               <input
