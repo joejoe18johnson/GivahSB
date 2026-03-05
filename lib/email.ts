@@ -18,9 +18,15 @@ interface BaseEmailParams {
   html: string;
 }
 
-/** Wrap email body HTML with branded layout: banner, logo, and consistent styling. */
+/** Base URL for email images. Use production domain so logos/banners load in email clients. */
+function getEmailAssetBase(): string {
+  const base = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.givahbz.com").trim().replace(/\/$/, "");
+  return base.startsWith("http") ? base : `https://${base}`;
+}
+
+/** Wrap email body HTML with branded layout: banner, logo, and consistent styling. Uses direct image URLs so they render in email clients. */
 function wrapEmailWithLayout(bodyHtml: string): string {
-  const base = SITE_URL.replace(/\/$/, "");
+  const base = getEmailAssetBase();
   const logoUrl = `${base}/givah-logo.png`;
   const bannerUrl = `${base}/Givah-Banner.png`;
 
@@ -31,22 +37,22 @@ function wrapEmailWithLayout(bodyHtml: string): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Givah</title>
 </head>
-<body style="margin:0; padding:0; background-color:#f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 16px; line-height: 1.5; color: #374151;">
+<body style="margin:0; padding:0; background-color:#f3f4f6; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5; color: #374151;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f3f4f6;">
     <tr>
       <td align="center" style="padding: 24px 16px;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-          <!-- Banner -->
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden;">
+          <!-- Banner: direct URL + fallback bar when images blocked -->
           <tr>
-            <td style="background: linear-gradient(135deg, #059669 0%, #047857 100%); padding: 0; line-height: 0;">
-              <img src="${bannerUrl}" alt="Givah" width="600" style="display:block; width:100%; max-width:600px; height:auto;" />
+            <td align="center" style="background-color:#1FA84A; padding:0; line-height:0; min-height:120px;">
+              <img src="${bannerUrl}" alt="GivahBZ" width="600" height="120" style="display:block; width:100%; max-width:600px; height:auto; border:0; outline:none; text-decoration:none;" />
             </td>
           </tr>
-          <!-- Logo + spacing -->
+          <!-- Logo: direct URL -->
           <tr>
             <td style="padding: 24px 24px 8px 24px;">
               <a href="${base}" style="text-decoration: none;">
-                <img src="${logoUrl}" alt="Givah" width="140" height="42" style="display:block; height: 42px; width: auto;" />
+                <img src="${logoUrl}" alt="GivahBZ" width="180" height="54" style="display:block; width:180px; height:auto; border:0; outline:none; text-decoration:none;" />
               </a>
             </td>
           </tr>
