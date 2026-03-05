@@ -85,9 +85,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const supabase = createClient();
     let cancelled = false;
 
-    // Helper: only treat as logged in if email is confirmed.
+    // Helper: only treat as logged in if email is confirmed (Supabase).
     const confirmedAt = (u: SupabaseUser) =>
       (u as unknown as { email_confirmed_at?: string | null }).email_confirmed_at;
+    // For email/password signups we also require profile.email_verified so they can't access account until they clicked the link.
+    const isEmailProvider = (u: SupabaseUser) =>
+      (u as unknown as { app_metadata?: { provider?: string } }).app_metadata?.provider === "email";
+
+    const setUserIfAllowed = (profile: UserProfile | null, sessionUser: SupabaseUser) => {
+      if (!profile) {
+        setUser(null);
+        return;
+      }
+      if (isEmailProvider(sessionUser) && profile.emailVerified !== true) {
+        setUser(null);
+        return;
+      }
+      setUser(profileToUser(profile));
+    };
 
     // 1) Subscribe to auth state changes (login, logout, token refresh).
     const {
@@ -103,7 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           try {
             const profile = await supabaseUserToProfile(supabase, session.user);
-            if (!cancelled) setUser(profile ? profileToUser(profile) : null);
+            if (!cancelled) setUserIfAllowed(profile ?? null, session.user);
           } catch {
             if (!cancelled) setUser(null);
           }
@@ -126,7 +141,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           } else {
             try {
               const profile = await supabaseUserToProfile(supabase, session.user);
-              if (profile) setUser(profileToUser(profile));
+              if (profile) setUserIfAllowed(profile, session.user);
+              else setUser(null);
             } catch {
               // keep user null if profile lookup fails
             }

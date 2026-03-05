@@ -47,6 +47,8 @@ function LoginForm() {
   useEffect(() => {
     if (authLoading) return;
     if (!user) return;
+    // Never redirect unverified email users — they must confirm email first
+    if (user.emailVerified === false) return;
     // Wait for server admin check so we know final isAdmin before redirecting
     if (!adminCheckDone) return;
 
