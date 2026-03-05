@@ -8,12 +8,66 @@
  * NOTE: These run on the server only (API routes / server components).
  */
 
+import { SITE_URL } from "@/lib/siteConfig";
+
 type ResendEmailRecipient = string | string[];
 
 interface BaseEmailParams {
   to: ResendEmailRecipient;
   subject: string;
   html: string;
+}
+
+/** Wrap email body HTML with branded layout: banner, logo, and consistent styling. */
+function wrapEmailWithLayout(bodyHtml: string): string {
+  const base = SITE_URL.replace(/\/$/, "");
+  const logoUrl = `${base}/givah-logo.png`;
+  const bannerUrl = `${base}/Givah-Banner.png`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Givah</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 16px; line-height: 1.5; color: #374151;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f3f4f6;">
+    <tr>
+      <td align="center" style="padding: 24px 16px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+          <!-- Banner -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #059669 0%, #047857 100%); padding: 0; line-height: 0;">
+              <img src="${bannerUrl}" alt="Givah" width="600" style="display:block; width:100%; max-width:600px; height:auto;" />
+            </td>
+          </tr>
+          <!-- Logo + spacing -->
+          <tr>
+            <td style="padding: 24px 24px 8px 24px;">
+              <a href="${base}" style="text-decoration: none;">
+                <img src="${logoUrl}" alt="Givah" width="140" height="42" style="display:block; height: 42px; width: auto;" />
+              </a>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding: 8px 24px 24px 24px;">
+${bodyHtml.trim()}
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 16px 24px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280;">
+              This email was sent by Givah. &copy; ${new Date().getFullYear()} GivahBz.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
 }
 
 async function sendEmailViaResend(params: BaseEmailParams): Promise<void> {
@@ -23,13 +77,15 @@ async function sendEmailViaResend(params: BaseEmailParams): Promise<void> {
   const toArray = Array.isArray(params.to) ? params.to.filter(Boolean) : [params.to].filter(Boolean);
   if (!toArray.length) return;
 
+  const html = wrapEmailWithLayout(params.html);
+
   if (!apiKey) {
     // In dev / missing configuration, just log instead of failing.
     console.log("[email] (no RESEND_API_KEY) would send:", {
       from,
       to: toArray,
       subject: params.subject,
-      htmlPreview: params.html.slice(0, 300),
+      htmlPreview: html.slice(0, 300),
     });
     return;
   }
@@ -45,7 +101,7 @@ async function sendEmailViaResend(params: BaseEmailParams): Promise<void> {
         from,
         to: toArray,
         subject: params.subject,
-        html: params.html,
+        html,
       }),
     });
 
