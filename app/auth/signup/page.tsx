@@ -7,6 +7,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useThemedModal } from "@/components/ThemedModal";
 
+const PASSWORD_MIN_LENGTH = 8;
+const PASSWORD_COMPLEXITY = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/;
+/** Basic email: must contain @ and have something before and after (e.g. a@b.c) */
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function SignupContent() {
   const [formData, setFormData] = useState({
     name: "",
@@ -14,16 +19,43 @@ function SignupContent() {
     password: "",
     confirmPassword: "",
   });
+  const [touched, setTouched] = useState({ name: false, email: false, password: false, confirmPassword: false });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
-  
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+
   const { signup, loginWithGoogle, user, isAdmin, adminCheckDone } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || searchParams.get("redirect") || null;
   const [googleLoading, setGoogleLoading] = useState(false);
   const { alert } = useThemedModal();
+
+  const showError = (field: keyof typeof touched) => touched[field] || submitAttempted;
+
+  const fieldErrors = {
+    name: !formData.name.trim() ? "Name is required." : null,
+    email: !formData.email.trim()
+      ? "Email is required."
+      : !formData.email.includes("@")
+        ? "Email must contain @."
+        : !EMAIL_REGEX.test(formData.email.trim())
+          ? "Enter a valid email (e.g. name@example.com)."
+          : null,
+    password: !formData.password
+      ? "Password is required."
+      : formData.password.length < PASSWORD_MIN_LENGTH
+        ? `Password must be at least ${PASSWORD_MIN_LENGTH} characters.`
+        : !PASSWORD_COMPLEXITY.test(formData.password)
+          ? "Use lowercase, uppercase, digits, and symbols."
+          : null,
+    confirmPassword: !formData.confirmPassword
+      ? "Please confirm your password."
+      : formData.password !== formData.confirmPassword
+        ? "Passwords do not match."
+        : null,
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -44,38 +76,24 @@ function SignupContent() {
   }, [user, isAdmin, adminCheckDone, router, callbackUrl]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const name = e.target.name as keyof typeof formData;
+    setFormData((prev) => ({ ...prev, [name]: e.target.value }));
     setError("");
+  };
+
+  const handleBlur = (field: keyof typeof touched) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.name || !formData.email || !formData.password) {
-      setError("Please fill in all fields.");
-      return;
-    }
-    
-    if (formData.password.length < 8) {
-      setError("Password must be at least 8 characters long.");
+    setSubmitAttempted(true);
+
+    if (fieldErrors.name || fieldErrors.email || fieldErrors.password || fieldErrors.confirmPassword) {
+      setError("Please fix the errors below.");
       return;
     }
 
-    // Require lowercase, uppercase, digit and symbol
-    const complexity = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/;
-    if (!complexity.test(formData.password)) {
-      setError("Password must include lowercase, uppercase letters, digits, and symbols.");
-      return;
-    }
-    
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-    
     try {
       await signup(formData.email, formData.password, formData.name);
       // Force full navigation so we always land on check-email; avoids race with any redirect effect.
@@ -173,7 +191,7 @@ function SignupContent() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">
                 Full Name *
               </label>
               <input
@@ -181,14 +199,20 @@ function SignupContent() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
+                onBlur={() => handleBlur("name")}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 placeholder:text-gray-500"
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 placeholder:text-gray-500 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-400 ${
+                  showError("name") && fieldErrors.name ? "border-red-500 focus:ring-red-500" : "border-gray-300 dark:border-gray-600"
+                }`}
                 placeholder="Enter your full name"
               />
+              {showError("name") && fieldErrors.name && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.name}</p>
+              )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">
                 Email Address *
               </label>
               <input
@@ -196,14 +220,20 @@ function SignupContent() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
+                onBlur={() => handleBlur("email")}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 placeholder:text-gray-500"
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 placeholder:text-gray-500 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-400 ${
+                  showError("email") && fieldErrors.email ? "border-red-500 focus:ring-red-500" : "border-gray-300 dark:border-gray-600"
+                }`}
                 placeholder="your.email@example.com"
               />
+              {showError("email") && fieldErrors.email && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.email}</p>
+              )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">
                 Password *
               </label>
               <div className="relative">
@@ -212,9 +242,12 @@ function SignupContent() {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
+                  onBlur={() => handleBlur("password")}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 pr-10 text-gray-900 placeholder:text-gray-500"
-                placeholder="Minimum 8 characters"
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 pr-10 text-gray-900 placeholder:text-gray-500 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-400 ${
+                    showError("password") && fieldErrors.password ? "border-red-500 focus:ring-red-500" : "border-gray-300 dark:border-gray-600"
+                  }`}
+                  placeholder="Minimum 8 characters"
                 />
                 <button
                   type="button"
@@ -224,13 +257,16 @@ function SignupContent() {
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-            <p className="mt-1 text-xs text-gray-600">
-              8+ characters, with lowercase, uppercase letters, digits, and symbols.
-            </p>
+              <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                8+ characters, with lowercase, uppercase letters, digits, and symbols.
+              </p>
+              {showError("password") && fieldErrors.password && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.password}</p>
+              )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">
                 Confirm Password *
               </label>
               <div className="relative">
@@ -239,8 +275,11 @@ function SignupContent() {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
+                  onBlur={() => handleBlur("confirmPassword")}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 pr-10 text-gray-900 placeholder:text-gray-500"
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 pr-10 text-gray-900 placeholder:text-gray-500 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-400 ${
+                    showError("confirmPassword") && fieldErrors.confirmPassword ? "border-red-500 focus:ring-red-500" : "border-gray-300 dark:border-gray-600"
+                  }`}
                   placeholder="Confirm your password"
                 />
                 <button
@@ -251,6 +290,9 @@ function SignupContent() {
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
+              {showError("confirmPassword") && fieldErrors.confirmPassword && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{fieldErrors.confirmPassword}</p>
+              )}
             </div>
 
             <button
