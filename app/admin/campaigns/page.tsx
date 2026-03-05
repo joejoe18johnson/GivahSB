@@ -177,8 +177,8 @@ export default function AdminCampaignsPage() {
       };
       const goalNum = editForm.goal === "" ? undefined : Number(editForm.goal);
       const raisedNum = editForm.raised === "" ? undefined : Number(editForm.raised);
-      if (Number.isFinite(goalNum) && goalNum >= 0) payload.goal = goalNum;
-      if (Number.isFinite(raisedNum) && raisedNum >= 0) payload.raised = raisedNum;
+      if (goalNum !== undefined && Number.isFinite(goalNum) && goalNum >= 0) payload.goal = goalNum;
+      if (raisedNum !== undefined && Number.isFinite(raisedNum) && raisedNum >= 0) payload.raised = raisedNum;
 
       const res = await fetch(`/api/admin/campaigns/${editingCampaign.id}`, {
         method: "PATCH",
@@ -200,8 +200,8 @@ export default function AdminCampaignsPage() {
                 title: editForm.title,
                 description: editForm.description,
                 fullDescription: editForm.fullDescription,
-                ...(Number.isFinite(goalNum) && goalNum >= 0 ? { goal: goalNum } : {}),
-                ...(Number.isFinite(raisedNum) && raisedNum >= 0 ? { raised: raisedNum } : {}),
+                ...(goalNum !== undefined && Number.isFinite(goalNum) && goalNum >= 0 ? { goal: goalNum } : {}),
+                ...(raisedNum !== undefined && Number.isFinite(raisedNum) && raisedNum >= 0 ? { raised: raisedNum } : {}),
               }
             : c
         )
