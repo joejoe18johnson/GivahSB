@@ -187,7 +187,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/how-it-works"
-                className="inline-flex justify-center border-2 border-primary-600 text-primary-600 px-8 py-3 rounded-full font-medium hover:bg-primary-50 transition-all duration-300 ease-in-out"
+                className="inline-flex justify-center gradient-border-1 bg-white dark:bg-gray-900 text-primary-600 dark:text-primary-100 px-8 py-3 rounded-full font-medium hover:bg-primary-50 dark:hover:bg-gray-800 transition-colors duration-300 ease-in-out shadow-sm"
               >
                 Learn how it works →
               </Link>
