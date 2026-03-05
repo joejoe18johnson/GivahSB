@@ -596,7 +596,7 @@ export default function Header() {
         <div className="lg:hidden border-t border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700 shadow-lg">
           <div className="container mx-auto px-4 py-4 space-y-4">
             <div className="flex items-center justify-between px-2 py-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-white">Theme</span>
               <ThemeSwitcher />
             </div>
             <form onSubmit={handleSearch} className="relative">
@@ -611,7 +611,7 @@ export default function Header() {
               />
             </form>
             <nav className="flex flex-col gap-1">
-              <Link href="/" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Home</Link>
+              <Link href="/" className="px-4 py-3 rounded-lg text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>Home</Link>
               <div className="rounded-lg overflow-hidden">
                 <button
                   type="button"
@@ -623,27 +623,27 @@ export default function Header() {
                 </button>
                 {mobileCampaignsOpen && (
                   <div className="bg-gray-50 dark:bg-gray-700/50 rounded-b-lg mt-1 border border-gray-200 dark:border-gray-600 shadow-sm overflow-hidden">
-                    <Link href="/campaigns" className="flex items-center gap-2 px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700/50 border-b border-gray-200 dark:border-gray-600" onClick={closeMobileMenu}>
-                      <Megaphone className="w-4 h-4 text-primary-600 dark:text-primary-400 shrink-0" />
+                    <Link href="/campaigns" className="flex items-center gap-2 px-4 py-3 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700/50 border-b border-gray-200 dark:border-gray-600" onClick={closeMobileMenu}>
+                      <Megaphone className="w-4 h-4 text-primary-600 dark:text-white shrink-0" />
                       View All Campaigns
                     </Link>
-                    <Link href="/success-stories" className="flex items-center gap-2 px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700/50 border-b border-gray-200 dark:border-gray-600" onClick={closeMobileMenu}>
-                      <Trophy className="w-4 h-4 text-primary-600 dark:text-primary-400 shrink-0" />
+                    <Link href="/success-stories" className="flex items-center gap-2 px-4 py-3 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700/50 border-b border-gray-200 dark:border-gray-600" onClick={closeMobileMenu}>
+                      <Trophy className="w-4 h-4 text-primary-600 dark:text-white shrink-0" />
                       Success Stories
                     </Link>
-                    <Link href="/how-it-works" className="flex items-center gap-2 px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700/50" onClick={closeMobileMenu}>
-                      <BookOpen className="w-4 h-4 text-primary-600 dark:text-primary-400 shrink-0" />
+                    <Link href="/how-it-works" className="flex items-center gap-2 px-4 py-3 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700/50" onClick={closeMobileMenu}>
+                      <BookOpen className="w-4 h-4 text-primary-600 dark:text-white shrink-0" />
                       How It Works
                     </Link>
                   </div>
                 )}
               </div>
-              <Link href="/campaigns/create" className="mx-4 flex justify-center items-center gradient-border-1 rounded-full px-4 py-3 font-medium bg-white text-primary-600 hover:bg-primary-50 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
+              <Link href="/campaigns/create" className="mx-4 flex justify-center items-center gradient-border-1 rounded-full px-4 py-3 font-medium bg-white dark:bg-gray-800 text-primary-600 dark:text-white hover:bg-primary-50 dark:hover:bg-gray-700 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
                 Create A Campaign
               </Link>
               {user ? (
                 <>
-                  <Link href="/liked-campaigns" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2" onClick={closeMobileMenu}>
+                  <Link href="/liked-campaigns" className="px-4 py-3 rounded-lg text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
                     <Heart className="w-4 h-4" />
                     Liked Campaigns
                     {heartedCount > 0 && (
@@ -652,25 +652,25 @@ export default function Header() {
                       </span>
                     )}
                   </Link>
-                  <Link href="/profile" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
+                  <Link href="/profile" className="px-4 py-3 rounded-lg text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
                     <User className="w-4 h-4" />
                     My Profile
                   </Link>
-                  <Link href="/verification-center" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2" onClick={closeMobileMenu}>
+                  <Link href="/verification-center" className="px-4 py-3 rounded-lg text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
                     <Shield className="w-4 h-4" />
                     Verification Center
                   </Link>
-                  <Link href="/my-campaigns" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
+                  <Link href="/my-campaigns" className="px-4 py-3 rounded-lg text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
                     <FolderOpen className="w-4 h-4" />
                     My Campaigns
                   </Link>
                   {isAdmin && (
-                    <Link href="/admin" className="px-4 py-3 rounded-lg text-primary-600 font-medium hover:bg-primary-50 flex items-center gap-2 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
+                    <Link href="/admin" className="px-4 py-3 rounded-lg text-primary-600 dark:text-white font-medium hover:bg-primary-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
                       <Settings className="w-4 h-4" />
                       Admin
                     </Link>
                   )}
-                  <Link href="/notifications" className="px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center gap-2" onClick={closeMobileMenu}>
+                  <Link href="/notifications" className="px-4 py-3 rounded-lg text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors duration-300 ease-in-out" onClick={closeMobileMenu}>
                     <Bell className="w-4 h-4" />
                     Notifications
                     {totalNotificationCount > 0 && (
@@ -679,7 +679,7 @@ export default function Header() {
                       </span>
                     )}
                   </Link>
-                  <button onClick={handleLogout} className="px-4 py-3 rounded-lg text-left text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                  <button onClick={handleLogout} className="px-4 py-3 rounded-lg text-left text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors duration-300 ease-in-out">
                     <LogOut className="w-4 h-4" /> Sign Out
                   </button>
                 </>
