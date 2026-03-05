@@ -315,7 +315,7 @@ export default function Header() {
               <button
                 type="button"
                 onClick={() => setShowCampaignsDropdown((v) => !v)}
-                className={`flex items-center gap-1 text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out ${pathname?.startsWith("/campaigns") || pathname?.startsWith("/success-stories") || pathname?.startsWith("/how-it-works") ? "text-primary-600 font-medium" : ""}`}
+                className={`flex items-center gap-1 text-gray-700 dark:text-white hover:text-primary-600 dark:hover:text-primary-300 transition-colors duration-300 ease-in-out ${pathname?.startsWith("/campaigns") || pathname?.startsWith("/success-stories") || pathname?.startsWith("/how-it-works") ? "text-primary-600 dark:text-white font-medium" : ""}`}
               >
                 Campaigns
                 <ChevronDown className={`w-4 h-4 transition-transform ${showCampaignsDropdown ? "rotate-180" : ""}`} />
