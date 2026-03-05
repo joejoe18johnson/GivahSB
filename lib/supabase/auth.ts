@@ -15,6 +15,7 @@ export interface UserProfile {
   verified: boolean;
   idVerified: boolean;
   addressVerified: boolean;
+  emailVerified?: boolean;
   role?: "user" | "admin";
   status?: UserStatus;
   birthday?: string;
@@ -55,6 +56,7 @@ function rowToProfile(row: Record<string, unknown>, email: string): UserProfile 
     verified: !!(row.verified ?? false),
     idVerified: !!(row.id_verified ?? false),
     addressVerified: !!(row.address_verified ?? false),
+    emailVerified: !!(row.email_verified ?? false),
     role: (isAdminByEmail ? "admin" : (row.role as "user" | "admin")) ?? "user",
     status: (row.status as UserStatus) ?? "active",
     birthday: row.birthday as string | undefined,

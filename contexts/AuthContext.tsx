@@ -21,6 +21,7 @@ interface User {
   verified: boolean;
   idVerified: boolean;
   addressVerified: boolean;
+  emailVerified?: boolean;
   role?: "user" | "admin";
   status?: "active" | "on_hold" | "deleted";
   birthday?: string;
@@ -58,6 +59,7 @@ function profileToUser(profile: UserProfile): User {
     verified: profile.verified,
     idVerified: profile.idVerified,
     addressVerified: profile.addressVerified,
+    emailVerified: profile.emailVerified,
     role: profile.role,
     status: profile.status,
     birthday: profile.birthday,

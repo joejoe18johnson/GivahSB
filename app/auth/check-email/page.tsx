@@ -16,19 +16,22 @@ function CheckEmailContent() {
           <MailCheck className="w-10 h-10 text-success-600" />
         </div>
 
-        <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-4">Check your email</h1>
+        <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-4">Check your email to confirm</h1>
 
-        <p className="text-gray-600 mb-4">
+        <p className="text-gray-600 dark:text-gray-400 mb-4">
           We&apos;ve sent a confirmation link to
           {email ? <span className="font-semibold"> {email}</span> : " your email address"}.
         </p>
-        <p className="text-gray-600 mb-6">
-          Please open that email and click the link to confirm your address. Once confirmed, you
-          can sign in and finish setting up your profile and verification.
+        <p className="text-gray-600 dark:text-gray-400 mb-4">
+          You must confirm your email before you can sign in or access your account. Open the email
+          and click the link—it works from any device or browser.
+        </p>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">
+          Once you&apos;ve confirmed, you can sign in and finish setting up your profile and verification.
         </p>
 
-        <div className="space-y-3 text-sm text-gray-600 text-left mb-6">
-          <p className="font-medium text-gray-800">Didn&apos;t receive the email?</p>
+        <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400 text-left mb-6">
+          <p className="font-medium text-gray-800 dark:text-gray-200">Didn&apos;t receive the email?</p>
           <ul className="list-disc list-inside space-y-1">
             <li>Check your spam or promotions folder.</li>
             <li>Make sure you entered the correct email address.</li>
@@ -39,12 +42,12 @@ function CheckEmailContent() {
         <div className="space-y-3">
           <Link
             href="/auth/login"
-            className="block w-full bg-primary-600 text-white px-8 py-3 rounded-full font-medium hover:bg-primary-700 transition-colors"
+            className="block w-full border-2 border-primary-600 text-primary-600 dark:border-primary-400 dark:text-primary-400 bg-transparent px-8 py-3 rounded-full font-medium hover:bg-primary-50 dark:hover:bg-primary-900/30 transition-colors"
           >
-            Go to login
+            Already confirmed? Sign in
           </Link>
-          <p className="text-xs text-gray-500">
-            After confirming your email, sign in with the same address to continue.
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Only sign in after you&apos;ve clicked the confirmation link in your email.
           </p>
         </div>
       </div>
@@ -59,14 +62,14 @@ function CheckEmailFallback() {
         <div className="w-20 h-20 bg-success-100 rounded-full flex items-center justify-center mx-auto mb-6">
           <MailCheck className="w-10 h-10 text-success-600" />
         </div>
-        <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-4">Check your email</h1>
-        <p className="text-gray-600 mb-6">We&apos;ve sent a confirmation link to your email address.</p>
+        <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-4">Check your email to confirm</h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">We&apos;ve sent a confirmation link. You must confirm before you can sign in.</p>
         <div className="animate-pulse h-4 bg-gray-200 rounded w-3/4 mx-auto mb-6" />
         <Link
           href="/auth/login"
-          className="block w-full bg-primary-600 text-white px-8 py-3 rounded-full font-medium hover:bg-primary-700 transition-colors"
+          className="block w-full border-2 border-primary-600 text-primary-600 px-8 py-3 rounded-full font-medium hover:bg-primary-50 transition-colors"
         >
-          Go to login
+          Already confirmed? Sign in
         </Link>
       </div>
     </div>

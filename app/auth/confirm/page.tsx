@@ -5,10 +5,21 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
+/** Parse URL hash into key-value map (e.g. #access_token=...&refresh_token=...) so confirmation works from any device. */
+function parseHashParams(): Record<string, string> {
+  if (typeof window === "undefined" || !window.location.hash) return {};
+  const map: Record<string, string> = {};
+  const hash = window.location.hash.slice(1);
+  hash.split("&").forEach((part) => {
+    const [key, value] = part.split("=");
+    if (key && value) map[decodeURIComponent(key)] = decodeURIComponent(value);
+  });
+  return map;
+}
+
 /**
  * Handles the redirect from the email verification link (sign up confirm email).
- * Supabase can send token_hash + type=email (use verifyOtp) or code (PKCE).
- * After confirming, redirects to app.
+ * Supabase can send: token_hash + type (query), code (query, PKCE), or access_token + refresh_token (hash, works from any device).
  */
 function ConfirmContent() {
   const router = useRouter();
@@ -20,8 +31,11 @@ function ConfirmContent() {
     let cancelled = false;
     (async () => {
       const tokenHash = searchParams.get("token_hash");
-      const type = searchParams.get("type"); // email | recovery
+      const type = searchParams.get("type");
       const code = searchParams.get("code");
+      const hashParams = typeof window !== "undefined" ? parseHashParams() : {};
+      const accessToken = hashParams.access_token || searchParams.get("access_token");
+      const refreshToken = hashParams.refresh_token || searchParams.get("refresh_token");
 
       const supabase = createClient();
 
@@ -45,9 +59,19 @@ function ConfirmContent() {
             setMessage(error.message || "Invalid or expired link. Try signing up again or use the link in the same browser.");
             return;
           }
+        } else if (accessToken && refreshToken) {
+          const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+          if (cancelled) return;
+          if (error) {
+            setStatus("error");
+            setMessage(error.message || "Invalid or expired link. Please use the link from your email.");
+            return;
+          }
+          // Clear hash from URL so refresh doesn't re-use the token
+          if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname + window.location.search);
         } else {
           setStatus("error");
-          setMessage("Missing confirmation data. Please use the link from your email.");
+          setMessage("Missing confirmation data. Please use the link from your email (it works from any device).");
           return;
         }
 
@@ -55,6 +79,11 @@ function ConfirmContent() {
         const { data: { session } } = await supabase.auth.getSession();
         const userId = session?.user?.id;
         if (userId) {
+          const { error: updateErr } = await supabase
+            .from("profiles")
+            .update({ email_verified: true, updated_at: new Date().toISOString() })
+            .eq("id", userId);
+          // Ignore updateErr if email_verified column doesn't exist yet (migration not run)
           const { data: profile } = await supabase
             .from("profiles")
             .select("phone_verified, id_verified, address_verified")

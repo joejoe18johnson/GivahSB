@@ -68,9 +68,9 @@ function LoginForm() {
   function getLoginErrorMessage(err: unknown): string {
     const msg = err instanceof Error ? err.message : String(err);
     if (/invalid login credentials|invalid_credentials/i.test(msg)) return "Invalid email or password. Please try again.";
-    if (/email not confirmed|email_not_confirmed/i.test(msg)) return "Please confirm your email address. Check your inbox for the confirmation link.";
+    if (/confirm your email|email not confirmed|email_not_confirmed/i.test(msg)) return "Please confirm your email first. Check your inbox for the confirmation link, then sign in.";
     if (/too many requests|rate limit/i.test(msg)) return "Too many attempts. Please try again in a few minutes.";
-    if (msg && msg !== "object") return "Sign-in failed. Please try again.";
+    if (msg && typeof msg === "string" && msg.length > 0) return msg;
     return "Invalid email or password. Please try again.";
   }
 
