@@ -110,6 +110,23 @@ input[type="datetime-local"] {
     mask-composite: exclude;
     pointer-events: none;
   }
+  /* 2px theme gradient outline for buttons in dark mode; parent needs position: relative */
+  .dark .gradient-outline-btn {
+    position: relative;
+  }
+  .dark .gradient-outline-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    border-radius: inherit;
+    background: linear-gradient(to right, #003F87, #16ac4b);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
   .text-balance {
     text-wrap: balance;
   }
