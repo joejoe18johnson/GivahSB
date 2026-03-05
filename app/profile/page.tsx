@@ -82,6 +82,23 @@ export default function ProfilePage() {
     );
   }
 
+  // Do not allow viewing profile until email is verified (defense in depth).
+  if (user.emailVerified === false) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <p className="text-gray-600 dark:text-gray-400 mb-4">Please verify your email before you can view your profile. Check your inbox and click the verification link we sent.</p>
+          <Link
+            href="/auth/login"
+            className="inline-block bg-success-500 text-white px-6 py-3 rounded-full font-medium hover:bg-success-600 transition-colors"
+          >
+            Go to sign in
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   const handleSaveName = async () => {
     try {
       await updateUser({ name });

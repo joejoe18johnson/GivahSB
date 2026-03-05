@@ -41,13 +41,13 @@ function CheckEmailContent() {
 
         <div className="space-y-3">
           <Link
-            href="/auth/verify-email"
+            href="/auth/login"
             className="block w-full border-2 border-primary-600 text-primary-600 dark:border-primary-400 dark:text-primary-400 bg-transparent px-8 py-3 rounded-full font-medium hover:bg-primary-50 dark:hover:bg-primary-900/30 transition-colors"
           >
-            Go to login
+            Go to sign in
           </Link>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            You&apos;ll be asked to verify your email before you can sign in.
+            You can only sign in after you&apos;ve clicked the verification link in your email.
           </p>
         </div>
       </div>
@@ -66,10 +66,10 @@ function CheckEmailFallback() {
         <p className="text-gray-600 dark:text-gray-400 mb-6">We&apos;ve sent a confirmation link. You must confirm before you can sign in.</p>
         <div className="animate-pulse h-4 bg-gray-200 rounded w-3/4 mx-auto mb-6" />
         <Link
-          href="/auth/verify-email"
+          href="/auth/login"
           className="block w-full border-2 border-primary-600 text-primary-600 px-8 py-3 rounded-full font-medium hover:bg-primary-50 transition-colors"
         >
-          Go to login
+          Go to sign in
         </Link>
       </div>
     </div>

@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+
+const LOADING_TIMEOUT_MS = 8000;
+const STUCK_MESSAGE = "This is taking longer than usual. Please open the link again from your email, or try signing in—if you already confirmed, you should get in.";
 
 /** Parse URL hash into key-value map (e.g. #access_token=...&refresh_token=...) so confirmation works from any device. */
 function parseHashParams(): Record<string, string> {
@@ -26,40 +29,80 @@ function ConfirmContent() {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState("");
+  const loadingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Single timeout set once on mount so the user is never stuck (effect cleanup below clears it when we're done).
+  useEffect(() => {
+    loadingTimeoutRef.current = setTimeout(() => {
+      setStatus((s) => {
+        if (s !== "loading") return s;
+        setMessage(STUCK_MESSAGE);
+        return "error";
+      });
+    }, LOADING_TIMEOUT_MS);
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+        loadingTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
 
-    // If we're still loading after 12s, show error so the user isn't stuck.
-    const timeoutId = setTimeout(() => {
-      if (cancelled) return;
-      setStatus((s) => (s === "loading" ? "error" : s));
-      setMessage((m) => (m ? m : "This is taking longer than usual. Please open the link again from your email, or try signing in—if you already confirmed, you should get in."));
-    }, 12000);
+    const verified = searchParams.get("verified");
+    const errorParam = searchParams.get("error");
+    const messageParam = searchParams.get("message");
+    const tokenHash = searchParams.get("token_hash");
+    const type = searchParams.get("type");
+    const code = searchParams.get("code");
+    const hashParams = typeof window !== "undefined" ? parseHashParams() : {};
+    const accessToken = hashParams.access_token || searchParams.get("access_token");
+    const refreshToken = hashParams.refresh_token || searchParams.get("refresh_token");
+
+    const hasAnyParam = verified || errorParam || tokenHash || type || code || (accessToken && refreshToken);
+    if (!hasAnyParam) {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+        loadingTimeoutRef.current = null;
+      }
+      setStatus("error");
+      setMessage("Missing confirmation data. Please use the link from your email (it works from any device).");
+      return;
+    }
+
+    const supabase = createClient();
 
     (async () => {
-      const verified = searchParams.get("verified");
-      const errorParam = searchParams.get("error");
-      const messageParam = searchParams.get("message");
-      const tokenHash = searchParams.get("token_hash");
-      const type = searchParams.get("type");
-      const code = searchParams.get("code");
-      const hashParams = typeof window !== "undefined" ? parseHashParams() : {};
-      const accessToken = hashParams.access_token || searchParams.get("access_token");
-      const refreshToken = hashParams.refresh_token || searchParams.get("refresh_token");
-
-      const supabase = createClient();
-
       try {
         // Server already exchanged code and set session; just run success path.
         if (verified === "1") {
-          let { data: { session } } = await supabase.auth.getSession();
-          // Cookies may not be available on first read after redirect; retry once.
+          let session: { user: { id: string } } | null = null;
+          try {
+            const sessionPromise = supabase.auth.getSession();
+            const timeoutPromise = new Promise<never>((_, reject) =>
+              setTimeout(() => reject(new Error("timeout")), 6000)
+            );
+            const result = await Promise.race([sessionPromise, timeoutPromise]);
+            session = result?.data?.session ?? null;
+          } catch {
+            if (!cancelled) {
+              if (loadingTimeoutRef.current) {
+                clearTimeout(loadingTimeoutRef.current);
+                loadingTimeoutRef.current = null;
+              }
+              setStatus("error");
+              setMessage(STUCK_MESSAGE);
+            }
+            return;
+          }
+          if (cancelled) return;
           if (!session?.user?.id) {
             await new Promise((r) => setTimeout(r, 400));
             if (cancelled) return;
             const retry = await supabase.auth.getSession();
-            session = retry.data.session;
+            session = retry.data.session as typeof session;
           }
           const userId = session?.user?.id;
           if (userId) {
@@ -79,12 +122,20 @@ function ConfirmContent() {
               (profile as { address_verified?: boolean }).address_verified
             );
             if (cancelled) return;
+            if (loadingTimeoutRef.current) {
+              clearTimeout(loadingTimeoutRef.current);
+              loadingTimeoutRef.current = null;
+            }
             setStatus("success");
             setTimeout(() => {
               if (cancelled) return;
               router.replace(fullyVerified ? "/my-campaigns" : "/verification-center");
             }, 1500);
           } else {
+            if (loadingTimeoutRef.current) {
+              clearTimeout(loadingTimeoutRef.current);
+              loadingTimeoutRef.current = null;
+            }
             setStatus("error");
             setMessage("Session not found. Try signing in—if you already confirmed your email, you should get in.");
           }
@@ -93,6 +144,10 @@ function ConfirmContent() {
 
         // Server sent us here with an error (e.g. PKCE verifier not found).
         if (errorParam === "pkce") {
+          if (loadingTimeoutRef.current) {
+            clearTimeout(loadingTimeoutRef.current);
+            loadingTimeoutRef.current = null;
+          }
           setStatus("error");
           setMessage(
             "This link was opened on a different device or browser. Please open the confirmation link on the same device where you signed up, or request a new confirmation email from the sign-in page."
@@ -100,11 +155,19 @@ function ConfirmContent() {
           return;
         }
         if (errorParam === "exchange" && messageParam) {
+          if (loadingTimeoutRef.current) {
+            clearTimeout(loadingTimeoutRef.current);
+            loadingTimeoutRef.current = null;
+          }
           setStatus("error");
           setMessage(decodeURIComponent(messageParam));
           return;
         }
         if (errorParam) {
+          if (loadingTimeoutRef.current) {
+            clearTimeout(loadingTimeoutRef.current);
+            loadingTimeoutRef.current = null;
+          }
           setStatus("error");
           setMessage("Confirmation failed. Please use the link from your email or try again.");
           return;
@@ -117,6 +180,10 @@ function ConfirmContent() {
           });
           if (cancelled) return;
           if (error) {
+            if (loadingTimeoutRef.current) {
+              clearTimeout(loadingTimeoutRef.current);
+              loadingTimeoutRef.current = null;
+            }
             setStatus("error");
             setMessage(error.message || "Invalid or expired link. Please request a new confirmation email.");
             return;
@@ -134,6 +201,10 @@ function ConfirmContent() {
           ]);
           if (cancelled) return;
           if (error) {
+            if (loadingTimeoutRef.current) {
+              clearTimeout(loadingTimeoutRef.current);
+              loadingTimeoutRef.current = null;
+            }
             setStatus("error");
             const isPkceError = /PKCE|code verifier|verifier not found/i.test(error.message || "");
             setMessage(
@@ -147,18 +218,22 @@ function ConfirmContent() {
           const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
           if (cancelled) return;
           if (error) {
+            if (loadingTimeoutRef.current) {
+              clearTimeout(loadingTimeoutRef.current);
+              loadingTimeoutRef.current = null;
+            }
             setStatus("error");
             setMessage(error.message || "Invalid or expired link. Please use the link from your email.");
             return;
           }
           // Clear hash from URL so refresh doesn't re-use the token
           if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname + window.location.search);
-        } else {
-          setStatus("error");
-          setMessage("Missing confirmation data. Please use the link from your email (it works from any device).");
-          return;
         }
 
+        if (loadingTimeoutRef.current) {
+          clearTimeout(loadingTimeoutRef.current);
+          loadingTimeoutRef.current = null;
+        }
         setStatus("success");
         const { data: { session } } = await supabase.auth.getSession();
         const userId = session?.user?.id;
@@ -191,14 +266,15 @@ function ConfirmContent() {
         }
       } catch (err) {
         if (cancelled) return;
+        if (loadingTimeoutRef.current) {
+          clearTimeout(loadingTimeoutRef.current);
+          loadingTimeoutRef.current = null;
+        }
         setStatus("error");
         setMessage(err instanceof Error ? err.message : "Something went wrong.");
       }
     })();
-    return () => {
-      cancelled = true;
-      clearTimeout(timeoutId);
-    };
+    return () => { cancelled = true; };
   }, [searchParams, router]);
 
   if (status === "loading") {

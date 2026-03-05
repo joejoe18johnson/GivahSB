@@ -44,6 +44,10 @@ export default function MyCampaignsPage() {
   useEffect(() => {
     if (!isLoading && !user) {
       router.replace("/auth/login?callbackUrl=/my-campaigns");
+      return;
+    }
+    if (user && user.emailVerified === false) {
+      router.replace("/auth/login?callbackUrl=/my-campaigns");
     }
   }, [user, isLoading, router]);
 
