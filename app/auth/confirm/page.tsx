@@ -8,6 +8,88 @@ import { createClient } from "@/lib/supabase/client";
 const LOADING_TIMEOUT_MS = 8000;
 const STUCK_MESSAGE = "This is taking longer than usual. Please open the link again from your email, or try signing in—if you already confirmed, you should get in.";
 
+/** Error view with optional "Resend confirmation email" when PKCE/different-device error. */
+function ConfirmErrorView({
+  message,
+  isPkceError,
+}: {
+  message: string;
+  isPkceError: boolean;
+}) {
+  const [resendEmail, setResendEmail] = useState("");
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendResult, setResendResult] = useState<"success" | "error" | null>(null);
+  const supabase = createClient();
+
+  const handleResend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const email = resendEmail.trim();
+    if (!email || !email.includes("@")) {
+      setResendResult("error");
+      return;
+    }
+    setResendLoading(true);
+    setResendResult(null);
+    try {
+      const { error } = await supabase.auth.resend({ type: "signup", email });
+      if (error) throw error;
+      setResendResult("success");
+    } catch {
+      setResendResult("error");
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center py-12 px-4">
+      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 text-center">
+        <h1 className="text-2xl font-medium text-gray-900 dark:text-gray-100 mb-4">Confirmation failed</h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">{message}</p>
+        {isPkceError && (
+          <div className="mb-6 p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50 text-left">
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Send a new confirmation link</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+              Enter the email you used to sign up. We&apos;ll send a new link. If your site uses a &quot;confirm from any device&quot; link, the new email will work on this browser too.
+            </p>
+            <form onSubmit={handleResend} className="space-y-2">
+              <input
+                type="email"
+                value={resendEmail}
+                onChange={(e) => setResendEmail(e.target.value)}
+                placeholder="your@email.com"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-gray-100 dark:bg-gray-800"
+              />
+              <button
+                type="submit"
+                disabled={resendLoading}
+                className="w-full py-2 rounded-lg font-medium bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-70"
+              >
+                {resendLoading ? "Sending…" : "Send new link"}
+              </button>
+            </form>
+            {resendResult === "success" && (
+              <p className="mt-2 text-sm text-green-600 dark:text-green-400">Check your inbox for the new link.</p>
+            )}
+            {resendResult === "error" && (
+              <p className="mt-2 text-sm text-red-600 dark:text-red-400">Could not send. Check the email address or try again later.</p>
+            )}
+          </div>
+        )}
+        <Link
+          href="/auth/signup"
+          className="inline-block bg-primary-600 text-white px-6 py-3 rounded-full font-medium hover:bg-primary-700 transition-colors"
+        >
+          Try again
+        </Link>
+        <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+          <Link href="/auth/login" className="text-primary-600 hover:text-primary-700 dark:text-primary-400">Back to sign in</Link>
+        </p>
+      </div>
+    </div>
+  );
+}
+
 /** Parse URL hash into key-value map (e.g. #access_token=...&refresh_token=...) so confirmation works from any device. */
 function parseHashParams(): Record<string, string> {
   if (typeof window === "undefined" || !window.location.hash) return {};
@@ -302,22 +384,12 @@ function ConfirmContent() {
     );
   }
 
+  const isPkceError = /different device|different browser|PKCE|code verifier/i.test(message);
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 text-center">
-        <h1 className="text-2xl font-medium text-gray-900 dark:text-gray-100 mb-4">Confirmation failed</h1>
-        <p className="text-gray-600 mb-6">{message}</p>
-        <Link
-          href="/auth/signup"
-          className="inline-block bg-primary-600 text-white px-6 py-3 rounded-full font-medium hover:bg-primary-700 transition-colors"
-        >
-          Try again
-        </Link>
-        <p className="mt-4 text-sm text-gray-500">
-          <Link href="/auth/login" className="text-primary-600 hover:text-primary-700">Back to sign in</Link>
-        </p>
-      </div>
-    </div>
+    <ConfirmErrorView
+      message={message}
+      isPkceError={isPkceError}
+    />
   );
 }
 

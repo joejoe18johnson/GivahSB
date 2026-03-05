@@ -130,7 +130,8 @@ export async function signUpWithEmailSupabase(
     password,
     options: {
       data: { name, phone_number: phoneNumber?.trim() || null },
-      emailRedirectTo: `${baseUrl}/api/auth/confirm-email`,
+      // Use client confirm page so links can use token_hash (works from any device). See docs/SUPABASE_EMAIL_CONFIRMATION_TEMPLATE.md.
+      emailRedirectTo: `${baseUrl}/auth/confirm`,
     },
   });
   if (error) throw error;

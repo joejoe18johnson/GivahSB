@@ -52,7 +52,7 @@ Under **Authentication** → **Email Templates** you can edit the text of:
 - **Confirm signup** (verification)
 - **Reset password**
 
-The default templates use Supabase placeholders (e.g. `{{ .ConfirmationURL }}`). Keep those so the links still work; you can change the wording and branding.
+The default templates use Supabase placeholders (e.g. `{{ .ConfirmationURL }}`). To allow users to **confirm from any device** (avoid "PKCE code verifier not found" when they open the link on a different browser or phone), see **[SUPABASE_EMAIL_CONFIRMATION_TEMPLATE.md](./SUPABASE_EMAIL_CONFIRMATION_TEMPLATE.md)** and switch the confirm link to use `token_hash`.
 
 ## Summary
 
