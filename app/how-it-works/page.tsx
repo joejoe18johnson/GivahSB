@@ -1,4 +1,3 @@
-import SafeImage from "@/components/SafeImage";
 import { CheckCircle2, Share2, DollarSign, Clock, Users, Shield } from "lucide-react";
 import Link from "next/link";
 
@@ -73,34 +72,6 @@ export default function HowItWorksPage() {
       icon: <Users className="w-6 h-6" />,
       title: "Community Support",
       text: "Connect with the Belizean community and receive support from people who care about your cause."
-    }
-  ];
-
-  const useCases = [
-    {
-      title: "Medical Costs",
-      description: "Cover medical expenses, surgeries, treatments, or healthcare needs",
-      image: "https://picsum.photos/seed/usecase1/600/400"
-    },
-    {
-      title: "Education",
-      description: "Support school supplies, tuition fees, educational resources, or student needs",
-      image: "https://picsum.photos/seed/usecase2/600/400"
-    },
-    {
-      title: "Community Projects",
-      description: "Fund community centers, local initiatives, or neighborhood improvements",
-      image: "https://picsum.photos/seed/usecase6/600/400"
-    },
-    {
-      title: "Charity Events",
-      description: "Raise funds for charity organizations, non-profits, or community events",
-      image: "https://picsum.photos/seed/usecase5/600/400"
-    },
-    {
-      title: "Personal Support",
-      description: "Help individuals and families facing financial hardship or emergencies",
-      image: "https://picsum.photos/seed/usecase6/600/400"
     }
   ];
 
@@ -182,48 +153,6 @@ export default function HowItWorksPage() {
                     <h3 className="text-xl font-medium text-gray-900 mb-2">{benefit.title}</h3>
                     <p className="text-gray-600">{benefit.text}</p>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Use Cases */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-medium text-center mb-4">Great For:</h2>
-          <p className="text-center text-gray-600 mb-12 text-lg">
-            GivahBz supports a wide range of causes and needs
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {useCases.map((useCase, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg gradient-border-1 overflow-hidden transition-shadow group"
-              >
-                <div className="relative h-48 w-full overflow-hidden">
-                  <div className="absolute inset-0">
-                    <SafeImage
-                      src={useCase.image}
-                      alt={useCase.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      fallback={
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary-200 to-primary-400 flex items-center justify-center">
-                          <span className="text-primary-600 text-3xl font-medium">
-                            {useCase.title.charAt(0)}
-                          </span>
-                        </div>
-                      }
-                    />
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-medium text-gray-900 mb-2">{useCase.title}</h3>
-                  <p className="text-gray-600">{useCase.description}</p>
                 </div>
               </div>
             ))}
