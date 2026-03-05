@@ -130,7 +130,7 @@ export async function signUpWithEmailSupabase(
     password,
     options: {
       data: { name, phone_number: phoneNumber?.trim() || null },
-      emailRedirectTo: `${baseUrl}/auth/confirm`,
+      emailRedirectTo: `${baseUrl}/api/auth/confirm-email`,
     },
   });
   if (error) throw error;
@@ -146,9 +146,10 @@ export async function signUpWithEmailSupabase(
     },
     { onConflict: "id" }
   );
-  // Sign out immediately so the user has no session until they confirm email.
-  // This prevents "Go to login" from opening an already-logged-in account.
-  await supabase.auth.signOut();
+  // Do NOT sign out here: Supabase stores a PKCE code_verifier for the email confirmation
+  // redirect. signOut() would clear it and break "Confirming your email" with "PKCE code verifier
+  // not found". We keep the session; AuthContext treats unconfirmed sessions as logged-out (setUser(null)
+  // without calling signOut) so the verifier is preserved and the confirmation link works.
   const profile = await supabaseUserToProfile(supabase, data.user);
   if (!profile) throw new Error("Could not load profile");
   return profile;

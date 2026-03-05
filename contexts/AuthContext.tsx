@@ -96,7 +96,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (cancelled) return;
       if (session?.user) {
         if (!confirmedAt(session.user)) {
-          await signOutSupabase(supabase);
+          // Do NOT sign out: the PKCE code_verifier is stored in cookies for the email confirmation
+          // link. Signing out would clear it and cause "PKCE code verifier not found". Just treat as
+          // logged out in the UI (setUser(null)) and keep the session/cookies so the confirm link works.
           if (!cancelled) setUser(null);
         } else {
           try {
@@ -119,7 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (cancelled) return;
         if (session?.user) {
           if (!confirmedAt(session.user)) {
-            await signOutSupabase(supabase);
+            // Do NOT sign out (see comment above); preserve code_verifier for email confirmation.
             setUser(null);
           } else {
             try {

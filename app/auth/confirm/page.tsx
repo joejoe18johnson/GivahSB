@@ -30,6 +30,9 @@ function ConfirmContent() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      const verified = searchParams.get("verified");
+      const errorParam = searchParams.get("error");
+      const messageParam = searchParams.get("message");
       const tokenHash = searchParams.get("token_hash");
       const type = searchParams.get("type");
       const code = searchParams.get("code");
@@ -40,6 +43,57 @@ function ConfirmContent() {
       const supabase = createClient();
 
       try {
+        // Server already exchanged code and set session; just run success path.
+        if (verified === "1") {
+          const { data: { session } } = await supabase.auth.getSession();
+          const userId = session?.user?.id;
+          if (userId) {
+            const { error: updateErr } = await supabase
+              .from("profiles")
+              .update({ email_verified: true, updated_at: new Date().toISOString() })
+              .eq("id", userId);
+            const { data: profile } = await supabase
+              .from("profiles")
+              .select("phone_verified, id_verified, address_verified")
+              .eq("id", userId)
+              .single();
+            const fullyVerified = !!(
+              profile &&
+              (profile as { phone_verified?: boolean }).phone_verified &&
+              (profile as { id_verified?: boolean }).id_verified &&
+              (profile as { address_verified?: boolean }).address_verified
+            );
+            setStatus("success");
+            setTimeout(() => {
+              if (cancelled) return;
+              router.replace(fullyVerified ? "/my-campaigns" : "/verification-center");
+            }, 1500);
+          } else {
+            setStatus("error");
+            setMessage("Session not found. Please try signing in.");
+          }
+          return;
+        }
+
+        // Server sent us here with an error (e.g. PKCE verifier not found).
+        if (errorParam === "pkce") {
+          setStatus("error");
+          setMessage(
+            "This link was opened on a different device or browser. Please open the confirmation link on the same device where you signed up, or request a new confirmation email from the sign-in page."
+          );
+          return;
+        }
+        if (errorParam === "exchange" && messageParam) {
+          setStatus("error");
+          setMessage(decodeURIComponent(messageParam));
+          return;
+        }
+        if (errorParam) {
+          setStatus("error");
+          setMessage("Confirmation failed. Please use the link from your email or try again.");
+          return;
+        }
+
         if (tokenHash && type) {
           const { error } = await supabase.auth.verifyOtp({
             token_hash: tokenHash,
@@ -56,7 +110,12 @@ function ConfirmContent() {
           if (cancelled) return;
           if (error) {
             setStatus("error");
-            setMessage(error.message || "Invalid or expired link. Try signing up again or use the link in the same browser.");
+            const isPkceError = /PKCE|code verifier|verifier not found/i.test(error.message || "");
+            setMessage(
+              isPkceError
+                ? "This link was opened on a different device or browser. Please open the confirmation link on the same device where you signed up, or request a new confirmation email from the sign-in page (forgot password / resend)."
+                : error.message || "Invalid or expired link. Try signing up again or use the link in the same browser."
+            );
             return;
           }
         } else if (accessToken && refreshToken) {
