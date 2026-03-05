@@ -108,25 +108,25 @@ export default function CreateCampaignPage() {
   if (REQUIRE_VERIFICATION_TO_CREATE && (!user.phoneVerified || !user.idVerified || !user.addressVerified)) {
     const missingVerifications: string[] = [];
     const pendingVerifications: string[] = [];
-
+    
     if (!user.phoneNumber) {
       missingVerifications.push("Phone number");
     } else if (!user.phoneVerified) {
       pendingVerifications.push("Phone number");
     }
-
+    
     if (!user.idDocument) {
       missingVerifications.push("ID document");
     } else if (!user.idVerified) {
       pendingVerifications.push("ID document");
     }
-
+    
     if (!user.addressDocument) {
       missingVerifications.push("Address document");
     } else if (!user.addressVerified) {
       pendingVerifications.push("Address document");
     }
-
+    
     const missingText = missingVerifications.length > 0 ? missingVerifications.join(", ") : null;
     const pendingText = pendingVerifications.length > 0 ? pendingVerifications.join(", ") : null;
 
@@ -321,14 +321,14 @@ export default function CreateCampaignPage() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          title: formData.title,
-          description: formData.description,
-          fullDescription: formData.fullDescription || "",
-          goal: goalNum,
-          category: formData.category,
-          creatorName,
-          image: imageUrl1,
-          image2: imageUrl2,
+        title: formData.title,
+        description: formData.description,
+        fullDescription: formData.fullDescription || "",
+        goal: goalNum,
+        category: formData.category,
+        creatorName,
+        image: imageUrl1,
+        image2: imageUrl2,
         }),
       });
       if (!res.ok) {
