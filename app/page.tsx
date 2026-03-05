@@ -175,7 +175,7 @@ export default function Home() {
                 })()}
               </h1>
             </div>
-            <p className="text-[15px] md:text-[17px] text-gray-600 mb-8 max-w-xl">
+            <p className="text-[15px] md:text-[17px] text-gray-600 dark:text-white mb-8 max-w-xl">
               {siteContent.heroSubtitle.replace(/^Life is either a daring adventure or nothing\.\s*/i, "").trim() || "Help real people and causes across Belize—verified, transparent, and community-driven."}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-10">
