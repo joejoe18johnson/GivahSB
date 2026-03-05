@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
 import { useHearted } from "./HeartedCampaigns";
 import UserAvatar from "./UserAvatar";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 interface UserNotification {
   id: string;
@@ -272,7 +273,7 @@ export default function Header() {
   if (isAdminRoute) return null;
 
   return (
-    <header className="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+    <header className="bg-white dark:bg-gray-900 shadow-sm fixed top-0 left-0 right-0 z-50 border-b border-gray-200 dark:border-gray-800">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo */}
@@ -304,9 +305,10 @@ export default function Header() {
 
           {/* Desktop Navigation — no Admin link in public nav */}
           <nav className="hidden lg:flex items-center gap-4 xl:gap-6 shrink-0">
+            <ThemeSwitcher />
             <Link
               href="/"
-              className="text-gray-700 hover:text-primary-600 transition-colors duration-300 ease-in-out"
+              className="text-gray-700 dark:text-gray-200 dark:hover:text-primary-400 hover:text-primary-600 transition-colors duration-300 ease-in-out"
             >
               Home
             </Link>
@@ -587,8 +589,12 @@ export default function Header() {
 
       {/* Mobile menu panel */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-gray-200 bg-white shadow-lg">
+        <div className="lg:hidden border-t border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700 shadow-lg">
           <div className="container mx-auto px-4 py-4 space-y-4">
+            <div className="flex items-center justify-between px-2 py-2">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme</span>
+              <ThemeSwitcher />
+            </div>
             <form onSubmit={handleSearch} className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
               <input

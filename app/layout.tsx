@@ -34,14 +34,29 @@ export const viewport = {
   maximumScale: 5,
 };
 
+function ThemeScript() {
+  const script = `
+    (function() {
+      var k = 'givah-theme';
+      var s = typeof localStorage !== 'undefined' && localStorage.getItem(k);
+      var d = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = (s === 'dark' || s === 'light') ? s : (d ? 'dark' : 'light');
+      if (theme === 'dark') document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
+    })();
+  `;
+  return <script dangerouslySetInnerHTML={{ __html: script }} />;
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${siteFont.className} bg-white`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${siteFont.className} bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100`}>
+        <ThemeScript />
         <Providers>
           <LayoutChrome>{children}</LayoutChrome>
         </Providers>

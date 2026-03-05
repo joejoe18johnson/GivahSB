@@ -18,11 +18,14 @@ button:not([class*="transition"]) {
   transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
-/* Keep text visible: site is light-themed; ignore dark mode so text is never white on white */
 body {
   color: rgb(var(--foreground-rgb));
   background: white;
   overflow-x: hidden;
+}
+.dark body {
+  background: #111827;
+  color: #f3f4f6;
 }
 
 /* All form inputs: always dark text + light background (mobile, desktop, dark mode) */

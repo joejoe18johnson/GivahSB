@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { LayoutDashboard, Megaphone, Users, Heart, ArrowLeft, Clock, Bell, LogOut, Trophy, Mail, Banknote } from "lucide-react";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 import UserAvatar from "@/components/UserAvatar";
 import {
   getCampaignsUnderReviewCountCached,
@@ -128,8 +129,8 @@ export default function AdminLayout({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-gray-500">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-gray-500 dark:text-gray-400">Loading...</div>
       </div>
     );
   }
@@ -141,18 +142,18 @@ export default function AdminLayout({
   // Wait for server admin check so we don't redirect admins away before isAdmin is set
   if (!adminCheckDone) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-gray-500">Checking access...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-gray-500 dark:text-gray-400">Checking access...</div>
       </div>
     );
   }
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <div className="max-w-md text-center bg-white rounded-xl border border-gray-200 p-8 shadow-sm">
-          <h1 className="text-xl font-semibold text-gray-900 mb-2">Access denied</h1>
-          <p className="text-gray-600 mb-4">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+        <div className="max-w-md text-center bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 shadow-sm">
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Access denied</h1>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
             Your account does not have admin access. You must set <code className="text-sm bg-gray-100 px-1 rounded">NEXT_PUBLIC_ADMIN_EMAILS</code> (comma-separated) in your <code className="text-sm bg-gray-100 px-1 rounded">.env</code> and in Vercel Environment Variables, then <strong>redeploy</strong> so the client gets the list. After that, sign out and sign in again.
           </p>
           <p className="text-sm text-gray-500 mb-6">
@@ -170,28 +171,31 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
-      <aside className="w-full md:w-56 md:fixed md:left-0 md:top-0 md:bottom-0 bg-white border-b md:border-b-0 md:border-r border-gray-200 shadow-sm z-40 overflow-y-auto flex flex-col">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col md:flex-row">
+      <aside className="w-full md:w-56 md:fixed md:left-0 md:top-0 md:bottom-0 bg-white dark:bg-gray-800 border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-700 shadow-sm z-40 overflow-y-auto flex flex-col">
         <nav className="p-4 space-y-1 flex-1 pb-24">
-          <div className="flex flex-col items-center gap-3 py-4 border-b border-gray-100">
+          <div className="flex flex-col items-center gap-3 py-4 border-b border-gray-100 dark:border-gray-700">
             <Image src="/givah-logo.png" alt="GivahBz" width={120} height={36} className="h-8 w-auto" priority />
-            <button
-              type="button"
-              onClick={() => router.push("/")}
-              className="w-full text-center inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-accent-600 text-white font-medium text-sm hover:bg-accent-700 transition-colors shadow-sm"
-            >
-              Back to site
-            </button>
+            <div className="flex items-center gap-2 w-full">
+              <ThemeSwitcher />
+              <button
+                type="button"
+                onClick={() => router.push("/")}
+                className="flex-1 text-center inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-accent-600 text-white font-medium text-sm hover:bg-accent-700 transition-colors shadow-sm"
+              >
+                Back to site
+              </button>
+            </div>
           </div>
           <div className="pt-4">
             <Link
               href="/admin/notifications"
               className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
                 pathname === "/admin/notifications"
-                  ? "bg-primary-50 text-primary-700 font-medium"
+                  ? "bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium"
                   : notificationTotal > 0
-                    ? "bg-amber-50/80 border border-amber-200 text-amber-900 hover:bg-amber-100"
-                    : "text-gray-600 hover:bg-gray-100"
+                    ? "bg-amber-50/80 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 text-amber-900 dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/50"
+                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
               <Bell className={`w-4 h-4 shrink-0 ${notificationTotal > 0 ? "text-red-600" : ""}`} />
@@ -206,10 +210,10 @@ export default function AdminLayout({
               href="/admin"
               className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
                 pathname === "/admin"
-                  ? "bg-primary-50 text-primary-700 font-medium"
+                  ? "bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium"
                   : notificationTotal > 0
-                    ? "bg-amber-50/80 border border-amber-200 text-amber-900 hover:bg-amber-100"
-                    : "text-gray-600 hover:bg-gray-100"
+                    ? "bg-amber-50/80 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 text-amber-900 dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/50"
+                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
               <LayoutDashboard className="w-4 h-4" />
@@ -222,7 +226,7 @@ export default function AdminLayout({
             </Link>
             <Link
               href="/admin/messages"
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg ${pathname === "/admin/messages" ? "bg-primary-50 text-primary-700 font-medium" : "text-gray-600 hover:bg-gray-100"}`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg ${pathname === "/admin/messages" ? "bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium" : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"}`}
             >
               <Mail className="w-4 h-4" />
               <span className="flex-1">Messages</span>
@@ -231,10 +235,10 @@ export default function AdminLayout({
               href="/admin/campaigns"
               className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
                 pathname === "/admin/campaigns"
-                  ? "bg-primary-50 text-primary-700 font-medium"
+                  ? "bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium"
                   : sectionCounts.campaigns > 0
                     ? "bg-amber-50/80 border border-amber-200 text-amber-900 hover:bg-amber-100"
-                    : "text-gray-600 hover:bg-gray-100"
+                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
               <Megaphone className="w-4 h-4" />
@@ -249,10 +253,10 @@ export default function AdminLayout({
               href="/admin/users"
               className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
                 pathname === "/admin/users"
-                  ? "bg-primary-50 text-primary-700 font-medium"
+                  ? "bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium"
                   : (sectionCounts.phonePending + sectionCounts.addressPending + sectionCounts.idPending) > 0
                     ? "bg-amber-50/80 border border-amber-200 text-amber-900 hover:bg-amber-100"
-                    : "text-gray-600 hover:bg-gray-100"
+                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
               <Users className="w-4 h-4" />
@@ -267,10 +271,10 @@ export default function AdminLayout({
               href="/admin/donations"
               className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
                 pathname === "/admin/donations"
-                  ? "bg-primary-50 text-primary-700 font-medium"
+                  ? "bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium"
                   : sectionCounts.pendingDonations > 0
                     ? "bg-amber-50/80 border border-amber-200 text-amber-900 hover:bg-amber-100"
-                    : "text-gray-600 hover:bg-gray-100"
+                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
               <Heart className="w-4 h-4" />
@@ -285,10 +289,10 @@ export default function AdminLayout({
               href="/admin/payouts"
               className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
                 pathname === "/admin/payouts"
-                  ? "bg-primary-50 text-primary-700 font-medium"
+                  ? "bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium"
                   : sectionCounts.pendingPayouts > 0
                     ? "bg-amber-50/80 border border-amber-200 text-amber-900 hover:bg-amber-100"
-                    : "text-gray-600 hover:bg-gray-100"
+                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
               <Banknote className="w-4 h-4" />
@@ -303,10 +307,10 @@ export default function AdminLayout({
               href="/admin/under-review"
               className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
                 pathname === "/admin/under-review"
-                  ? "bg-primary-50 text-primary-700 font-medium"
+                  ? "bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium"
                   : sectionCounts.underReview > 0
                     ? "bg-amber-50/80 border border-amber-200 text-amber-900 hover:bg-amber-100"
-                    : "text-gray-600 hover:bg-gray-100"
+                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
               <Clock className="w-4 h-4" />
@@ -319,7 +323,7 @@ export default function AdminLayout({
             </Link>
             <Link
               href="/admin/completed-campaigns"
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg ${pathname === "/admin/completed-campaigns" ? "bg-primary-50 text-primary-700 font-medium" : "text-gray-600 hover:bg-gray-100"}`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg ${pathname === "/admin/completed-campaigns" ? "bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium" : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"}`}
             >
               <Trophy className="w-4 h-4" />
               <span className="flex-1">Completed campaigns</span>
@@ -327,16 +331,16 @@ export default function AdminLayout({
           </div>
           
           {/* Profile Section at Bottom */}
-          <div className="p-4 pt-[60px] md:pt-[60px] border-t border-gray-200 bg-white md:absolute md:bottom-0 md:left-0 md:right-0">
+          <div className="p-4 pt-[60px] md:pt-[60px] border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 md:absolute md:bottom-0 md:left-0 md:right-0">
             {user && (
               <div className="space-y-3">
                 <div className="flex items-center gap-3 px-2">
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-primary-100 flex items-center justify-center text-primary-700 font-medium flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full overflow-hidden bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center text-primary-700 dark:text-primary-300 font-medium flex-shrink-0">
                     <UserAvatar profilePhoto={user.profilePhoto} name={user.name} email={user.email} size={40} className="w-full h-full" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
-                    <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{user.name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
                   </div>
                 </div>
                 <button
@@ -344,7 +348,7 @@ export default function AdminLayout({
                     await logout();
                     router.push("/");
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors text-sm font-medium"
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm font-medium"
                 >
                   <LogOut className="w-4 h-4" />
                   Sign Out
