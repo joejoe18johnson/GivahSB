@@ -130,13 +130,13 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
         <div className="p-6 flex flex-col flex-1">
           <div className="-mt-3 mb-1.5 flex flex-wrap items-center gap-1.5">
             {campaign.adminBacked && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-verified-100 text-verified-800 text-[10px] font-semibold border border-verified-300 shadow-sm">
+              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-verified-100 dark:bg-verified-900/40 text-verified-800 dark:text-verified-300 text-[10px] font-semibold border border-verified-300 dark:border-verified-700 shadow-sm">
                 <ShieldCheck className="w-3 h-3 flex-shrink-0" />
                 Givah Approved Campaign
               </span>
             )}
             {campaign.verified && (
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-verified-100 text-verified-700 text-[10px] font-medium">
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-verified-100 dark:bg-verified-900/40 text-verified-700 dark:text-verified-300 text-[10px] font-medium">
                 <CheckCircle2 className="w-2.5 h-2.5" />
                 Verified
               </span>
@@ -148,7 +148,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
           {goalReached ? (
             <>
               <div className="mb-4">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-verified-100 text-verified-800 text-xs font-medium">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-verified-100 dark:bg-verified-900/40 text-verified-800 dark:text-verified-300 text-xs font-medium">
                   <Trophy className="w-3.5 h-3.5" />
                   Total Funding Goal Achieved
                 </div>
@@ -172,10 +172,10 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
               {/* Progress Bar */}
               <div className="mb-4">
                 <div className="flex justify-between text-sm mb-2">
-                  <span className="font-medium text-primary-600">{formatCurrency(raised)}</span>
-                  <span className="text-gray-500">of {formatCurrency(campaign.goal)}</span>
+                  <span className="font-medium text-primary-600 dark:text-primary-400">{formatCurrency(raised)}</span>
+                  <span className="text-gray-500 dark:text-gray-400">of {formatCurrency(campaign.goal)}</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                   <div
                     className="bg-gradient-to-r from-primary-500 to-verified-500 h-2 rounded-full transition-all"
                     style={{ width: `${progressPercentage}%` }}
@@ -183,12 +183,12 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
                 </div>
               </div>
               {/* Stats */}
-              <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+              <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-4">
                 <div className="flex items-center gap-1">
                   <Users className="w-4 h-4" />
                   <span>{campaign.backers} donors</span>
                 </div>
-                <p className="text-base font-bold bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">
+                <p className="text-base font-bold bg-gradient-to-r from-primary-500 to-verified-500 dark:from-primary-400 dark:to-verified-400 bg-clip-text text-transparent">
                   {Math.round(progressPercentage)}% Funded
                 </p>
               </div>
@@ -196,9 +196,9 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
           )}
 
           {/* Creator */}
-          <div className="pt-4 border-t border-gray-200 mt-auto">
-            <p className="text-sm text-gray-600">
-              by <span className={`font-medium ${goalReached ? "text-gray-600" : "text-gray-900"}`}>{campaign.creator}</span>
+          <div className="pt-4 border-t border-gray-200 dark:border-gray-700 mt-auto">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              by <span className={`font-medium ${goalReached ? "text-gray-600 dark:text-gray-400" : "text-gray-900 dark:text-gray-100"}`}>{campaign.creator}</span>
             </p>
           </div>
         </div>

@@ -213,30 +213,30 @@ export default function Home() {
       </div>
 
       {/* Top Campaigns */}
-      <section className="mb-12 relative py-8 md:py-12 overflow-hidden bg-white animate-fade-in opacity-0 [animation-delay:0.25s] [animation-fill-mode:forwards]">
+      <section className="mb-12 relative py-8 md:py-12 overflow-hidden bg-white dark:bg-gray-800 animate-fade-in opacity-0 [animation-delay:0.25s] [animation-fill-mode:forwards]">
         <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-primary-600 shrink-0" />
-              <h2 className="text-2xl sm:text-3xl font-medium text-gray-900">Top Campaigns</h2>
-              <div className="bg-success-100 text-success-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 shrink-0">
+              <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-primary-600 dark:text-primary-400 shrink-0" />
+              <h2 className="text-2xl sm:text-3xl font-medium text-gray-900 dark:text-gray-100">Top Campaigns</h2>
+              <div className="bg-success-100 dark:bg-success-900/40 text-success-700 dark:text-success-300 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 shrink-0">
                 <TrendingUp className="w-3 h-3" />
                 TRENDING
               </div>
             </div>
-            <div className="hidden md:block flex-1 min-w-[60px] h-px bg-gray-200" />
+            <div className="hidden md:block flex-1 min-w-[60px] h-px bg-gray-200 dark:bg-gray-600" />
           </div>
-          <span className="text-gray-600 font-medium text-sm whitespace-nowrap self-start sm:self-auto">
+          <span className="text-gray-600 dark:text-gray-400 font-medium text-sm whitespace-nowrap self-start sm:self-auto">
             {allTrendingCampaigns.length} {allTrendingCampaigns.length === 1 ? "campaign" : "campaigns"}
           </span>
         </div>
-        <p className="text-gray-600 mb-6">
+        <p className="text-gray-600 dark:text-gray-400 mb-6">
           Campaigns gaining momentum and support from the community
         </p>
 
         {campaignsError && (
-          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800">
+          <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-lg text-amber-800 dark:text-amber-200">
             <p className="font-medium">{campaignsError}</p>
             <p className="text-sm mt-1">
               <a href="/api/campaigns" className="underline" target="_blank" rel="noopener noreferrer">Check campaigns API</a>
@@ -256,15 +256,15 @@ export default function Home() {
         )}
 
         {!isLoading && allTrendingCampaigns.length === 0 && !campaignsError && (
-          <div className="py-12 text-center text-gray-500">
-            <p className="font-medium text-gray-700">No trending campaigns yet</p>
+          <div className="py-12 text-center text-gray-500 dark:text-gray-400">
+            <p className="font-medium text-gray-700 dark:text-gray-300">No trending campaigns yet</p>
             <p className="text-sm mt-1 max-w-md mx-auto">
               This can happen if the project is new and has no campaigns, or no campaign has reached 60% funding yet.
             </p>
-            <Link href="/campaigns" className="inline-block mt-4 text-primary-600 hover:text-primary-700 font-medium underline">
+            <Link href="/campaigns" className="inline-block mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium underline">
               Browse all campaigns →
             </Link>
-            <p className="text-xs mt-4 text-gray-400">
+            <p className="text-xs mt-4 text-gray-400 dark:text-gray-500">
               Create a campaign or run a seed script to add test data.
             </p>
           </div>
@@ -307,8 +307,8 @@ export default function Home() {
                   type="button"
                   onClick={() => scrollTrendingMobileToIndex(i)}
                   aria-label={`Go to slide ${i + 1}`}
-                  className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
-                    currentMobileIndex === i ? "bg-primary-600 scale-110" : "bg-gray-300 hover:bg-gray-400"
+                  className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 ${
+                    currentMobileIndex === i ? "bg-primary-600 dark:bg-primary-500 scale-110" : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
                   }`}
                 />
               ))}
@@ -325,7 +325,7 @@ export default function Home() {
             type="button"
             onClick={() => scrollTrending("left")}
             disabled={!trendingCanScrollLeft}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 z-20 w-12 h-12 rounded-full bg-white border border-gray-200 shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:border-success-500 hover:text-success-600 transition-all duration-300 ease-in-out disabled:opacity-40 disabled:pointer-events-none"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 z-20 w-12 h-12 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-lg flex items-center justify-center text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-success-500 hover:text-success-600 transition-all duration-300 ease-in-out disabled:opacity-40 disabled:pointer-events-none"
             aria-label="Previous campaigns"
           >
             <ChevronLeft className="w-6 h-6" />
@@ -335,7 +335,7 @@ export default function Home() {
             type="button"
             onClick={() => scrollTrending("right")}
             disabled={!trendingCanScrollRight}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 z-20 w-12 h-12 rounded-full bg-white border border-gray-200 shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 hover:border-success-500 hover:text-success-600 transition-all duration-300 ease-in-out disabled:opacity-40 disabled:pointer-events-none"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 z-20 w-12 h-12 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-lg flex items-center justify-center text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-success-500 hover:text-success-600 transition-all duration-300 ease-in-out disabled:opacity-40 disabled:pointer-events-none"
             aria-label="Next campaigns"
           >
             <ChevronRight className="w-6 h-6" />
@@ -369,8 +369,8 @@ export default function Home() {
                     onClick={() => scrollTrendingToPage(page)}
                     aria-label={`Go to page ${page}`}
                     aria-current={currentPage === page ? "true" : undefined}
-                    className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
-                      currentPage === page ? "bg-success-600 scale-110" : "bg-gray-300 hover:bg-gray-400"
+                    className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 ${
+                      currentPage === page ? "bg-success-600 dark:bg-success-500 scale-110" : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
                     }`}
                   />
                 ))}
@@ -384,7 +384,7 @@ export default function Home() {
                     className={`w-10 h-10 flex items-center justify-center rounded-full font-medium text-sm transition-colors duration-300 ease-in-out ${
                       currentPage === page
                         ? "bg-success-500 text-white"
-                        : "border border-gray-300 text-gray-700 hover:bg-gray-100"
+                        : "border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600"
                     }`}
                     aria-label={`Go to page ${page}`}
                     aria-current={currentPage === page ? "true" : undefined}
@@ -415,7 +415,7 @@ export default function Home() {
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium mb-4 px-2">
             <span className="bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">Accessible. Accountable. Transformative.</span>
             <br />
-            <span className="text-gray-900">For Belizeans</span>
+            <span className="text-gray-900 dark:text-gray-100">For Belizeans</span>
           </h2>
         </div>
 
@@ -510,8 +510,8 @@ export default function Home() {
           </div>
 
         {/* Campaigns Needing Support - horizontal cards (same layout as Success Stories) */}
-        <div className="bg-white rounded-2xl gradient-border-1 p-6 md:p-8 flex flex-col">
-          <h2 className="text-3xl md:text-4xl font-medium mb-6 bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">Campaigns Needing Support</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl gradient-border-1 p-6 md:p-8 flex flex-col">
+          <h2 className="text-3xl md:text-4xl font-medium mb-6 bg-gradient-to-r from-primary-500 to-verified-500 dark:from-primary-400 dark:to-verified-400 bg-clip-text text-transparent">Campaigns Needing Support</h2>
           <ul className="flex flex-col gap-4 list-none p-0 m-0">
             {campaigns.slice(0, 3).map((campaign) => {
               const goal = Number(campaign.goal) || 1;
@@ -521,9 +521,9 @@ export default function Home() {
                 <li key={campaign.id}>
                   <Link
                     href={`/campaigns/${campaign.id}`}
-                    className="flex flex-row rounded-xl border border-white/30 bg-white/95 overflow-hidden shadow-sm hover:border-white/50 hover:shadow-md transition-all duration-300 ease-in-out"
+                    className="flex flex-row rounded-xl border border-white/30 dark:border-gray-600 bg-white/95 dark:bg-gray-700/95 overflow-hidden shadow-sm hover:border-white/50 dark:hover:border-gray-500 hover:shadow-md transition-all duration-300 ease-in-out"
                   >
-                    <div className="relative w-32 sm:w-40 flex-shrink-0 aspect-square bg-gray-200">
+                    <div className="relative w-32 sm:w-40 flex-shrink-0 aspect-square bg-gray-200 dark:bg-gray-600">
                       {campaign.image ? (
                         <SafeImage
                           src={campaign.image}
@@ -544,23 +544,23 @@ export default function Home() {
                       )}
                     </div>
                     <div className="flex flex-col flex-1 min-w-0 p-4 justify-center">
-                      <p className="text-sm text-gray-500 flex items-center gap-1">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
                         <Users className="w-3.5 h-3.5" />
                         {(campaign.backers ?? 0).toLocaleString()} donors
                       </p>
-                      <h3 className="font-semibold text-gray-900 line-clamp-2 mt-1">
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mt-1">
                         {campaign.title}
                       </h3>
-                      <p className="text-base font-bold bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent mt-1">
+                      <p className="text-base font-bold bg-gradient-to-r from-primary-500 to-verified-500 dark:from-primary-400 dark:to-verified-400 bg-clip-text text-transparent mt-1">
                         {Math.round(pct)}% Funded
                       </p>
-                      <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                      <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5 mt-2">
                         <div
                           className="bg-gradient-to-r from-primary-500 to-verified-500 h-2.5 rounded-full transition-all duration-300 ease-in-out"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
-                      <p className="text-sm font-semibold text-gray-900 mt-2">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-2">
                         {formatCurrency(raised)} raised
                       </p>
                     </div>
@@ -572,7 +572,7 @@ export default function Home() {
           <div className="text-center mt-6">
             <Link
               href="/campaigns"
-              className="inline-block text-primary-600 hover:text-primary-700 font-medium text-sm underline"
+              className="inline-block text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium text-sm underline"
             >
               View All Campaigns →
             </Link>
@@ -581,15 +581,15 @@ export default function Home() {
       </section>
 
         {/* Frequently Asked Questions */}
-        <section className="mb-12 bg-success-50 rounded-2xl p-6 md:p-8" aria-label="Frequently asked questions">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-medium mb-8 text-center" style={{ color: "#111827" }}>
+        <section className="mb-12 bg-success-50 dark:bg-gray-800 rounded-2xl p-6 md:p-8" aria-label="Frequently asked questions">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-medium mb-8 text-center text-gray-900 dark:text-gray-100">
             Frequently Asked Questions
           </h2>
           <div className="max-w-3xl mx-auto space-y-3">
             {siteContent.homeFaqs.map((faq, index) => (
               <div
                 key={index}
-                className="bg-white gradient-border-1 rounded-xl overflow-hidden shadow-sm transition-colors duration-300 ease-in-out"
+                className="bg-white dark:bg-gray-700 gradient-border-1 rounded-xl overflow-hidden shadow-sm transition-colors duration-300 ease-in-out"
               >
                 <button
                   type="button"
@@ -597,19 +597,18 @@ export default function Home() {
                   aria-expanded={faqOpenIndex === index}
                   aria-controls={`faq-answer-${index}`}
                   id={`faq-question-${index}`}
-                  className="w-full flex items-center justify-between gap-4 text-left px-5 py-4 font-medium hover:bg-gray-50 transition-colors duration-300 ease-in-out cursor-pointer"
-                  style={{ color: "#111827" }}
+                  className="w-full flex items-center justify-between gap-4 text-left px-5 py-4 font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-300 ease-in-out cursor-pointer"
                 >
                   <span className="pr-2">{faq.q}</span>
                   {faqOpenIndex === index ? (
-                    <ChevronUp className="w-5 h-5 flex-shrink-0 text-primary-600" />
+                    <ChevronUp className="w-5 h-5 flex-shrink-0 text-primary-600 dark:text-primary-400" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 flex-shrink-0 text-gray-400" />
+                    <ChevronDown className="w-5 h-5 flex-shrink-0 text-gray-400 dark:text-gray-500" />
                   )}
                 </button>
                 {faqOpenIndex === index && (
                   <div id={`faq-answer-${index}`} className="px-5 pb-5 pt-0" role="region" aria-labelledby={`faq-question-${index}`}>
-                    <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: "#4b5563" }}>
+                    <p className="text-sm leading-relaxed whitespace-pre-line text-gray-600 dark:text-gray-300">
                       {faq.a}
                     </p>
                   </div>
@@ -620,7 +619,7 @@ export default function Home() {
           <div className="text-center mt-6">
             <Link
               href="/faq"
-              className="text-primary-600 hover:text-primary-700 font-medium text-sm underline"
+              className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium text-sm underline"
             >
               View all FAQs →
             </Link>
