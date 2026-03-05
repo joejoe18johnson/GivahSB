@@ -413,10 +413,9 @@ export default function Home() {
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium mb-4 px-2">
-            <span className="whitespace-nowrap">
-              <span className="bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">Accessible. Accountable. Transformative.</span>{" "}
-              <span className="text-gray-900">For Belizeans</span>
-            </span>
+            <span className="bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">Accessible. Accountable. Transformative.</span>
+            <br />
+            <span className="text-gray-900">For Belizeans</span>
           </h2>
         </div>
 
