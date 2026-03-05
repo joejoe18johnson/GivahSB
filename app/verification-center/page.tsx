@@ -350,7 +350,7 @@ export default function VerificationCenterPage() {
   return (
     <div className="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
       <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
           <Shield className="w-8 h-8 text-primary-600" />
           Verification Center
         </h1>
