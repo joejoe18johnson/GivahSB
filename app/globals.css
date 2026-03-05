@@ -28,6 +28,14 @@ body {
   color: #f3f4f6;
 }
 
+/* In dark mode, keep headers and section titles dark; applied where main content has light bg */
+.dark main h1,
+.dark main h2,
+.dark main h3,
+.dark main h4 {
+  color: #111827;
+}
+
 /* All form inputs: always dark text + light background (mobile, desktop, dark mode) */
 input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
 textarea {
