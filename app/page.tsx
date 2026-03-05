@@ -162,7 +162,7 @@ export default function Home() {
           {/* Left: Content - vertically centered */}
           <div className="order-2 lg:order-1 flex flex-col justify-center mt-14 sm:mt-16 lg:mt-0 min-h-[320px] lg:min-h-[400px] animate-fade-in-up opacity-0 [animation-fill-mode:forwards]">
             <div className="mb-4 w-full max-w-xl md:max-w-none md:w-max pb-1 flex justify-center md:justify-start">
-              <h1 className="font-bold text-gray-900 w-full text-center md:text-left text-2xl sm:text-3xl md:text-4xl md:whitespace-nowrap md:min-w-max lg:text-3xl xl:text-4xl pb-[0.2em]">
+              <h1 className="font-bold text-gray-900 dark:text-gray-100 w-full text-center md:text-left text-2xl sm:text-3xl md:text-4xl md:whitespace-nowrap md:min-w-max lg:text-3xl xl:text-4xl pb-[0.2em]">
                 {(() => {
                   const parts = siteContent.heroTitle.split(/(Burdens|Together)/);
                   return (
