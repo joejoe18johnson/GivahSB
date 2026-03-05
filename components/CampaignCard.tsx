@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import SafeImage from "./SafeImage";
 import ShareCampaign from "./ShareCampaign";
-import { CheckCircle2, Heart, Trophy, ShieldCheck } from "lucide-react";
+import { Users, CheckCircle2, Heart, Trophy, ShieldCheck } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { useHearted } from "./HeartedCampaigns";
 import { useAuth } from "@/contexts/AuthContext";
@@ -69,8 +69,8 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
   return (
     <Link href={`/campaigns/${campaign.id}`} className="group h-full flex transition-transform duration-300 ease-in-out hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified-500 focus-visible:ring-offset-2 rounded-lg">
       <div className={`bg-white rounded-lg gradient-border-1 overflow-hidden transition-all duration-300 ease-in-out cursor-pointer flex flex-col w-full h-full min-w-0 ${goalReached ? "opacity-80" : ""}`}>
-        {/* Image - square */}
-        <div className={`relative w-full aspect-square bg-gray-200 overflow-hidden shrink-0 ${goalReached ? "grayscale" : ""}`}>
+        {/* Image - fixed aspect ratio so all cards show the same size image area */}
+        <div className={`relative w-full aspect-[16/10] bg-gray-200 overflow-hidden shrink-0 ${goalReached ? "grayscale" : ""}`}>
           {campaign.image ? (
             <div className="absolute inset-0">
               <SafeImage
@@ -126,61 +126,78 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
           </div>
         </div>
 
-        {/* Content - title only, compact */}
-        <div className="p-3 flex flex-col flex-1 min-h-0">
-          <div className="mb-1 flex flex-wrap items-center gap-1">
+        {/* Content */}
+        <div className="p-6 flex flex-col flex-1">
+          <div className="-mt-3 mb-1.5 flex flex-wrap items-center gap-1.5">
             {campaign.adminBacked && (
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-verified-100 text-verified-800 text-[9px] font-semibold border border-verified-300">
-                <ShieldCheck className="w-2.5 h-2.5 flex-shrink-0" />
-                Givah Approved
+              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-verified-100 text-verified-800 text-[10px] font-semibold border border-verified-300 shadow-sm">
+                <ShieldCheck className="w-3 h-3 flex-shrink-0" />
+                Givah Approved Campaign
               </span>
             )}
             {campaign.verified && (
-              <span className="inline-flex items-center gap-0.5 px-1 py-0.5 rounded-full bg-verified-100 text-verified-700 text-[9px] font-medium">
-                <CheckCircle2 className="w-2 h-2" />
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-verified-100 text-verified-700 text-[10px] font-medium">
+                <CheckCircle2 className="w-2.5 h-2.5" />
                 Verified
               </span>
             )}
           </div>
-          <h3 className={`text-base font-medium mb-2 line-clamp-2 ${goalReached ? "text-gray-600" : "text-gray-900"}`}>{campaign.title}</h3>
+          <h3 className={`text-xl font-medium mb-2 line-clamp-2 ${goalReached ? "text-gray-600" : "text-gray-900"}`}>{campaign.title}</h3>
+          <p className="text-gray-600 text-sm mb-4 line-clamp-2">{campaign.description}</p>
 
           {goalReached ? (
             <>
-              <div className="mb-2">
-                <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-verified-100 text-verified-800 text-[10px] font-medium">
-                  <Trophy className="w-3 h-3" />
-                  Goal Achieved
+              <div className="mb-4">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-verified-100 text-verified-800 text-xs font-medium">
+                  <Trophy className="w-3.5 h-3.5" />
+                  Total Funding Goal Achieved
                 </div>
-                <p className="text-xs font-medium text-gray-700 mt-1">Raised {formatCurrency(raised)}</p>
+                <p className="text-sm font-medium text-gray-700 mt-2">
+                  Raised {formatCurrency(raised)}
+                </p>
               </div>
-              <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
-                <span>{campaign.backers} donors</span>
-                <span>Goal met</span>
+              <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                <div className="flex items-center gap-1">
+                  <Users className="w-4 h-4" />
+                  <span>{campaign.backers} donors</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Goal met</span>
+                </div>
               </div>
             </>
           ) : (
             <>
-              <div className="mb-2">
-                <div className="flex justify-between text-xs mb-1">
+              {/* Progress Bar */}
+              <div className="mb-4">
+                <div className="flex justify-between text-sm mb-2">
                   <span className="font-medium text-primary-600">{formatCurrency(raised)}</span>
                   <span className="text-gray-500">of {formatCurrency(campaign.goal)}</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
-                    className="bg-gradient-to-r from-primary-500 to-verified-500 h-1.5 rounded-full transition-all"
+                    className="bg-gradient-to-r from-primary-500 to-verified-500 h-2 rounded-full transition-all"
                     style={{ width: `${progressPercentage}%` }}
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
-                <span>{campaign.backers} donors</span>
-                <p className="font-bold text-primary-600">{Math.round(progressPercentage)}%</p>
+              {/* Stats */}
+              <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                <div className="flex items-center gap-1">
+                  <Users className="w-4 h-4" />
+                  <span>{campaign.backers} donors</span>
+                </div>
+                <p className="text-base font-bold bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">
+                  {Math.round(progressPercentage)}% Funded
+                </p>
               </div>
             </>
           )}
 
-          <div className="pt-2 border-t border-gray-100 mt-auto">
-            <p className="text-xs text-gray-500">
+          {/* Creator */}
+          <div className="pt-4 border-t border-gray-200 mt-auto">
+            <p className="text-sm text-gray-600">
               by <span className={`font-medium ${goalReached ? "text-gray-600" : "text-gray-900"}`}>{campaign.creator}</span>
             </p>
           </div>
