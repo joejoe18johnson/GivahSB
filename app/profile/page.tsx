@@ -130,8 +130,15 @@ export default function ProfilePage() {
     if (!user) return;
     setIsDeactivating(true);
     try {
-      await updateUser({ status: "deleted" });
-      await logout();
+      const res = await fetch("/api/profile/delete", {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(typeof data.error === "string" ? data.error : "Failed to deactivate account");
+      }
+      // Account and auth user are deleted; full redirect so session is gone
       window.location.href = "/";
     } catch (error) {
       console.error("Error deactivating account:", error);
