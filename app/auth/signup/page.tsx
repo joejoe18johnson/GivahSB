@@ -30,6 +30,8 @@ function SignupContent() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || searchParams.get("redirect") || null;
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [signupEmail, setSignupEmail] = useState("");
   const { alert } = useThemedModal();
 
   const showError = (field: keyof typeof touched) => touched[field] || submitAttempted;
@@ -96,13 +98,8 @@ function SignupContent() {
 
     try {
       await signup(formData.email, formData.password, formData.name);
-      // Force full navigation so we always land on check-email; avoids race with any redirect effect.
-      const params = new URLSearchParams({ email: formData.email });
-      if (typeof window !== "undefined") {
-        window.location.href = `/auth/check-email?${params.toString()}`;
-      } else {
-        router.replace(`/auth/check-email?${params.toString()}`);
-      }
+      setSignupEmail(formData.email);
+      setShowSuccessModal(true);
       return;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "";
@@ -122,12 +119,51 @@ function SignupContent() {
     }
   };
 
+  const handleSuccessContinue = () => {
+    const params = new URLSearchParams({ email: signupEmail });
+    if (typeof window !== "undefined") {
+      window.location.href = `/auth/check-email?${params.toString()}`;
+    } else {
+      router.replace(`/auth/check-email?${params.toString()}`);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4">
-      <div className="max-w-2xl w-full bg-white rounded-lg shadow-xl p-8">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center py-12 px-4">
+      {/* Success modal: account created, verify email */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full overflow-hidden border border-success-200 dark:border-success-800" role="dialog" aria-modal="true" aria-labelledby="signup-success-title">
+            <div className="p-6">
+              <div className="flex justify-center mb-4">
+                <div className="w-14 h-14 rounded-full bg-success-100 dark:bg-success-900/40 flex items-center justify-center">
+                  <svg className="w-8 h-8 text-success-600 dark:text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              </div>
+              <h2 id="signup-success-title" className="text-xl font-semibold text-gray-900 dark:text-gray-100 text-center mb-2">
+                Account created
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 text-center mb-6">
+                Please check your email and click the verification link to confirm your account. You can sign in only after you verify.
+              </p>
+              <button
+                type="button"
+                onClick={handleSuccessContinue}
+                className="w-full bg-success-500 hover:bg-success-600 text-white font-medium py-3 rounded-full transition-colors"
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="max-w-2xl w-full bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-2">Create Your Account</h1>
-          <p className="text-gray-600">Join GivahBz and help make a difference</p>
+          <p className="text-gray-600 dark:text-gray-400">Join GivahBz and help make a difference</p>
         </div>
 
         {error && (

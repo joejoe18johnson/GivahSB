@@ -217,7 +217,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   ): Promise<void> => {
     const supabase = createClient();
     await signUpWithEmailSupabase(supabase, email, password, name, phoneNumber);
-    // Do not set user: they must confirm email first. Session was cleared in signUpWithEmailSupabase.
+    // Ensure UI never shows them as logged in until they verify (avoids flash of "logged in" before refresh).
+    setUser(null);
   };
 
   const requestPasswordReset = async (email: string): Promise<void> => {
