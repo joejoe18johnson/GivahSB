@@ -244,6 +244,7 @@ export async function updateCampaign(
   if (updates.title !== undefined) row.title = updates.title;
   if (updates.description !== undefined) row.description = updates.description;
   if (updates.fullDescription !== undefined) row.full_description = updates.fullDescription;
+  if (updates.goal !== undefined) row.goal = updates.goal;
   if (updates.raised !== undefined) row.raised = updates.raised;
   if (updates.backers !== undefined) row.backers = updates.backers;
   const { error } = await supabase.from("campaigns").update(row).eq("id", campaignId);

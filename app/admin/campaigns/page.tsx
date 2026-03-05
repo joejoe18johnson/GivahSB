@@ -22,7 +22,7 @@ export default function AdminCampaignsPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [onHoldId, setOnHoldId] = useState<string | null>(null);
   const [editingCampaign, setEditingCampaign] = useState<CampaignWithStatus | null>(null);
-  const [editForm, setEditForm] = useState({ title: "", description: "", fullDescription: "" });
+  const [editForm, setEditForm] = useState({ title: "", description: "", fullDescription: "", goal: "", raised: "" });
   const [savingText, setSavingText] = useState(false);
   const [page, setPage] = useState(1);
   const [sortKey, setSortKey] = useState<SortKey>("created");
@@ -157,6 +157,8 @@ export default function AdminCampaignsPage() {
       title: c.title ?? "",
       description: c.description ?? "",
       fullDescription: c.fullDescription ?? "",
+      goal: c.goal != null ? String(c.goal) : "",
+      raised: c.raised != null ? String(c.raised) : "",
     });
   };
 
@@ -168,26 +170,43 @@ export default function AdminCampaignsPage() {
     }
     setSavingText(true);
     try {
+      const payload: Record<string, unknown> = {
+        title: editForm.title,
+        description: editForm.description,
+        fullDescription: editForm.fullDescription,
+      };
+      const goalNum = editForm.goal === "" ? undefined : Number(editForm.goal);
+      const raisedNum = editForm.raised === "" ? undefined : Number(editForm.raised);
+      if (Number.isFinite(goalNum) && goalNum >= 0) payload.goal = goalNum;
+      if (Number.isFinite(raisedNum) && raisedNum >= 0) payload.raised = raisedNum;
+
       const res = await fetch(`/api/admin/campaigns/${editingCampaign.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify(editForm),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) {
-        alert(data?.error ?? "Failed to update campaign text.", { variant: "error" });
+        alert(data?.error ?? "Failed to update campaign.", { variant: "error" });
         return;
       }
       invalidateCampaignsCache();
       setCampaigns((prev) =>
         prev.map((c) =>
           c.id === editingCampaign.id
-            ? { ...c, title: editForm.title, description: editForm.description, fullDescription: editForm.fullDescription }
+            ? {
+                ...c,
+                title: editForm.title,
+                description: editForm.description,
+                fullDescription: editForm.fullDescription,
+                ...(Number.isFinite(goalNum) && goalNum >= 0 ? { goal: goalNum } : {}),
+                ...(Number.isFinite(raisedNum) && raisedNum >= 0 ? { raised: raisedNum } : {}),
+              }
             : c
         )
       );
-      alert("Campaign text updated.", { variant: "success" });
+      alert("Campaign updated.", { variant: "success" });
       setEditingCampaign(null);
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed to update.", { variant: "error" });
@@ -454,15 +473,41 @@ export default function AdminCampaignsPage() {
         </div>
       )}
 
-      {/* Edit campaign text modal */}
+      {/* Edit campaign modal */}
       {editingCampaign && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => !savingText && setEditingCampaign(null)}>
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Edit campaign text</h2>
-              <p className="text-sm text-gray-500 mt-0.5">Fix grammar or spelling. Changes appear on the live campaign page.</p>
+              <h2 className="text-lg font-semibold text-gray-900">Edit campaign</h2>
+              <p className="text-sm text-gray-500 mt-0.5">Edit text, goal, or amount raised. Changes appear on the live campaign page.</p>
             </div>
             <div className="px-6 py-4 overflow-y-auto flex-1 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Goal (BZ$)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    step={1}
+                    value={editForm.goal}
+                    onChange={(e) => setEditForm((f) => ({ ...f, goal: e.target.value }))}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="Funding goal"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Amount raised (BZ$)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    step={1}
+                    value={editForm.raised}
+                    onChange={(e) => setEditForm((f) => ({ ...f, raised: e.target.value }))}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="Total donations"
+                  />
+                </div>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                 <input
