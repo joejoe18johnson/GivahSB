@@ -30,6 +30,7 @@ export default function AdminCampaignsPage() {
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const { confirm, alert } = useThemedModal();
+  const [campaignIdSearch, setCampaignIdSearch] = useState("");
 
   async function loadCampaigns() {
     setLoadError(null);
@@ -50,6 +51,7 @@ export default function AdminCampaignsPage() {
   }, []);
 
   const filteredSortedCampaigns = useMemo(() => {
+    const term = campaignIdSearch.trim().toUpperCase();
     const from = startDate ? new Date(startDate) : null;
     const to = endDate ? new Date(endDate) : null;
     const inRange = (createdAt?: string) => {
@@ -64,8 +66,13 @@ export default function AdminCampaignsPage() {
       }
       return true;
     };
+    const matchesCampaignId = (c: CampaignWithStatus) => {
+      if (!term) return true;
+      const shortId = c.id.slice(-6).toUpperCase();
+      return shortId.includes(term);
+    };
     const sorted = [...campaigns]
-      .filter((c) => inRange(c.createdAt))
+      .filter((c) => inRange(c.createdAt) && matchesCampaignId(c))
       .sort((a, b) => {
         const dir = sortDirection === "asc" ? 1 : -1;
         const dateA = new Date(a.createdAt ?? 0).getTime();
@@ -92,7 +99,7 @@ export default function AdminCampaignsPage() {
         }
       });
     return sorted;
-  }, [campaigns, sortKey, sortDirection, startDate, endDate]);
+  }, [campaigns, sortKey, sortDirection, startDate, endDate, campaignIdSearch]);
 
   const totalPages = Math.max(1, Math.ceil(filteredSortedCampaigns.length / PAGE_SIZE));
   const start = (page - 1) * PAGE_SIZE;
@@ -258,31 +265,43 @@ export default function AdminCampaignsPage() {
             Put a campaign on hold to hide it from the public site, or delete it. Use <strong>Release</strong> to make an on-hold campaign live again.
           </p>
         </div>
-        <div className="flex flex-col sm:items-end gap-2 text-sm">
-          <span className="text-gray-500">Filter by created date:</span>
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 text-sm">
+          <div className="flex flex-col gap-1">
+            <span className="text-gray-500">Filter by created date:</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
+                className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
+              />
+              <span className="text-gray-400 text-xs">to</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
+                className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
+              />
+              {(startDate || endDate) && (
+                <button
+                  type="button"
+                  onClick={() => { setStartDate(""); setEndDate(""); setPage(1); }}
+                  className="text-xs text-primary-600 hover:text-primary-700 underline"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-gray-500">Search by Campaign ID:</span>
             <input
-              type="date"
-              value={startDate}
-              onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
-              className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
+              type="text"
+              value={campaignIdSearch}
+              onChange={(e) => { setCampaignIdSearch(e.target.value); setPage(1); }}
+              placeholder="e.g. 5AF358"
+              className="w-full md:w-56 border border-gray-300 rounded-md px-3 py-1.5 text-xs text-gray-700 placeholder:text-gray-400 uppercase tracking-widest"
             />
-            <span className="text-gray-400 text-xs">to</span>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
-              className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
-            />
-            {(startDate || endDate) && (
-              <button
-                type="button"
-                onClick={() => { setStartDate(""); setEndDate(""); setPage(1); }}
-                className="text-xs text-primary-600 hover:text-primary-700 underline"
-              >
-                Clear
-              </button>
-            )}
           </div>
         </div>
       </div>

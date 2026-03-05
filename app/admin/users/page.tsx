@@ -24,6 +24,7 @@ export default function AdminUsersPage() {
   const [endDate, setEndDate] = useState<string>("");
   const [rejectModal, setRejectModal] = useState<{ userId: string; userName: string; type: "id" | "address" } | null>(null);
   const [rejectReason, setRejectReason] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const load = async () => {
     setLoading(true);
@@ -44,6 +45,7 @@ export default function AdminUsersPage() {
   }, []);
 
   const filteredSortedUsers = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
     const from = startDate ? new Date(startDate) : null;
     const to = endDate ? new Date(endDate) : null;
     const inRange = (createdAt?: string) => {
@@ -58,8 +60,21 @@ export default function AdminUsersPage() {
       }
       return true;
     };
+    const matchesSearch = (u: AdminUserDoc) => {
+      if (!term) return true;
+      const name = (u.name ?? "").toLowerCase();
+      const email = (u.email ?? "").toLowerCase();
+      const phone = (u.phoneNumber ?? "").toLowerCase();
+      const status = (u.status ?? "").toLowerCase();
+      return (
+        name.includes(term) ||
+        email.includes(term) ||
+        phone.includes(term) ||
+        status.includes(term)
+      );
+    };
     const sorted = [...users]
-      .filter((u) => inRange(u.createdAt))
+      .filter((u) => inRange(u.createdAt) && matchesSearch(u))
       .sort((a, b) => {
         const dir = sortDirection === "asc" ? 1 : -1;
         const dateA = new Date(a.createdAt ?? 0).getTime();
@@ -82,7 +97,7 @@ export default function AdminUsersPage() {
         }
       });
     return sorted;
-  }, [users, sortKey, sortDirection, startDate, endDate]);
+  }, [users, sortKey, sortDirection, startDate, endDate, searchTerm]);
 
   const totalPages = Math.max(1, Math.ceil(filteredSortedUsers.length / PAGE_SIZE));
   const start = (page - 1) * PAGE_SIZE;
@@ -298,31 +313,43 @@ export default function AdminUsersPage() {
           </p>
         )}
       </div>
-      <div className="flex flex-col sm:items-end gap-2 text-sm">
-        <span className="text-gray-500">Filter by signup date:</span>
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 text-sm">
+        <div className="flex flex-col gap-1">
+          <span className="text-gray-500">Filter by signup date:</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
+              className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
+            />
+            <span className="text-gray-400 text-xs">to</span>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
+              className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
+            />
+            {(startDate || endDate) && (
+              <button
+                type="button"
+                onClick={() => { setStartDate(""); setEndDate(""); setPage(1); }}
+                className="text-xs text-primary-600 hover:text-primary-700 underline"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-gray-500">Search users:</span>
           <input
-            type="date"
-            value={startDate}
-            onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
-            className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
+            type="text"
+            value={searchTerm}
+            onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
+            placeholder="Search by name, email, phone, or status"
+            className="w-full md:w-64 border border-gray-300 rounded-md px-3 py-1.5 text-xs text-gray-700 placeholder:text-gray-400"
           />
-          <span className="text-gray-400 text-xs">to</span>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
-            className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
-          />
-          {(startDate || endDate) && (
-            <button
-              type="button"
-              onClick={() => { setStartDate(""); setEndDate(""); setPage(1); }}
-              className="text-xs text-primary-600 hover:text-primary-700 underline"
-            >
-              Clear
-            </button>
-          )}
         </div>
       </div>
 

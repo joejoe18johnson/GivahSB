@@ -25,6 +25,7 @@ export default function AdminDonationsPage() {
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
+  const [refSearch, setRefSearch] = useState("");
 
   async function loadDonations() {
     setIsLoading(true);
@@ -44,6 +45,7 @@ export default function AdminDonationsPage() {
   }, []);
 
   const filteredSortedDonations = useMemo(() => {
+    const term = refSearch.trim().toLowerCase();
     const from = startDate ? new Date(startDate) : null;
     const to = endDate ? new Date(endDate) : null;
     const inRange = (createdAt: string) => {
@@ -57,8 +59,13 @@ export default function AdminDonationsPage() {
       }
       return true;
     };
+    const matchesRef = (d: AdminDonation) => {
+      if (!term) return true;
+      const ref = (d.referenceNumber ?? "").toLowerCase();
+      return ref.includes(term);
+    };
     const sorted = [...donations]
-      .filter((d) => inRange(d.createdAt))
+      .filter((d) => inRange(d.createdAt) && matchesRef(d))
       .sort((a, b) => {
         const dir = sortDirection === "asc" ? 1 : -1;
         const dateA = new Date(a.createdAt).getTime();
@@ -83,7 +90,7 @@ export default function AdminDonationsPage() {
         }
       });
     return sorted;
-  }, [donations, sortKey, sortDirection, startDate, endDate]);
+  }, [donations, sortKey, sortDirection, startDate, endDate, refSearch]);
 
   const totalPages = Math.max(1, Math.ceil(filteredSortedDonations.length / PAGE_SIZE));
   const start = (page - 1) * PAGE_SIZE;
@@ -177,33 +184,49 @@ export default function AdminDonationsPage() {
         </div>
         <div className="flex flex-col sm:items-end gap-3 text-sm">
           <div className="flex gap-4">
-            <span className="text-gray-600">Completed: <strong className="text-verified-600">{formatCurrency(totalCompleted)}</strong></span>
-            <span className="text-gray-600">Pending: <strong className="text-amber-600">{formatCurrency(totalPending)}</strong></span>
+            <span className="text-gray-600">
+              Completed: <strong className="text-verified-600">{formatCurrency(totalCompleted)}</strong>
+            </span>
+            <span className="text-gray-600">
+              Pending: <strong className="text-amber-600">{formatCurrency(totalPending)}</strong>
+            </span>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-gray-500">Filter by date:</span>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => { setPage(1); setStartDate(e.target.value); }}
-              className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
-            />
-            <span className="text-gray-400 text-xs">to</span>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => { setPage(1); setEndDate(e.target.value); }}
-              className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
-            />
-            {(startDate || endDate) && (
-              <button
-                type="button"
-                onClick={() => { setStartDate(""); setEndDate(""); setPage(1); }}
-                className="text-xs text-primary-600 hover:text-primary-700 underline"
-              >
-                Clear
-              </button>
-            )}
+          <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-gray-500">Filter by date:</span>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => { setPage(1); setStartDate(e.target.value); }}
+                className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
+              />
+              <span className="text-gray-400 text-xs">to</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => { setPage(1); setEndDate(e.target.value); }}
+                className="border border-gray-300 rounded-md px-2 py-1 text-xs text-gray-700"
+              />
+              {(startDate || endDate) && (
+                <button
+                  type="button"
+                  onClick={() => { setStartDate(""); setEndDate(""); setPage(1); }}
+                  className="text-xs text-primary-600 hover:text-primary-700 underline"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-gray-500">Search by Ref#:</span>
+              <input
+                type="text"
+                value={refSearch}
+                onChange={(e) => { setRefSearch(e.target.value); setPage(1); }}
+                placeholder="Enter reference number"
+                className="w-full sm:w-56 border border-gray-300 rounded-md px-3 py-1.5 text-xs text-gray-700 placeholder:text-gray-400"
+              />
+            </div>
           </div>
         </div>
       </div>
