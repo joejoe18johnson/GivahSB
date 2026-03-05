@@ -68,9 +68,9 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
 
   return (
     <Link href={`/campaigns/${campaign.id}`} className="group h-full flex transition-transform duration-300 ease-in-out hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verified-500 focus-visible:ring-offset-2 rounded-lg">
-      <div className={`bg-white rounded-lg gradient-border-1 overflow-hidden transition-all duration-300 ease-in-out cursor-pointer flex flex-col w-full h-full min-w-0 ${goalReached ? "opacity-80" : ""}`}>
+      <div className={`bg-white dark:bg-gray-800 rounded-lg gradient-border-1 overflow-hidden transition-all duration-300 ease-in-out cursor-pointer flex flex-col w-full h-full min-w-0 ${goalReached ? "opacity-80" : ""}`}>
         {/* Image - fixed aspect ratio so all cards show the same size image area */}
-        <div className={`relative w-full aspect-[16/10] bg-gray-200 overflow-hidden shrink-0 ${goalReached ? "grayscale" : ""}`}>
+        <div className={`relative w-full aspect-[16/10] bg-gray-200 dark:bg-gray-700 overflow-hidden shrink-0 ${goalReached ? "grayscale" : ""}`}>
           {campaign.image ? (
             <div className="absolute inset-0">
               <SafeImage
@@ -120,7 +120,7 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
             </button>
           </div>
           <div className="absolute top-2 right-2 flex gap-2">
-            <div className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-primary-600 shadow-lg">
+            <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-primary-600 dark:text-primary-400 shadow-lg">
               {campaign.category}
             </div>
           </div>
@@ -142,8 +142,8 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
               </span>
             )}
           </div>
-          <h3 className={`text-xl font-medium mb-2 line-clamp-2 ${goalReached ? "text-gray-600" : "text-gray-900"}`}>{campaign.title}</h3>
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2">{campaign.description}</p>
+          <h3 className={`text-xl font-medium mb-2 line-clamp-2 ${goalReached ? "text-gray-600 dark:text-gray-400" : "text-gray-900 dark:text-gray-100"}`}>{campaign.title}</h3>
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">{campaign.description}</p>
 
           {goalReached ? (
             <>
@@ -152,11 +152,11 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
                   <Trophy className="w-3.5 h-3.5" />
                   Total Funding Goal Achieved
                 </div>
-                <p className="text-sm font-medium text-gray-700 mt-2">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-2">
                   Raised {formatCurrency(raised)}
                 </p>
               </div>
-              <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+              <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
                 <div className="flex items-center gap-1">
                   <Users className="w-4 h-4" />
                   <span>{campaign.backers} donors</span>

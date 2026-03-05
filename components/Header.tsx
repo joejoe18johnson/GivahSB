@@ -584,8 +584,8 @@ export default function Header() {
             </button>
           </div>
 
-          {/* Theme switcher - always visible, far right */}
-          <div className="shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center">
+          {/* Theme switcher - desktop only; on mobile it's inside the burger menu */}
+          <div className="hidden lg:flex shrink-0 min-w-[44px] min-h-[44px] items-center justify-center">
             <ThemeSwitcher />
           </div>
         </div>
@@ -599,7 +599,6 @@ export default function Header() {
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme</span>
               <ThemeSwitcher />
             </div>
-            {/* ThemeSwitcher also in mobile menu for convenience */}
             <form onSubmit={handleSearch} className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
               <input

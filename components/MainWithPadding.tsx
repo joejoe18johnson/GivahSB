@@ -6,7 +6,7 @@ export default function MainWithPadding({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
   return (
-    <main className={isAdmin ? "min-h-screen" : "min-h-screen pt-16 dark:bg-gray-100 dark:text-gray-900"}>
+    <main className={isAdmin ? "min-h-screen" : "min-h-screen pt-16 dark:bg-gray-900 dark:text-gray-100"}>
       {children}
     </main>
   );
