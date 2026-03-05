@@ -176,16 +176,13 @@ export default function AdminLayout({
         <nav className="p-4 space-y-1 flex-1 pb-24">
           <div className="flex flex-col items-center gap-3 py-4 border-b border-gray-100 dark:border-gray-700">
             <Image src="/givah-logo.png" alt="GivahBz" width={120} height={36} className="h-8 w-auto" priority />
-            <div className="flex items-center gap-2 w-full">
-              <ThemeSwitcher />
-              <button
-                type="button"
-                onClick={() => router.push("/")}
-                className="flex-1 text-center inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-accent-600 text-white font-medium text-sm hover:bg-accent-700 transition-colors shadow-sm"
-              >
-                Back to site
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => router.push("/")}
+              className="w-full text-center inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-accent-600 text-white font-medium text-sm hover:bg-accent-700 transition-colors shadow-sm"
+            >
+              Back to site
+            </button>
           </div>
           <div className="pt-4">
             <Link
@@ -359,8 +356,11 @@ export default function AdminLayout({
         </nav>
       </aside>
 
-      <main className="min-h-screen pt-4 md:pt-6 md:pl-56 min-w-0 flex-1">
-        <div className="p-4 md:p-6 lg:p-8 min-w-0">{children}</div>
+      <main className="min-h-screen pt-4 md:pt-6 md:pl-56 min-w-0 flex-1 flex flex-col">
+        <div className="flex justify-end items-center pr-4 md:pr-6 lg:pr-8 pt-2 pb-1 shrink-0">
+          <ThemeSwitcher />
+        </div>
+        <div className="p-4 md:p-6 lg:p-8 min-w-0 flex-1">{children}</div>
       </main>
     </div>
   );

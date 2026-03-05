@@ -305,7 +305,6 @@ export default function Header() {
 
           {/* Desktop Navigation — no Admin link in public nav */}
           <nav className="hidden lg:flex items-center gap-4 xl:gap-6 shrink-0">
-            <ThemeSwitcher />
             <Link
               href="/"
               className="text-gray-700 dark:text-gray-200 dark:hover:text-primary-400 hover:text-primary-600 transition-colors duration-300 ease-in-out"
@@ -517,6 +516,7 @@ export default function Header() {
                     </div>
                   )}
                 </div>
+                <ThemeSwitcher />
               </>
             ) : (
               <>
@@ -532,6 +532,7 @@ export default function Header() {
                 >
                   Sign Up
                 </Link>
+                <ThemeSwitcher />
               </>
             )}
           </nav>
