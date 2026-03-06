@@ -336,7 +336,7 @@ export default function Home() {
                           <div key={campaign.id} className="flex-shrink-0 w-[85vw] max-w-[340px] snap-center snap-always">
                             <Link
                               href={`/campaigns/${campaign.id}`}
-                              className="flex flex-row rounded-xl border border-white/30 dark:border-gray-600 bg-white/95 dark:bg-gray-700/95 overflow-hidden shadow-sm hover:border-white/50 dark:hover:border-gray-500 hover:shadow-md transition-all duration-300 ease-in-out"
+                              className="flex flex-row rounded-xl gradient-border-little-warriors bg-white/95 dark:bg-gray-700/95 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 ease-in-out"
                             >
                               <div className="relative w-32 sm:w-40 flex-shrink-0 aspect-square bg-gray-200 dark:bg-gray-600">
                                 {campaign.image ? (
@@ -436,7 +436,7 @@ export default function Home() {
                           <div key={campaign.id} className="flex-shrink-0 w-[320px] sm:w-[360px] snap-start">
                             <Link
                               href={`/campaigns/${campaign.id}`}
-                              className="flex flex-row rounded-xl border border-white/30 dark:border-gray-600 bg-white/95 dark:bg-gray-700/95 overflow-hidden shadow-sm hover:border-white/50 dark:hover:border-gray-500 hover:shadow-md transition-all duration-300 ease-in-out"
+                              className="flex flex-row rounded-xl gradient-border-little-warriors bg-white/95 dark:bg-gray-700/95 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 ease-in-out"
                             >
                               <div className="relative w-32 sm:w-40 flex-shrink-0 aspect-square bg-gray-200 dark:bg-gray-600">
                                 {campaign.image ? (
@@ -822,10 +822,10 @@ export default function Home() {
               const pct = goal > 0 ? Math.min((raised / goal) * 100, 100) : 0;
               return (
                 <li key={campaign.id}>
-                  <Link
-                    href={`/campaigns/${campaign.id}`}
-                    className="flex flex-row rounded-xl border border-white/30 dark:border-gray-600 bg-white/95 dark:bg-gray-700/95 overflow-hidden shadow-sm hover:border-white/50 dark:hover:border-gray-500 hover:shadow-md transition-all duration-300 ease-in-out"
-                  >
+                            <Link
+                              href={`/campaigns/${campaign.id}`}
+                              className="flex flex-row rounded-xl gradient-border-little-warriors bg-white/95 dark:bg-gray-700/95 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 ease-in-out"
+                            >
                     <div className="relative w-32 sm:w-40 flex-shrink-0 aspect-square bg-gray-200 dark:bg-gray-600">
                       {campaign.image ? (
                         <SafeImage
