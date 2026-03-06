@@ -5,11 +5,10 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, Megaphone, Users, Heart, ArrowLeft, Clock, Bell, LogOut, Trophy, Mail, Banknote } from "lucide-react";
+import { LayoutDashboard, Megaphone, Users, Heart, ArrowLeft, Clock, Bell, LogOut, Trophy, Mail, Banknote, Baby } from "lucide-react";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import UserAvatar from "@/components/UserAvatar";
 import {
-  getCampaignsUnderReviewCountCached,
   getCampaignsUnderReviewCached,
   getCampaignsCached,
   getUsersCached,
@@ -26,6 +25,7 @@ export default function AdminLayout({
 
   const [sectionCounts, setSectionCounts] = useState({
     campaigns: 0,
+    littleWarriors: 0,
     users: 0,
     donations: 0,
     underReview: 0,
@@ -63,13 +63,15 @@ export default function AdminLayout({
     if (!isAdmin) return;
     async function load() {
       try {
-        const [underReviewCount, campaigns, users, donations] = await Promise.all([
-          getCampaignsUnderReviewCountCached(),
+        const [underReviewList, campaigns, users, donations] = await Promise.all([
+          getCampaignsUnderReviewCached(),
           getCampaignsCached(),
           getUsersCached(),
           getDonationsCached(),
         ]);
         const since = sevenDaysAgo();
+        const underReviewCount = underReviewList.length;
+        const littleWarriors = underReviewList.filter((c) => c.isLittleWarriors).length;
         const phonePending = users.filter((u) => u.phoneNumber && !u.phoneVerified).length;
         const addressPending = users.filter((u) => u.addressDocument && !u.addressVerified).length;
         const idPending = users.filter((u) => u.idDocument && u.idPending).length;
@@ -86,6 +88,7 @@ export default function AdminLayout({
         }
         setSectionCounts({
           underReview: underReviewCount,
+          littleWarriors,
           campaigns: campaigns.filter((c) => new Date(c.createdAt).getTime() >= since).length,
           users: users.filter((u) => u.createdAt && new Date(u.createdAt).getTime() >= since).length,
           donations: donations.filter((d) => new Date(d.createdAt).getTime() >= since).length,
@@ -98,6 +101,7 @@ export default function AdminLayout({
       } catch {
         setSectionCounts({
           campaigns: 0,
+          littleWarriors: 0,
           users: 0,
           donations: 0,
           underReview: 0,
@@ -243,6 +247,24 @@ export default function AdminLayout({
               {sectionCounts.campaigns > 0 && (
                 <span className="min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-medium">
                   {sectionCounts.campaigns > 99 ? "99+" : sectionCounts.campaigns}
+                </span>
+              )}
+            </Link>
+            <Link
+              href="/admin/little-warriors"
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
+                pathname === "/admin/little-warriors"
+                  ? "bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium"
+                  : sectionCounts.littleWarriors > 0
+                    ? "bg-amber-50/80 border border-amber-200 text-amber-900 hover:bg-amber-100"
+                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+              }`}
+            >
+              <Baby className="w-4 h-4" />
+              <span className="flex-1">Little Warriors</span>
+              {sectionCounts.littleWarriors > 0 && (
+                <span className="min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-medium">
+                  {sectionCounts.littleWarriors > 99 ? "99+" : sectionCounts.littleWarriors}
                 </span>
               )}
             </Link>
