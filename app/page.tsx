@@ -524,7 +524,7 @@ export default function Home() {
             <div className="text-center mt-6">
               <Link
                 href="/campaigns"
-                className="inline-block bg-pink-500 hover:bg-pink-600 text-white px-6 py-2.5 rounded-full font-medium text-sm transition-colors"
+                className="inline-block bg-gradient-to-r from-pink-500 via-blue-500 to-pink-600 hover:opacity-90 text-white px-6 py-2.5 rounded-full font-medium text-sm transition-opacity"
               >
                 Support Little Warriors →
               </Link>
