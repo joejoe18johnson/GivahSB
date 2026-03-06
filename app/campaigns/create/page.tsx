@@ -253,6 +253,7 @@ export default function CreateCampaignPage() {
       category: formData.category,
       creatorName,
       submittedAt: new Date().toISOString(),
+      isLittleWarriors: formData.isLittleWarriors,
     });
 
     setIsSubmitting(true);
@@ -330,6 +331,7 @@ export default function CreateCampaignPage() {
         creatorName,
         image: imageUrl1,
         image2: imageUrl2,
+        isLittleWarriors: formData.isLittleWarriors,
         }),
       });
       if (!res.ok) {
@@ -560,6 +562,22 @@ export default function CreateCampaignPage() {
             <option value="Educational support">Educational support</option>
             <option value="Other">Other</option>
           </select>
+        </div>
+
+        {/* Little Warriors category */}
+        <div className="bg-pink-50 border border-pink-200 rounded-lg p-4">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              name="isLittleWarriors"
+              checked={formData.isLittleWarriors}
+              onChange={handleChange}
+              className="mt-1 h-4 w-4 rounded border-pink-300 text-pink-600 focus:ring-pink-500"
+            />
+            <span className="text-sm font-medium text-gray-800">
+              Are the beneficiaries children ages 0-12 (Little Warriors category)?
+            </span>
+          </label>
         </div>
 
         {/* Short Description */}

@@ -8,6 +8,7 @@ export interface CampaignUnderReview {
   category: string;
   creatorName: string;
   submittedAt: string; // ISO date string
+  isLittleWarriors?: boolean;
 }
 
 export function getCampaignsUnderReview(): CampaignUnderReview[] {
