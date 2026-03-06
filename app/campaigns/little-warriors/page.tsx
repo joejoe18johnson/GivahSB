@@ -6,8 +6,10 @@ import { Campaign } from "@/lib/data";
 import { fetchCampaignsFromAPI } from "@/lib/services/campaignService";
 import { useState, useEffect, Suspense } from "react";
 import { Baby } from "lucide-react";
+import { Cookie } from "next/font/google";
 
 const LITTLE_WARRIORS_RE = /baby|child|children|infant|pediatric|toddler|newborn|kids/i;
+const cookie = Cookie({ weight: "400", subsets: ["latin"] });
 
 function LittleWarriorsContent() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -41,7 +43,7 @@ function LittleWarriorsContent() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <div className="flex flex-wrap items-center gap-3 mb-4">
-          <h1 className="text-4xl font-medium">
+          <h1 className={`text-4xl font-normal ${cookie.className}`}>
             <span className="bg-gradient-to-r from-pink-500 via-blue-500 to-pink-600 dark:from-pink-400 dark:via-blue-400 dark:to-pink-500 bg-clip-text text-transparent">
               Little Warriors
             </span>
