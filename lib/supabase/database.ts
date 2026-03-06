@@ -64,6 +64,7 @@ interface CampaignRow {
   verified: boolean;
   admin_backed: boolean;
   reference_number: string | null;
+  is_little_warriors?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -99,6 +100,7 @@ interface CampaignUnderReviewRow {
   submitted_at: string;
   created_at: string;
   days_left?: number | null;
+  is_little_warriors?: boolean;
 }
 
 function toCampaign(r: CampaignRow): Campaign {
@@ -122,6 +124,7 @@ function toCampaign(r: CampaignRow): Campaign {
     verified: !!r.verified,
     adminBacked: r.admin_backed ?? undefined,
     referenceNumber: r.reference_number ?? undefined,
+    isLittleWarriors: !!r.is_little_warriors,
   };
 }
 
@@ -519,6 +522,8 @@ export interface CampaignUnderReviewDoc {
   /** Proof-of-need document URLs (PDFs, images) for admin to review. */
   proofDocumentUrls?: string[];
   daysLeft?: number;
+  /** True when beneficiaries are children ages 0–12 (Little Warriors category). */
+  isLittleWarriors?: boolean;
 }
 
 function toUnderReview(r: CampaignUnderReviewRow): CampaignUnderReviewDoc {
@@ -553,6 +558,7 @@ function toUnderReview(r: CampaignUnderReviewRow): CampaignUnderReviewDoc {
     image2: r.image2 ?? undefined,
     proofDocumentUrls: proofDocumentUrls?.length ? proofDocumentUrls : undefined,
     daysLeft,
+    isLittleWarriors: !!r.is_little_warriors,
   };
 }
 
@@ -574,6 +580,7 @@ export async function addCampaignUnderReview(
       image2: data.image2,
       days_left: data.daysLeft ?? 0,
       status: "pending",
+      is_little_warriors: !!data.isLittleWarriors,
     })
     .select("id")
     .single();
@@ -671,6 +678,7 @@ export async function approveAndPublishCampaign(
       verified: true,
       creator_id: underReview.creatorId,
       reference_number,
+      is_little_warriors: !!underReview.isLittleWarriors,
     })
     .select("id")
     .single();

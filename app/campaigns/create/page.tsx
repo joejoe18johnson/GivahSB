@@ -23,6 +23,7 @@ export default function CreateCampaignPage() {
     category: "",
     location: "",
     creatorType: "",
+    isLittleWarriors: false,
   });
 
   const [proofFiles, setProofFiles] = useState<File[]>([]);
@@ -488,9 +489,11 @@ export default function CreateCampaignPage() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
+    const target = e.target;
+    const value = target.type === "checkbox" ? (target as HTMLInputElement).checked : target.value;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [target.name]: value,
     });
   };
 

@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
   if (!user?.id) {
     return NextResponse.json({ error: "You must be signed in to submit a campaign." }, { status: 401 });
   }
-  let body: { title?: string; description?: string; fullDescription?: string; goal?: number; category?: string; creatorName?: string; image?: string; image2?: string; daysLeft?: number };
+  let body: { title?: string; description?: string; fullDescription?: string; goal?: number; category?: string; creatorName?: string; image?: string; image2?: string; daysLeft?: number; isLittleWarriors?: boolean };
   try {
     body = await request.json();
   } catch {
@@ -90,6 +90,7 @@ export async function POST(request: NextRequest) {
       image: image || undefined,
       image2: image2 || undefined,
       daysLeft,
+      isLittleWarriors: !!body.isLittleWarriors,
     });
     const creatorEmail = (user.email ?? "").trim();
     if (creatorEmail) {

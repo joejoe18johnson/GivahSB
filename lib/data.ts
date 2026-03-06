@@ -20,6 +20,8 @@ export interface Campaign {
   adminBacked?: boolean;
   /** Single reference number for this campaign; used for all donations to this campaign. */
   referenceNumber?: string;
+  /** True when beneficiaries are children ages 0–12 (Little Warriors category). */
+  isLittleWarriors?: boolean;
   proofDocuments?: ProofDocument[];
   updates?: CampaignUpdate[];
   rewards?: Reward[];
