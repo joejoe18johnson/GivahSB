@@ -71,7 +71,7 @@ export default function AdminLayout({
         ]);
         const since = sevenDaysAgo();
         const underReviewCount = underReviewList.length;
-        const littleWarriors = underReviewList.filter((c) => c.isLittleWarriors).length;
+        const littleWarriors = campaigns.filter((c) => c.isLittleWarriors).length;
         const phonePending = users.filter((u) => u.phoneNumber && !u.phoneVerified).length;
         const addressPending = users.filter((u) => u.addressDocument && !u.addressVerified).length;
         const idPending = users.filter((u) => u.idDocument && u.idPending).length;

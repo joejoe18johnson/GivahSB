@@ -74,7 +74,18 @@ export async function PATCH(
     }
     return NextResponse.json({ ok: true, message: "Campaign updated." });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed to update.";
+    const rawMessage =
+      err instanceof Error
+        ? err.message
+        : (typeof err === "object" &&
+          err !== null &&
+          "message" in err &&
+          typeof (err as { message?: unknown }).message === "string"
+            ? (err as { message: string }).message
+            : "Failed to update.");
+    const message = /is_little_warriors/i.test(rawMessage)
+      ? "Little Warriors status could not be saved because the database is missing the is_little_warriors column. Run migration 20260228000000_is_little_warriors.sql and try again."
+      : rawMessage;
     const status = message === "Campaign not found" ? 404 : 500;
     return NextResponse.json({ error: message }, { status });
   }

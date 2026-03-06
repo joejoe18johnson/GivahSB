@@ -253,7 +253,7 @@ export async function updateCampaign(
   if (updates.category !== undefined) row.category = updates.category;
   if (updates.isLittleWarriors !== undefined) row.is_little_warriors = updates.isLittleWarriors;
   const { error } = await supabase.from("campaigns").update(row).eq("id", campaignId);
-  if (error) throw error;
+  if (error) throw new Error(error.message);
 }
 
 export async function deleteCampaign(
@@ -1195,7 +1195,7 @@ export async function updateCampaignText(
     .from("campaigns")
     .update({ ...row, updated_at: new Date().toISOString() })
     .eq("id", campaignId);
-  if (error) throw error;
+  if (error) throw new Error(error.message);
 }
 
 export interface AdminCreateCampaignPayload {
