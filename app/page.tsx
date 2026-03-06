@@ -6,7 +6,7 @@ import { Campaign } from "@/lib/data";
 import { fetchCampaignsFromAPI } from "@/lib/services/campaignService";
 import SafeImage from "@/components/SafeImage";
 import HeroCommunityVisual from "@/components/HeroCommunityVisual";
-import { TrendingUp, FileText, Share2, ArrowUpRight, Shield, DollarSign, Calendar, Users, CheckCircle2, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
+import { TrendingUp, FileText, Share2, ArrowUpRight, Shield, DollarSign, Calendar, Users, CheckCircle2, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Baby } from "lucide-react";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
@@ -149,6 +149,56 @@ export default function Home() {
     setCurrentMobileIndex(index);
   };
 
+  // Little Warriors: babies and children fighting medical challenges
+  const littleWarriorsRe = /baby|child|children|infant|pediatric|toddler|newborn|kids/i;
+  const littleWarriorsCampaigns = campaigns.filter(
+    (c) => littleWarriorsRe.test(c.title) || littleWarriorsRe.test(c.description) || littleWarriorsRe.test(c.fullDescription || "")
+  );
+  const lwScrollRef = useRef<HTMLDivElement>(null);
+  const [lwCurrentPage, setLwCurrentPage] = useState(1);
+  const [lwCanScrollLeft, setLwCanScrollLeft] = useState(false);
+  const [lwCanScrollRight, setLwCanScrollRight] = useState(false);
+  const LW_CARD_WIDTH = 360;
+  const lwCardsPerPage = 2;
+  const lwTotalPages = Math.max(1, Math.ceil(littleWarriorsCampaigns.length / lwCardsPerPage));
+  const LW_PAGE_WIDTH = LW_CARD_WIDTH * lwCardsPerPage + 24 * (lwCardsPerPage - 1);
+
+  const updateLwScrollState = () => {
+    const el = lwScrollRef.current;
+    if (!el) return;
+    setLwCanScrollLeft(el.scrollLeft > 0);
+    setLwCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 1);
+    const page = Math.min(lwTotalPages, Math.round(el.scrollLeft / LW_PAGE_WIDTH) + 1);
+    setLwCurrentPage((p) => (page >= 1 && page <= lwTotalPages ? page : p));
+  };
+
+  const scrollLwToPage = (page: number) => {
+    const el = lwScrollRef.current;
+    if (!el) return;
+    el.scrollTo({ left: (page - 1) * LW_PAGE_WIDTH, behavior: "smooth" });
+    setLwCurrentPage(page);
+  };
+
+  const scrollLw = (direction: "left" | "right") => {
+    const el = lwScrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: direction === "left" ? -LW_PAGE_WIDTH : LW_PAGE_WIDTH, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    const el = lwScrollRef.current;
+    const onScroll = () => updateLwScrollState();
+    updateLwScrollState();
+    const t = setTimeout(updateLwScrollState, 100);
+    if (el) el.addEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      clearTimeout(t);
+      if (el) el.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [littleWarriorsCampaigns.length]);
+
   return (
     <>
       {/* First viewport: hero + Communities Share Burdens heading visible */}
@@ -211,6 +261,169 @@ export default function Home() {
           </div>
         </section>
       </div>
+
+      {/* Little Warriors */}
+      <section className="py-8 md:py-12 overflow-hidden bg-gradient-to-b from-verified-50 to-white dark:from-gray-800 dark:to-gray-800 animate-fade-in opacity-0 [animation-delay:0.22s] [animation-fill-mode:forwards]">
+        <div className="container mx-auto px-4">
+          <div className="mb-6 text-center">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-medium text-gray-900 dark:text-gray-100">
+                <span className="bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">Little Warriors</span>
+              </h2>
+              <div className="bg-pink-100 dark:bg-pink-900/40 text-pink-700 dark:text-pink-300 px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 shrink-0">
+                <Baby className="w-3.5 h-3.5" />
+                BABY SECTION
+              </div>
+            </div>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-base md:text-lg leading-relaxed">
+              This section is dedicated to babies and children bravely fighting medical challenges. Your support can help provide life-saving treatments, surgeries, medication, and care for these little warriors and their families during difficult times.
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-2xl gradient-border-1 p-6 md:p-8">
+            {!isLoading && littleWarriorsCampaigns.length === 0 ? (
+              <div className="py-12 text-center text-gray-500 dark:text-gray-400">
+                <Baby className="w-12 h-12 mx-auto mb-3 text-pink-300 dark:text-pink-600" />
+                <p className="font-medium text-gray-700 dark:text-gray-300">No Little Warriors campaigns yet</p>
+                <p className="text-sm mt-1">Campaigns for babies and children will appear here when available.</p>
+                <Link href="/campaigns" className="inline-block mt-4 text-primary-600 dark:text-primary-400 hover:underline font-medium">
+                  Browse all campaigns →
+                </Link>
+              </div>
+            ) : littleWarriorsCampaigns.length > 0 ? (
+              <>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => scrollLw("left")}
+                    disabled={!lwCanScrollLeft}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 z-20 w-10 h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-lg flex items-center justify-center text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-40 disabled:pointer-events-none"
+                    aria-label="Previous"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollLw("right")}
+                    disabled={!lwCanScrollRight}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 z-20 w-10 h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-lg flex items-center justify-center text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-40 disabled:pointer-events-none"
+                    aria-label="Next"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                  <div
+                    ref={lwScrollRef}
+                    className="overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory scrollbar-hide -mx-2 px-2"
+                    style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                  >
+                    <div className="flex gap-6 py-2">
+                      {littleWarriorsCampaigns.map((campaign) => {
+                        const goal = Number(campaign.goal) || 1;
+                        const raised = Number(campaign.raised) || 0;
+                        const pct = goal > 0 ? Math.min((raised / goal) * 100, 100) : 0;
+                        return (
+                          <div
+                            key={campaign.id}
+                            className="flex-shrink-0 w-[320px] sm:w-[360px] snap-start"
+                          >
+                            <Link
+                              href={`/campaigns/${campaign.id}`}
+                              className="flex flex-row rounded-xl border border-white/30 dark:border-gray-600 bg-white/95 dark:bg-gray-700/95 overflow-hidden shadow-sm hover:border-white/50 dark:hover:border-gray-500 hover:shadow-md transition-all duration-300 ease-in-out"
+                            >
+                              <div className="relative w-28 sm:w-32 flex-shrink-0 aspect-square bg-gray-200 dark:bg-gray-600">
+                                {campaign.image ? (
+                                  <SafeImage
+                                    src={campaign.image}
+                                    alt={campaign.title}
+                                    fill
+                                    className="object-cover"
+                                    sizes="128px"
+                                    fallback={
+                                      <div className="absolute inset-0 flex items-center justify-center bg-primary-100 text-primary-600 text-xl font-semibold">
+                                        {campaign.title.charAt(0)}
+                                      </div>
+                                    }
+                                  />
+                                ) : (
+                                  <div className="absolute inset-0 flex items-center justify-center bg-primary-100 text-primary-600 text-xl font-semibold">
+                                    {campaign.title.charAt(0)}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex flex-col flex-1 min-w-0 p-4 justify-center">
+                                <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                  <Users className="w-3 h-3" />
+                                  {(campaign.backers ?? 0).toLocaleString()} donors
+                                </p>
+                                <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mt-1 text-sm">
+                                  {campaign.title}
+                                </h3>
+                                <p className="text-sm font-bold bg-gradient-to-r from-primary-500 to-verified-500 dark:from-primary-400 dark:to-verified-400 bg-clip-text text-transparent mt-1">
+                                  {Math.round(pct)}% Funded
+                                </p>
+                                <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 mt-2">
+                                  <div
+                                    className="bg-gradient-to-r from-primary-500 to-verified-500 h-2 rounded-full transition-all duration-300"
+                                    style={{ width: `${pct}%` }}
+                                  />
+                                </div>
+                                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 mt-2">
+                                  {formatCurrency(raised)} raised
+                                </p>
+                              </div>
+                            </Link>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+                {lwTotalPages > 1 && (
+                  <div className="flex flex-col items-center gap-3 mt-6">
+                    <div className="flex justify-center gap-2">
+                      {Array.from({ length: lwTotalPages }, (_, i) => i + 1).map((page) => (
+                        <button
+                          key={page}
+                          type="button"
+                          onClick={() => scrollLwToPage(page)}
+                          aria-label={`Go to page ${page}`}
+                          className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                            lwCurrentPage === page ? "bg-pink-500 scale-110" : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <div className="flex justify-center gap-2">
+                      {Array.from({ length: lwTotalPages }, (_, i) => i + 1).map((page) => (
+                        <button
+                          key={page}
+                          type="button"
+                          onClick={() => scrollLwToPage(page)}
+                          className={`w-8 h-8 flex items-center justify-center rounded-full font-medium text-xs ${
+                            lwCurrentPage === page
+                              ? "bg-pink-500 text-white"
+                              : "border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : null}
+            <div className="text-center mt-6">
+              <Link
+                href="/campaigns"
+                className="inline-block bg-pink-500 hover:bg-pink-600 text-white px-6 py-2.5 rounded-full font-medium text-sm transition-colors"
+              >
+                Support Little Warriors →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Top Campaigns */}
       <section className="mb-12 relative py-8 md:py-12 overflow-hidden bg-white dark:bg-gray-800 animate-fade-in opacity-0 [animation-delay:0.25s] [animation-fill-mode:forwards]">
