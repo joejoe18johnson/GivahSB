@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { CheckCircle2, AlertTriangle, Info } from "lucide-react";
 
-type AlertVariant = "success" | "error" | "info";
+type AlertVariant = "success" | "error" | "info" | "warning";
 type ConfirmVariant = "primary" | "danger" | "success" | "warning";
 
 const alertStyles: Record<AlertVariant, { icon: typeof CheckCircle2; border: string; iconBg: string; iconColor: string; title: string }> = {
@@ -27,6 +27,13 @@ const alertStyles: Record<AlertVariant, { icon: typeof CheckCircle2; border: str
     iconBg: "bg-primary-100",
     iconColor: "text-primary-600",
     title: "Information",
+  },
+  warning: {
+    icon: AlertTriangle,
+    border: "border-amber-200",
+    iconBg: "bg-amber-100",
+    iconColor: "text-amber-600",
+    title: "Warning",
   },
 };
 
