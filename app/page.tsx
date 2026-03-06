@@ -1,6 +1,6 @@
 "use client";
 
-import { Permanent_Marker, Cookie } from "next/font/google";
+import { Permanent_Marker, Grand_Hotel } from "next/font/google";
 import CampaignCard from "@/components/CampaignCard";
 import { Campaign } from "@/lib/data";
 import { fetchCampaignsFromAPI } from "@/lib/services/campaignService";
@@ -13,7 +13,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 const permanentMarker = Permanent_Marker({ weight: "400", subsets: ["latin"] });
-const cookie = Cookie({ weight: "400", subsets: ["latin"] });
+const grandHotel = Grand_Hotel({ weight: "400", subsets: ["latin"] });
 
 export default function Home() {
   const { content: siteContent } = useSiteContent();
@@ -293,7 +293,7 @@ export default function Home() {
               <div className="bg-white/80 dark:bg-gray-800/80 text-pink-500 dark:text-pink-400 p-2.5 rounded-full shadow-sm border border-pink-200/50 dark:border-pink-800/50 shrink-0" aria-hidden>
                 <Baby className="w-8 h-8 sm:w-10 sm:h-10" />
               </div>
-              <h2 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-normal text-gray-900 dark:text-gray-100 ${cookie.className}`}>
+              <h2 className={`text-7xl sm:text-7xl md:text-8xl lg:text-8xl xl:text-9xl font-normal text-gray-900 dark:text-gray-100 ${grandHotel.className}`}>
                 <span className="bg-gradient-to-r from-pink-500 via-blue-500 to-pink-600 dark:from-pink-400 dark:via-blue-400 dark:to-pink-500 bg-clip-text text-transparent">Little Warriors</span>
               </h2>
             </div>
