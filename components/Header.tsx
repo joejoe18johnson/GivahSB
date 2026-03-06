@@ -312,18 +312,13 @@ export default function Header() {
               Home
             </Link>
             <div className="relative flex items-center" ref={campaignsDropdownRef}>
-              <Link
-                href="/campaigns/little-warriors"
-                className={`flex items-center gap-1 text-gray-700 dark:text-white hover:text-primary-600 dark:hover:text-primary-300 transition-colors duration-300 ease-in-out ${pathname?.startsWith("/campaigns") || pathname?.startsWith("/success-stories") || pathname?.startsWith("/how-it-works") ? "text-primary-600 dark:text-white font-medium" : ""}`}
-              >
-                Campaigns
-              </Link>
               <button
                 type="button"
                 onClick={() => setShowCampaignsDropdown((v) => !v)}
                 aria-label="Toggle campaigns menu"
-                className={`p-0.5 -ml-0.5 text-gray-700 dark:text-white hover:text-primary-600 dark:hover:text-primary-300 transition-colors duration-300 ease-in-out ${pathname?.startsWith("/campaigns") || pathname?.startsWith("/success-stories") || pathname?.startsWith("/how-it-works") ? "text-primary-600 dark:text-white" : ""}`}
+                className={`flex items-center gap-1 text-gray-700 dark:text-white hover:text-primary-600 dark:hover:text-primary-300 transition-colors duration-300 ease-in-out ${pathname?.startsWith("/campaigns") || pathname?.startsWith("/success-stories") || pathname?.startsWith("/how-it-works") ? "text-primary-600 dark:text-white font-medium" : ""}`}
               >
+                Campaigns
                 <ChevronDown className={`w-4 h-4 transition-transform ${showCampaignsDropdown ? "rotate-180" : ""}`} />
               </button>
               {showCampaignsDropdown && (
