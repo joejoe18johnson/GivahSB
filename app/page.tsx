@@ -487,36 +487,18 @@ export default function Home() {
                   </div>
                 </div>
                 {lwTotalPages > 1 && (
-                  <div className="flex flex-col items-center gap-3 mt-6">
-                    <div className="flex justify-center gap-2">
-                      {Array.from({ length: lwTotalPages }, (_, i) => i + 1).map((page) => (
-                        <button
-                          key={page}
-                          type="button"
-                          onClick={() => scrollLwToPage(page)}
-                          aria-label={`Go to page ${page}`}
-                          className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-                            lwCurrentPage === page ? "bg-pink-500 scale-110" : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <div className="flex justify-center gap-2">
-                      {Array.from({ length: lwTotalPages }, (_, i) => i + 1).map((page) => (
-                        <button
-                          key={page}
-                          type="button"
-                          onClick={() => scrollLwToPage(page)}
-                          className={`w-8 h-8 flex items-center justify-center rounded-full font-medium text-xs ${
-                            lwCurrentPage === page
-                              ? "bg-pink-500 text-white"
-                              : "border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600"
-                          }`}
-                        >
-                          {page}
-                        </button>
-                      ))}
-                    </div>
+                  <div className="flex justify-center gap-2 mt-6">
+                    {Array.from({ length: lwTotalPages }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        type="button"
+                        onClick={() => scrollLwToPage(page)}
+                        aria-label={`Go to page ${page}`}
+                        className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                          lwCurrentPage === page ? "bg-pink-500 scale-110" : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400"
+                        }`}
+                      />
+                    ))}
                   </div>
                 )}
               </>
@@ -524,7 +506,7 @@ export default function Home() {
             <div className="text-center mt-6">
               <Link
                 href="/campaigns"
-                className="inline-block bg-gradient-to-r from-pink-500 via-blue-500 to-pink-600 hover:opacity-90 text-white px-6 py-2.5 rounded-full font-medium text-sm transition-opacity"
+                className="inline-block bg-gradient-to-r from-pink-500 to-blue-500 hover:opacity-90 text-white px-6 py-2.5 rounded-full font-medium text-sm transition-opacity"
               >
                 Support Little Warriors →
               </Link>
