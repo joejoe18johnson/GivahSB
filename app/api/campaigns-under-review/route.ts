@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseUserFromRequest } from "@/lib/supabase/auth-server";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { addCampaignUnderReview, creatorHasCampaignWithTitle } from "@/lib/supabase/database";
-import { sendCampaignSubmittedForReviewEmail } from "@/lib/email";
+import { sendCampaignSubmittedForReviewEmail } from "@/lib/email-notifications";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
