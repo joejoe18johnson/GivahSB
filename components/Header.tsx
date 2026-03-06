@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Heart, LogOut, Menu, X, Bell, Shield, User, FolderOpen, Settings, ChevronDown, Megaphone, Trophy, BookOpen, Trash2, CheckCheck } from "lucide-react";
+import { Search, Heart, LogOut, Menu, X, Bell, Shield, User, FolderOpen, Settings, ChevronDown, Megaphone, Trophy, BookOpen, Trash2, CheckCheck, Baby } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
@@ -312,12 +312,18 @@ export default function Header() {
               Home
             </Link>
             <div className="relative flex items-center" ref={campaignsDropdownRef}>
-              <button
-                type="button"
-                onClick={() => setShowCampaignsDropdown((v) => !v)}
+              <Link
+                href="/campaigns/little-warriors"
                 className={`flex items-center gap-1 text-gray-700 dark:text-white hover:text-primary-600 dark:hover:text-primary-300 transition-colors duration-300 ease-in-out ${pathname?.startsWith("/campaigns") || pathname?.startsWith("/success-stories") || pathname?.startsWith("/how-it-works") ? "text-primary-600 dark:text-white font-medium" : ""}`}
               >
                 Campaigns
+              </Link>
+              <button
+                type="button"
+                onClick={() => setShowCampaignsDropdown((v) => !v)}
+                aria-label="Toggle campaigns menu"
+                className={`p-0.5 -ml-0.5 text-gray-700 dark:text-white hover:text-primary-600 dark:hover:text-primary-300 transition-colors duration-300 ease-in-out ${pathname?.startsWith("/campaigns") || pathname?.startsWith("/success-stories") || pathname?.startsWith("/how-it-works") ? "text-primary-600 dark:text-white" : ""}`}
+              >
                 <ChevronDown className={`w-4 h-4 transition-transform ${showCampaignsDropdown ? "rotate-180" : ""}`} />
               </button>
               {showCampaignsDropdown && (
@@ -327,9 +333,17 @@ export default function Header() {
                       <h3 className="font-medium text-gray-900 dark:text-gray-100">Campaigns</h3>
                     </div>
                     <Link
+                      href="/campaigns/little-warriors"
+                      onClick={() => setShowCampaignsDropdown(false)}
+                      className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center gap-2 text-gray-700 dark:text-gray-200 text-sm"
+                    >
+                      <Baby className="w-4 h-4 text-pink-500 shrink-0" />
+                      Little Warriors
+                    </Link>
+                    <Link
                       href="/campaigns"
                       onClick={() => setShowCampaignsDropdown(false)}
-                      className="block px-4 py-3 hover:bg-gray-50 flex items-center gap-2 text-gray-700 text-sm"
+                      className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center gap-2 text-gray-700 dark:text-gray-200 text-sm"
                     >
                       <Megaphone className="w-4 h-4 text-primary-600 shrink-0" />
                       View All Campaigns
@@ -623,6 +637,10 @@ export default function Header() {
                 </button>
                 {mobileCampaignsOpen && (
                   <div className="bg-gray-50 dark:bg-gray-700/50 rounded-b-lg mt-1 border border-gray-200 dark:border-gray-600 shadow-sm overflow-hidden">
+                    <Link href="/campaigns/little-warriors" className="flex items-center gap-2 px-4 py-3 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700/50 border-b border-gray-200 dark:border-gray-600" onClick={closeMobileMenu}>
+                      <Baby className="w-4 h-4 text-pink-500 dark:text-pink-400 shrink-0" />
+                      Little Warriors
+                    </Link>
                     <Link href="/campaigns" className="flex items-center gap-2 px-4 py-3 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700/50 border-b border-gray-200 dark:border-gray-600" onClick={closeMobileMenu}>
                       <Megaphone className="w-4 h-4 text-primary-600 dark:text-white shrink-0" />
                       View All Campaigns
