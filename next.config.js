@@ -44,6 +44,18 @@ const nextConfig = {
   },
   // Enable compression (default) and optimize for Vercel
   compress: true,
+
+  // After redeploy, changes show sooner: don't cache page responses at edge/browser.
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=0, must-revalidate' },
+        ],
+      },
+    ];
+  },
 }
 
 module.exports = nextConfig
