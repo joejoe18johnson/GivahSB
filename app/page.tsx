@@ -301,7 +301,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl gradient-border-1 p-6 md:p-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl gradient-border-little-warriors p-6 md:p-8">
             {!isLoading && littleWarriorsCampaigns.length === 0 ? (
               <div className="py-12 text-center text-gray-500 dark:text-gray-400">
                 <Baby className="w-12 h-12 mx-auto mb-3 text-pink-300 dark:text-pink-600" />
@@ -487,7 +487,7 @@ export default function Home() {
                   </div>
                 </div>
                 {lwTotalPages > 1 && (
-                  <div className="flex justify-center gap-2 mt-6">
+                  <div className="hidden md:flex justify-center gap-2 mt-6">
                     {Array.from({ length: lwTotalPages }, (_, i) => i + 1).map((page) => (
                       <button
                         key={page}
