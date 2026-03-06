@@ -285,17 +285,16 @@ export default function Home() {
       </div>
 
       {/* Little Warriors */}
-      <section className="py-8 md:py-12 overflow-hidden bg-gradient-to-b from-verified-50 to-white dark:from-gray-800 dark:to-gray-800 animate-fade-in opacity-0 [animation-delay:0.22s] [animation-fill-mode:forwards]">
+      <section className="py-8 md:py-12 overflow-hidden bg-gradient-to-br from-pink-50 via-blue-50 to-pink-100 dark:from-pink-950/30 dark:via-blue-950/20 dark:to-pink-950/30 animate-fade-in opacity-0 [animation-delay:0.22s] [animation-fill-mode:forwards]">
         <div className="container mx-auto px-4">
           <div className="mb-6 text-center">
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-4">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-medium text-gray-900 dark:text-gray-100">
-                <span className="bg-gradient-to-r from-primary-500 to-verified-500 bg-clip-text text-transparent">Little Warriors</span>
-              </h2>
-              <div className="bg-pink-100 dark:bg-pink-900/40 text-pink-700 dark:text-pink-300 px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 shrink-0">
-                <Baby className="w-3.5 h-3.5" />
-                LITTLE WARRIORS
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-4">
+              <div className="bg-white/80 dark:bg-gray-800/80 text-pink-500 dark:text-pink-400 p-2.5 rounded-full shadow-sm border border-pink-200/50 dark:border-pink-800/50 shrink-0" aria-hidden>
+                <Baby className="w-8 h-8 sm:w-10 sm:h-10" />
               </div>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-gray-900 dark:text-gray-100">
+                <span className="bg-gradient-to-r from-pink-500 via-blue-500 to-pink-600 dark:from-pink-400 dark:via-blue-400 dark:to-pink-500 bg-clip-text text-transparent">Little Warriors</span>
+              </h2>
             </div>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-base md:text-lg leading-relaxed">
               This section is dedicated to babies and children bravely fighting medical challenges. Your support can help provide life-saving treatments, surgeries, medication, and care for these little warriors and their families during difficult times.
