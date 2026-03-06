@@ -330,7 +330,7 @@ export default function Header() {
                     <Link
                       href="/campaigns/little-warriors"
                       onClick={() => setShowCampaignsDropdown(false)}
-                      className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center gap-2 text-gray-700 dark:text-gray-200 text-sm"
+                      className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center gap-2 text-gray-700 dark:text-white text-sm"
                     >
                       <Baby className="w-4 h-4 text-pink-500 shrink-0" />
                       Little Warriors
@@ -338,7 +338,7 @@ export default function Header() {
                     <Link
                       href="/campaigns"
                       onClick={() => setShowCampaignsDropdown(false)}
-                      className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center gap-2 text-gray-700 dark:text-gray-200 text-sm"
+                      className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center gap-2 text-gray-700 dark:text-white text-sm"
                     >
                       <Megaphone className="w-4 h-4 text-primary-600 shrink-0" />
                       View All Campaigns
@@ -346,7 +346,7 @@ export default function Header() {
                     <Link
                       href="/success-stories"
                       onClick={() => setShowCampaignsDropdown(false)}
-                      className="block px-4 py-3 hover:bg-gray-50 flex items-center gap-2 text-gray-700 text-sm"
+                      className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center gap-2 text-gray-700 dark:text-white text-sm"
                     >
                       <Trophy className="w-4 h-4 text-primary-600 shrink-0" />
                       Success Stories
@@ -354,7 +354,7 @@ export default function Header() {
                     <Link
                       href="/how-it-works"
                       onClick={() => setShowCampaignsDropdown(false)}
-                      className="block px-4 py-3 hover:bg-gray-50 flex items-center gap-2 text-gray-700 text-sm"
+                      className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center gap-2 text-gray-700 dark:text-white text-sm"
                     >
                       <BookOpen className="w-4 h-4 text-primary-600 shrink-0" />
                       How It Works
