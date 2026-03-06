@@ -506,7 +506,7 @@ export default function Home() {
             ) : null}
             <div className="text-center mt-6">
               <Link
-                href="/campaigns"
+                href="/campaigns/little-warriors"
                 className="inline-block bg-gradient-to-r from-pink-500 to-blue-500 hover:opacity-90 text-white px-6 py-2.5 rounded-full font-medium text-sm transition-opacity"
               >
                 Support Little Warriors →
