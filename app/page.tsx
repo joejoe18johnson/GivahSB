@@ -385,6 +385,21 @@ export default function Home() {
                       })}
                     </div>
                   </div>
+                  {littleWarriorsCampaigns.length > 1 && (
+                    <div className="flex justify-center gap-2 pt-3 pb-1">
+                      {littleWarriorsCampaigns.map((_, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => scrollLwMobileToIndex(i)}
+                          aria-label={`Go to slide ${i + 1}`}
+                          className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                            lwCurrentMobileIndex === i ? "bg-pink-500 scale-110" : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Desktop: carousel with arrows (Campaigns Needing Support card layout) */}
