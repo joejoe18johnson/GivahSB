@@ -276,6 +276,31 @@ export async function sendCampaignRejectedEmail(
   });
 }
 
+// Campaign submitted for review (creator confirmation)
+
+export interface CampaignSubmittedForReviewEmailParams {
+  to: string;
+  creatorName: string;
+  campaignTitle: string;
+}
+
+export async function sendCampaignSubmittedForReviewEmail(
+  params: CampaignSubmittedForReviewEmailParams
+): Promise<void> {
+  const { to, creatorName, campaignTitle } = params;
+  if (!to) return;
+
+  await sendEmailViaResend({
+    to,
+    subject: `Campaign submitted for review: ${campaignTitle}`,
+    html: `
+      <p>Hi ${creatorName || "there"},</p>
+      <p>Your campaign &quot;${campaignTitle}&quot; has been submitted for review. Our team will look at it and get back to you once it&apos;s approved.</p>
+      <p>You can check the status from your My Campaigns page.</p>
+    `,
+  });
+}
+
 // Campaign goal reached (creator)
 
 export interface CampaignGoalReachedEmailParams {
@@ -302,6 +327,64 @@ export async function sendCampaignGoalReachedEmail(
       <p>Congratulations! Your campaign &quot;${campaignTitle}&quot; has reached its fundraising goal.</p>
       <p><strong>Goal:</strong> ${format(goal)}<br/><strong>Raised:</strong> ${format(raised)}</p>
       <p>You can now request a payout from your My Campaigns page.</p>
+    `,
+  });
+}
+
+// Creator: someone donated to your campaign (after admin approval)
+
+export interface DonationReceivedEmailParams {
+  to: string;
+  creatorName: string;
+  campaignTitle: string;
+  amount: number;
+  donorDisplay: string;
+  status: "pending" | "completed";
+}
+
+export async function sendDonationReceivedEmail(
+  params: DonationReceivedEmailParams
+): Promise<void> {
+  const { to, creatorName, campaignTitle, amount, donorDisplay } = params;
+  if (!to) return;
+
+  const amountStr = `BZ$${Number(amount || 0).toLocaleString()}`;
+
+  await sendEmailViaResend({
+    to,
+    subject: `New donation to ${campaignTitle}`,
+    html: `
+      <p>Hi ${creatorName || "there"},</p>
+      <p><strong>${donorDisplay}</strong> donated ${amountStr} to your campaign &quot;${campaignTitle}&quot;.</p>
+      <p>Thank you for using Givah to make a difference.</p>
+    `,
+  });
+}
+
+// Donor: your donation was approved
+
+export interface DonationApprovedEmailParams {
+  to: string;
+  donorName: string;
+  campaignTitle: string;
+  amount: number;
+}
+
+export async function sendDonationApprovedEmail(
+  params: DonationApprovedEmailParams
+): Promise<void> {
+  const { to, donorName, campaignTitle, amount } = params;
+  if (!to) return;
+
+  const amountStr = `BZ$${Number(amount || 0).toLocaleString()}`;
+
+  await sendEmailViaResend({
+    to,
+    subject: `Donation confirmed: ${campaignTitle}`,
+    html: `
+      <p>Hi ${donorName || "there"},</p>
+      <p>Your donation of <strong>${amountStr}</strong> to &quot;${campaignTitle}&quot; has been confirmed and is now complete.</p>
+      <p>Thank you for supporting our community.</p>
     `,
   });
 }
