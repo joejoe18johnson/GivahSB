@@ -8,7 +8,6 @@ import { useState, useEffect, Suspense } from "react";
 import { Baby } from "lucide-react";
 import { Grand_Hotel } from "next/font/google";
 
-const LITTLE_WARRIORS_RE = /baby|child|children|infant|pediatric|toddler|newborn|kids/i;
 const grandHotel = Grand_Hotel({ weight: "400", subsets: ["latin"] });
 
 function LittleWarriorsContent() {
@@ -32,12 +31,7 @@ function LittleWarriorsContent() {
     loadCampaigns();
   }, []);
 
-  const littleWarriorsCampaigns = campaigns.filter(
-    (c) =>
-      LITTLE_WARRIORS_RE.test(c.title) ||
-      LITTLE_WARRIORS_RE.test(c.description) ||
-      LITTLE_WARRIORS_RE.test(c.fullDescription || "")
-  );
+  const littleWarriorsCampaigns = campaigns.filter((c) => !!c.isLittleWarriors);
 
   return (
     <div className="container mx-auto px-4 py-8">

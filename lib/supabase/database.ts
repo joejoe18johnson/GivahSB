@@ -250,6 +250,8 @@ export async function updateCampaign(
   if (updates.goal !== undefined) row.goal = updates.goal;
   if (updates.raised !== undefined) row.raised = updates.raised;
   if (updates.backers !== undefined) row.backers = updates.backers;
+  if (updates.category !== undefined) row.category = updates.category;
+  if (updates.isLittleWarriors !== undefined) row.is_little_warriors = updates.isLittleWarriors;
   const { error } = await supabase.from("campaigns").update(row).eq("id", campaignId);
   if (error) throw error;
 }

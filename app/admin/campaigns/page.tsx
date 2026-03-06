@@ -22,7 +22,15 @@ export default function AdminCampaignsPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [onHoldId, setOnHoldId] = useState<string | null>(null);
   const [editingCampaign, setEditingCampaign] = useState<CampaignWithStatus | null>(null);
-  const [editForm, setEditForm] = useState({ title: "", description: "", fullDescription: "", goal: "", raised: "" });
+  const [editForm, setEditForm] = useState({
+    title: "",
+    description: "",
+    fullDescription: "",
+    goal: "",
+    raised: "",
+    category: "",
+    isLittleWarriors: false,
+  });
   const [savingText, setSavingText] = useState(false);
   const [page, setPage] = useState(1);
   const [sortKey, setSortKey] = useState<SortKey>("created");
@@ -166,6 +174,8 @@ export default function AdminCampaignsPage() {
       fullDescription: c.fullDescription ?? "",
       goal: c.goal != null ? String(c.goal) : "",
       raised: c.raised != null ? String(c.raised) : "",
+      category: c.category ?? "",
+      isLittleWarriors: !!c.isLittleWarriors,
     });
   };
 
@@ -181,6 +191,8 @@ export default function AdminCampaignsPage() {
         title: editForm.title,
         description: editForm.description,
         fullDescription: editForm.fullDescription,
+        category: editForm.category,
+        isLittleWarriors: editForm.isLittleWarriors,
       };
       const goalNum = editForm.goal === "" ? undefined : Number(editForm.goal);
       const raisedNum = editForm.raised === "" ? undefined : Number(editForm.raised);
@@ -209,6 +221,8 @@ export default function AdminCampaignsPage() {
                 fullDescription: editForm.fullDescription,
                 ...(goalNum !== undefined && Number.isFinite(goalNum) && goalNum >= 0 ? { goal: goalNum } : {}),
                 ...(raisedNum !== undefined && Number.isFinite(raisedNum) && raisedNum >= 0 ? { raised: raisedNum } : {}),
+                category: editForm.category,
+                isLittleWarriors: editForm.isLittleWarriors,
               }
             : c
         )
@@ -422,7 +436,7 @@ export default function AdminCampaignsPage() {
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary-100 text-primary-700 hover:bg-primary-200 text-xs font-medium"
                     >
                       <Pencil className="w-3.5 h-3.5" />
-                      Edit text
+                      Edit
                     </button>
                     <button
                       type="button"
@@ -497,8 +511,8 @@ export default function AdminCampaignsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => !savingText && setEditingCampaign(null)}>
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Edit campaign</h2>
-              <p className="text-sm text-gray-500 mt-0.5">Edit text, goal, or amount raised. Changes appear on the live campaign page.</p>
+              <h2 className="text-lg font-semibold text-gray-900">Edit</h2>
+              <p className="text-sm text-gray-500 mt-0.5">Edit category, Little Warriors status, text, goal, or amount raised.</p>
             </div>
             <div className="px-6 py-4 overflow-y-auto flex-1 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -525,6 +539,31 @@ export default function AdminCampaignsPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="Total donations"
                   />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                  <select
+                    value={editForm.category}
+                    onChange={(e) => setEditForm((f) => ({ ...f, category: e.target.value }))}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  >
+                    <option value="Medical expenses">Medical expenses</option>
+                    <option value="Educational support">Educational support</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Little Warriors status</label>
+                  <select
+                    value={editForm.isLittleWarriors ? "yes" : "no"}
+                    onChange={(e) => setEditForm((f) => ({ ...f, isLittleWarriors: e.target.value === "yes" }))}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  >
+                    <option value="no">Not a Little Warrior</option>
+                    <option value="yes">Little Warrior (ages 0-12)</option>
+                  </select>
                 </div>
               </div>
               <div>

@@ -150,11 +150,8 @@ export default function Home() {
     setCurrentMobileIndex(index);
   };
 
-  // Little Warriors: babies and children fighting medical challenges
-  const littleWarriorsRe = /baby|child|children|infant|pediatric|toddler|newborn|kids/i;
-  const littleWarriorsCampaigns = campaigns.filter(
-    (c) => littleWarriorsRe.test(c.title) || littleWarriorsRe.test(c.description) || littleWarriorsRe.test(c.fullDescription || "")
-  );
+  // Little Warriors is admin-classified (or creator-selected) via isLittleWarriors flag.
+  const littleWarriorsCampaigns = campaigns.filter((c) => !!c.isLittleWarriors);
   const lwScrollRef = useRef<HTMLDivElement>(null);
   const lwMobileScrollRef = useRef<HTMLDivElement>(null);
   const lwMobileScrollRaf = useRef<number | null>(null);

@@ -43,20 +43,23 @@ export async function PATCH(
 
   const textUpdates: { title?: string; description?: string; fullDescription?: string } = {};
   const amountUpdates: { goal?: number; raised?: number } = {};
+  const metaUpdates: { category?: string; isLittleWarriors?: boolean } = {};
   if (body && typeof body === "object") {
     const o = body as Record<string, unknown>;
     if (typeof o.title === "string") textUpdates.title = o.title;
     if (typeof o.description === "string") textUpdates.description = o.description;
     if (typeof o.fullDescription === "string") textUpdates.fullDescription = o.fullDescription;
+    if (typeof o.category === "string" && o.category.trim().length > 0) metaUpdates.category = o.category.trim();
+    if (typeof o.isLittleWarriors === "boolean") metaUpdates.isLittleWarriors = o.isLittleWarriors;
     const goalNum = typeof o.goal === "number" ? o.goal : (typeof o.goal === "string" ? Number(o.goal) : NaN);
     const raisedNum = typeof o.raised === "number" ? o.raised : (typeof o.raised === "string" ? Number(o.raised) : NaN);
     if (Number.isFinite(goalNum) && goalNum >= 0) amountUpdates.goal = goalNum;
     if (Number.isFinite(raisedNum) && raisedNum >= 0) amountUpdates.raised = raisedNum;
   }
 
-  if (Object.keys(textUpdates).length === 0 && Object.keys(amountUpdates).length === 0) {
+  if (Object.keys(textUpdates).length === 0 && Object.keys(amountUpdates).length === 0 && Object.keys(metaUpdates).length === 0) {
     return NextResponse.json(
-      { error: "Provide at least one of: title, description, fullDescription, goal, raised." },
+      { error: "Provide at least one of: title, description, fullDescription, goal, raised, category, isLittleWarriors." },
       { status: 400 }
     );
   }
@@ -66,8 +69,8 @@ export async function PATCH(
     if (Object.keys(textUpdates).length > 0) {
       await updateCampaignText(supabase, campaignId, textUpdates);
     }
-    if (Object.keys(amountUpdates).length > 0) {
-      await updateCampaign(supabase, campaignId, amountUpdates);
+    if (Object.keys(amountUpdates).length > 0 || Object.keys(metaUpdates).length > 0) {
+      await updateCampaign(supabase, campaignId, { ...amountUpdates, ...metaUpdates });
     }
     return NextResponse.json({ ok: true, message: "Campaign updated." });
   } catch (err) {
