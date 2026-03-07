@@ -223,8 +223,8 @@ const DEMO_CAMPAIGNS = [
     raised: 2630,
     backers: 49,
     daysLeft: 23,
-    image: "/little-warriors/y1.png",
-    image2: "/little-warriors/y2.png",
+    image: "/little-warriors/y1.jpg",
+    image2: "/little-warriors/y2.jpg",
     isLittleWarriors: true,
   }),
   campaign(42, {
@@ -239,8 +239,8 @@ const DEMO_CAMPAIGNS = [
     raised: 3415,
     backers: 62,
     daysLeft: 19,
-    image: "/little-warriors/x1.png",
-    image2: "/little-warriors/x2.png",
+    image: "/little-warriors/x1.jpg",
+    image2: "/little-warriors/x2.jpeg",
     isLittleWarriors: true,
   }),
   campaign(43, {
@@ -255,8 +255,8 @@ const DEMO_CAMPAIGNS = [
     raised: 1890,
     backers: 37,
     daysLeft: 27,
-    image: "/little-warriors/v1.png",
-    image2: "/little-warriors/v2.png",
+    image: "/little-warriors/v1.jpg",
+    image2: "/little-warriors/v2.jpg",
     isLittleWarriors: true,
   }),
   campaign(44, {
@@ -271,8 +271,8 @@ const DEMO_CAMPAIGNS = [
     raised: 4120,
     backers: 71,
     daysLeft: 16,
-    image: "/little-warriors/a1.png",
-    image2: "/little-warriors/a2.png",
+    image: "/little-warriors/a1.jpg",
+    image2: "/little-warriors/a2.jpg",
     isLittleWarriors: true,
   }),
 ];

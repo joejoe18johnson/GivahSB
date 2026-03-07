@@ -1,6 +1,6 @@
 -- Add 4 fictional Little Warriors campaigns (paired images: y, x, v, a).
 -- NOTE: these rows expect matching files in /public/little-warriors/
--- with names y1.png, y2.png, x1.png, x2.png, v1.png, v2.png, a1.png, a2.png.
+-- with names y1.jpg, y2.jpg, x1.jpg, x2.jpeg, v1.jpg, v2.jpg, a1.jpg, a2.jpg.
 
 insert into public.campaigns (
   id,
@@ -39,8 +39,8 @@ values
   49,
   23,
   'Medical expenses',
-  '/little-warriors/y1.png',
-  '/little-warriors/y2.png',
+  '/little-warriors/y1.jpg',
+  '/little-warriors/y2.jpg',
   'Belmopan, Belize',
   'live',
   true,
@@ -62,8 +62,8 @@ values
   62,
   19,
   'Medical expenses',
-  '/little-warriors/x1.png',
-  '/little-warriors/x2.png',
+  '/little-warriors/x1.jpg',
+  '/little-warriors/x2.jpeg',
   'Orange Walk Town, Belize',
   'live',
   true,
@@ -85,8 +85,8 @@ values
   37,
   27,
   'Medical expenses',
-  '/little-warriors/v1.png',
-  '/little-warriors/v2.png',
+  '/little-warriors/v1.jpg',
+  '/little-warriors/v2.jpg',
   'Dangriga, Belize',
   'live',
   true,
@@ -108,8 +108,8 @@ values
   71,
   16,
   'Medical expenses',
-  '/little-warriors/a1.png',
-  '/little-warriors/a2.png',
+  '/little-warriors/a1.jpg',
+  '/little-warriors/a2.jpg',
   'San Ignacio, Cayo District, Belize',
   'live',
   true,
