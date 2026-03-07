@@ -103,6 +103,23 @@ interface CampaignUnderReviewRow {
   is_little_warriors?: boolean;
 }
 
+// Backward-compatibility: some rows stored .png paths for Little Warriors assets,
+// but current uploaded files use .jpg/.jpeg extensions.
+function normalizeLittleWarriorsImagePath(path: string | null | undefined): string | undefined {
+  if (!path) return undefined;
+  const lwPathMap: Record<string, string> = {
+    "/little-warriors/y1.png": "/little-warriors/y1.jpg",
+    "/little-warriors/y2.png": "/little-warriors/y2.jpg",
+    "/little-warriors/x1.png": "/little-warriors/x1.jpg",
+    "/little-warriors/x2.png": "/little-warriors/x2.jpeg",
+    "/little-warriors/v1.png": "/little-warriors/v1.jpg",
+    "/little-warriors/v2.png": "/little-warriors/v2.jpg",
+    "/little-warriors/a1.png": "/little-warriors/a1.jpg",
+    "/little-warriors/a2.png": "/little-warriors/a2.jpg",
+  };
+  return lwPathMap[path] ?? path;
+}
+
 function toCampaign(r: CampaignRow): Campaign {
   const createdAt = r.created_at?.split?.("T")?.[0] ?? new Date().toISOString().split("T")[0];
   return {
@@ -117,8 +134,8 @@ function toCampaign(r: CampaignRow): Campaign {
     backers: Number(r.backers) || 0,
     daysLeft: (r.days_left !== null && r.days_left !== undefined && Number(r.days_left) === 0) ? 0 : (Number(r.days_left) || 30),
     category: r.category,
-    image: r.image,
-    image2: r.image2 ?? undefined,
+    image: normalizeLittleWarriorsImagePath(r.image) || "",
+    image2: normalizeLittleWarriorsImagePath(r.image2) ?? undefined,
     location: r.location ?? undefined,
     createdAt,
     verified: !!r.verified,
@@ -558,8 +575,8 @@ function toUnderReview(r: CampaignUnderReviewRow): CampaignUnderReviewDoc {
     creatorId: r.creator_id,
     submittedAt: r.submitted_at ?? r.created_at,
     status: (r.status as CampaignUnderReviewDoc["status"]) || "pending",
-    image: r.image ?? undefined,
-    image2: r.image2 ?? undefined,
+    image: normalizeLittleWarriorsImagePath(r.image) ?? undefined,
+    image2: normalizeLittleWarriorsImagePath(r.image2) ?? undefined,
     proofDocumentUrls: proofDocumentUrls?.length ? proofDocumentUrls : undefined,
     daysLeft,
     isLittleWarriors: !!r.is_little_warriors,
