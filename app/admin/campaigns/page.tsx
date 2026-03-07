@@ -8,6 +8,7 @@ import { useThemedModal } from "@/components/ThemedModal";
 import Link from "next/link";
 import { CheckCircle2, XCircle, Trash2, PauseCircle, PlayCircle, Pencil, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { compressImageForUpload } from "@/lib/compressImage";
 
 const PAGE_SIZE = 50;
 type CampaignWithStatus = Campaign & { status?: string };
@@ -30,8 +31,11 @@ export default function AdminCampaignsPage() {
     raised: "",
     category: "",
     isLittleWarriors: false,
+    image: "",
+    image2: "",
   });
   const [savingText, setSavingText] = useState(false);
+  const [uploadingImageIndex, setUploadingImageIndex] = useState<0 | 1 | null>(null);
   const [page, setPage] = useState(1);
   const [sortKey, setSortKey] = useState<SortKey>("created");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
@@ -176,7 +180,53 @@ export default function AdminCampaignsPage() {
       raised: c.raised != null ? String(c.raised) : "",
       category: c.category ?? "",
       isLittleWarriors: !!c.isLittleWarriors,
+      image: c.image ?? "",
+      image2: c.image2 ?? c.image ?? "",
     });
+  };
+
+  const handleImageChange = (index: 0 | 1) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editingCampaign) return;
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file (JPG, PNG, etc.).", { variant: "error" });
+      return;
+    }
+    setUploadingImageIndex(index);
+    try {
+      const compressed = await compressImageForUpload(file, { maxDimension: 1200, quality: 0.75 });
+      const formData = new FormData();
+      formData.append("file", compressed);
+      formData.append("pendingId", editingCampaign.id);
+      formData.append("index", String(index));
+      const res = await fetch("/api/upload-campaign-image", {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const message = typeof data.error === "string" ? data.error : "Failed to upload image.";
+        alert(message, { variant: "error" });
+        return;
+      }
+      const url = (data as { url?: string }).url;
+      if (!url) {
+        alert("Upload succeeded but no image URL was returned.", { variant: "error" });
+        return;
+      }
+      if (index === 0) {
+        setEditForm((f) => ({ ...f, image: url }));
+      } else {
+        setEditForm((f) => ({ ...f, image2: url }));
+      }
+      alert("Image uploaded.", { variant: "success" });
+    } catch {
+      alert("Failed to upload image. Please try again.", { variant: "error" });
+    } finally {
+      setUploadingImageIndex(null);
+      e.target.value = "";
+    }
   };
 
   const handleSaveText = async () => {
@@ -193,6 +243,8 @@ export default function AdminCampaignsPage() {
         fullDescription: editForm.fullDescription,
         category: editForm.category,
         isLittleWarriors: editForm.isLittleWarriors,
+        image: editForm.image,
+        image2: editForm.image2,
       };
       const goalNum = editForm.goal === "" ? undefined : Number(editForm.goal);
       const raisedNum = editForm.raised === "" ? undefined : Number(editForm.raised);
@@ -223,6 +275,8 @@ export default function AdminCampaignsPage() {
                 ...(raisedNum !== undefined && Number.isFinite(raisedNum) && raisedNum >= 0 ? { raised: raisedNum } : {}),
                 category: editForm.category,
                 isLittleWarriors: editForm.isLittleWarriors,
+                image: editForm.image,
+                image2: editForm.image2,
               }
             : c
         )
@@ -515,6 +569,37 @@ export default function AdminCampaignsPage() {
               <p className="text-sm text-gray-500 mt-0.5">Edit category, Little Warriors status, text, goal, or amount raised.</p>
             </div>
             <div className="px-6 py-4 overflow-y-auto flex-1 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Campaign images</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <div className="aspect-video rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                      {editForm.image ? (
+                        <img src={editForm.image} alt="Campaign image 1" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-sm text-gray-400">No image 1</div>
+                      )}
+                    </div>
+                    <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-primary-100 text-primary-700 hover:bg-primary-200 text-xs font-medium cursor-pointer">
+                      <input type="file" accept="image/*" className="hidden" onChange={handleImageChange(0)} />
+                      {uploadingImageIndex === 0 ? "Uploading..." : "Change image 1"}
+                    </label>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="aspect-video rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                      {editForm.image2 ? (
+                        <img src={editForm.image2} alt="Campaign image 2" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-sm text-gray-400">No image 2</div>
+                      )}
+                    </div>
+                    <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-primary-100 text-primary-700 hover:bg-primary-200 text-xs font-medium cursor-pointer">
+                      <input type="file" accept="image/*" className="hidden" onChange={handleImageChange(1)} />
+                      {uploadingImageIndex === 1 ? "Uploading..." : "Change image 2"}
+                    </label>
+                  </div>
+                </div>
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Goal (BZ$)</label>

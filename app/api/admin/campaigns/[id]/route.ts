@@ -43,7 +43,7 @@ export async function PATCH(
 
   const textUpdates: { title?: string; description?: string; fullDescription?: string } = {};
   const amountUpdates: { goal?: number; raised?: number } = {};
-  const metaUpdates: { category?: string; isLittleWarriors?: boolean } = {};
+  const metaUpdates: { category?: string; isLittleWarriors?: boolean; image?: string; image2?: string } = {};
   if (body && typeof body === "object") {
     const o = body as Record<string, unknown>;
     if (typeof o.title === "string") textUpdates.title = o.title;
@@ -51,6 +51,8 @@ export async function PATCH(
     if (typeof o.fullDescription === "string") textUpdates.fullDescription = o.fullDescription;
     if (typeof o.category === "string" && o.category.trim().length > 0) metaUpdates.category = o.category.trim();
     if (typeof o.isLittleWarriors === "boolean") metaUpdates.isLittleWarriors = o.isLittleWarriors;
+    if (typeof o.image === "string" && o.image.trim().length > 0) metaUpdates.image = o.image.trim();
+    if (typeof o.image2 === "string" && o.image2.trim().length > 0) metaUpdates.image2 = o.image2.trim();
     const goalNum = typeof o.goal === "number" ? o.goal : (typeof o.goal === "string" ? Number(o.goal) : NaN);
     const raisedNum = typeof o.raised === "number" ? o.raised : (typeof o.raised === "string" ? Number(o.raised) : NaN);
     if (Number.isFinite(goalNum) && goalNum >= 0) amountUpdates.goal = goalNum;
@@ -59,7 +61,7 @@ export async function PATCH(
 
   if (Object.keys(textUpdates).length === 0 && Object.keys(amountUpdates).length === 0 && Object.keys(metaUpdates).length === 0) {
     return NextResponse.json(
-      { error: "Provide at least one of: title, description, fullDescription, goal, raised, category, isLittleWarriors." },
+      { error: "Provide at least one of: title, description, fullDescription, goal, raised, category, isLittleWarriors, image, image2." },
       { status: 400 }
     );
   }
