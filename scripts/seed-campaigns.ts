@@ -34,7 +34,7 @@ const LOCATIONS = [
 
 function campaign(
   n: number,
-  opts: { title: string; description: string; fullDescription: string; creator: string; creatorType: typeof CREATOR_TYPES[number]; category: string; location: string; goal: number; raised: number; backers: number; daysLeft: number; fullyFunded?: boolean; image?: string; image2?: string }
+  opts: { title: string; description: string; fullDescription: string; creator: string; creatorType: typeof CREATOR_TYPES[number]; category: string; location: string; goal: number; raised: number; backers: number; daysLeft: number; fullyFunded?: boolean; image?: string; image2?: string; isLittleWarriors?: boolean }
 ) {
   const id = `a1b2c3d4-${String(n).padStart(4, "0")}-4000-8000-0000000000${String(n).padStart(2, "0")}`;
   const created = new Date(Date.now() - (40 - n) * 2 * 24 * 60 * 60 * 1000).toISOString();
@@ -57,6 +57,7 @@ function campaign(
     status: "live" as const,
     verified: true,
     admin_backed: false,
+    is_little_warriors: !!opts.isLittleWarriors,
     created_at: created,
     updated_at: new Date().toISOString(),
   };
@@ -209,6 +210,71 @@ const DEMO_CAMPAIGNS = [
   campaign(38, { title: "Furniture for New Mothers", description: "Cribs and essentials for 15 new mothers in need.", fullDescription: "We support new mothers who cannot afford a safe place for their baby to sleep. We provide cribs, mattresses, and basic baby essentials. Your gift keeps infants safe and helps families get a good start.", creator: "Belize New Mothers Fund", creatorType: "charity", category: "Community", location: "Belize City, Belize", goal: 2700, raised: 980, backers: 30, daysLeft: 16 }),
   campaign(39, { title: "Burn Victim Care", description: "Medical and recovery support for a young burn victim.", fullDescription: "A child suffered serious burns in a home accident. He needs ongoing treatment and rehabilitation. The family cannot cover all costs. We are raising funds for his care and recovery.", creator: "Family of Miguel", creatorType: "individual", category: "Medical", location: "Dangriga, Belize", goal: 5500, raised: 2350, backers: 64, daysLeft: 5, image: "/burn-victim-care-1.png", image2: "/burn-victim-care-2.png" }),
   campaign(40, { title: "Playground for San Ignacio School", description: "Safe playground equipment for a primary school.", fullDescription: "A primary school in San Ignacio has no proper playground. We want to install safe, durable equipment so children can play at recess. The school has cleared the space; we need the equipment and installation.", creator: "San Ignacio School Parents", creatorType: "organization", category: "Community", location: "San Ignacio, Cayo District, Belize", goal: 3200, raised: 1280, backers: 42, daysLeft: 20 }),
+  // --- 4 LITTLE WARRIORS (fictional; paired images y/x/v/a) ---
+  campaign(41, {
+    title: "Help Mia Recover From Severe Viral Fever",
+    description: "7-year-old Mia needs urgent tests, medication, and follow-up care after repeated high fevers.",
+    fullDescription: "Mia has been admitted multiple times with persistent high fever and dehydration. Her family is trying to cover lab work, pediatric specialist visits, and medication, but costs keep increasing. This campaign will help with diagnostics, treatment, and transportation to follow-up appointments so Mia can recover safely.",
+    creator: "Mia's Family Support Circle",
+    creatorType: "individual",
+    category: "Medical expenses",
+    location: "Belmopan, Belize",
+    goal: 8200,
+    raised: 2630,
+    backers: 49,
+    daysLeft: 23,
+    image: "/little-warriors/y1.png",
+    image2: "/little-warriors/y2.png",
+    isLittleWarriors: true,
+  }),
+  campaign(42, {
+    title: "Breathing Support for Jayden's ICU Recovery",
+    description: "Jayden is fighting a serious respiratory infection and needs ICU support and post-discharge therapy.",
+    fullDescription: "Little Jayden was placed on breathing support after a severe respiratory infection. His doctors expect a long recovery period with hospital monitoring, respiratory therapy, and medications after discharge. Funds raised will go directly to ICU-related costs, medications, and recovery care for Jayden.",
+    creator: "Jayden Recovery Team",
+    creatorType: "individual",
+    category: "Medical expenses",
+    location: "Orange Walk Town, Belize",
+    goal: 9700,
+    raised: 3415,
+    backers: 62,
+    daysLeft: 19,
+    image: "/little-warriors/x1.png",
+    image2: "/little-warriors/x2.png",
+    isLittleWarriors: true,
+  }),
+  campaign(43, {
+    title: "Cold & Chest Treatment Fund for Alina",
+    description: "Alina needs pediatric care, medication, and monitoring for recurring chest infections.",
+    fullDescription: "Alina has been experiencing recurring flu-like symptoms and chest complications that require close pediatric follow-up. Her family needs support for clinic visits, medicine, and emergency checkups to prevent complications. Your help can keep Alina on track to a full recovery.",
+    creator: "Friends of Alina",
+    creatorType: "individual",
+    category: "Medical expenses",
+    location: "Dangriga, Belize",
+    goal: 7600,
+    raised: 1890,
+    backers: 37,
+    daysLeft: 27,
+    image: "/little-warriors/v1.png",
+    image2: "/little-warriors/v2.png",
+    isLittleWarriors: true,
+  }),
+  campaign(44, {
+    title: "Emergency Pediatric Oxygen Care for Nyla",
+    description: "Nyla urgently needs oxygen therapy, specialist review, and continued pediatric treatment.",
+    fullDescription: "Nyla was rushed in with breathing distress and now requires oxygen support and continued pediatric supervision. Her mother is doing everything possible, but hospital bills and treatment costs are overwhelming. This fundraiser will help cover oxygen therapy, medicine, and specialist follow-up care for Nyla.",
+    creator: "Nyla Care Fund",
+    creatorType: "individual",
+    category: "Medical expenses",
+    location: "San Ignacio, Cayo District, Belize",
+    goal: 10300,
+    raised: 4120,
+    backers: 71,
+    daysLeft: 16,
+    image: "/little-warriors/a1.png",
+    image2: "/little-warriors/a2.png",
+    isLittleWarriors: true,
+  }),
 ];
 
 /** Donor names/emails for seeded donations (cycle through; ~25% anonymous). */

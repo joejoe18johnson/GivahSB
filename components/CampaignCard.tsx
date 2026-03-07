@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import SafeImage from "./SafeImage";
 import ShareCampaign from "./ShareCampaign";
-import { Users, CheckCircle2, Heart, Trophy, ShieldCheck } from "lucide-react";
+import { Users, CheckCircle2, Heart, Trophy, ShieldCheck, Baby } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { useHearted } from "./HeartedCampaigns";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,6 +26,7 @@ interface Campaign {
   location?: string;
   verified?: boolean;
   adminBacked?: boolean;
+  isLittleWarriors?: boolean;
 }
 
 interface CampaignCardProps {
@@ -129,6 +130,12 @@ export default function CampaignCard({ campaign }: CampaignCardProps) {
         {/* Content */}
         <div className="p-6 flex flex-col flex-1">
           <div className="-mt-3 mb-1.5 flex flex-wrap items-center gap-1.5">
+            {campaign.isLittleWarriors && (
+              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-pink-100 dark:bg-pink-900/40 text-pink-700 dark:text-pink-300 text-[10px] font-semibold border border-pink-300 dark:border-pink-700 shadow-sm">
+                <Baby className="w-3 h-3 flex-shrink-0" />
+                Little Warrior
+              </span>
+            )}
             {campaign.adminBacked && (
               <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-verified-100 dark:bg-verified-900/40 text-verified-800 dark:text-verified-300 text-[10px] font-semibold border border-verified-300 dark:border-verified-700 shadow-sm">
                 <ShieldCheck className="w-3 h-3 flex-shrink-0" />

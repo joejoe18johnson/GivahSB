@@ -361,6 +361,10 @@ export default function Home() {
                                   <Users className="w-3.5 h-3.5" />
                                   {(campaign.backers ?? 0).toLocaleString()} donors
                                 </p>
+                                <span className="mt-1 inline-flex w-fit items-center gap-1 px-2 py-0.5 rounded-full bg-pink-100 dark:bg-pink-900/40 text-pink-700 dark:text-pink-300 text-[10px] font-semibold border border-pink-300 dark:border-pink-700">
+                                  <Baby className="w-3 h-3" />
+                                  Little Warrior
+                                </span>
                                 <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mt-1">
                                   {campaign.title}
                                 </h3>
@@ -461,6 +465,10 @@ export default function Home() {
                                   <Users className="w-3.5 h-3.5" />
                                   {(campaign.backers ?? 0).toLocaleString()} donors
                                 </p>
+                                <span className="mt-1 inline-flex w-fit items-center gap-1 px-2 py-0.5 rounded-full bg-pink-100 dark:bg-pink-900/40 text-pink-700 dark:text-pink-300 text-[10px] font-semibold border border-pink-300 dark:border-pink-700">
+                                  <Baby className="w-3 h-3" />
+                                  Little Warrior
+                                </span>
                                 <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mt-1">
                                   {campaign.title}
                                 </h3>
