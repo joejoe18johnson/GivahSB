@@ -311,97 +311,69 @@ export default function Home() {
               </div>
             ) : littleWarriorsCampaigns.length > 0 ? (
               <>
-                {/* Mobile: swipeable carousel with dots (Campaigns Needing Support card layout) */}
-                <div className="md:hidden -mx-4 px-4 mb-6">
-                  <div
-                    ref={lwMobileScrollRef}
-                    className="overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory scrollbar-hide pb-2"
-                    style={{ WebkitOverflowScrolling: "touch" }}
-                    onScroll={() => {
-                      if (lwMobileScrollRaf.current != null) cancelAnimationFrame(lwMobileScrollRaf.current);
-                      lwMobileScrollRaf.current = requestAnimationFrame(() => {
-                        lwMobileScrollRaf.current = null;
-                        updateLwMobileIndex();
-                      });
-                    }}
-                  >
-                    <div className="flex gap-4">
-                      {littleWarriorsCampaigns.map((campaign) => {
-                        const goal = Number(campaign.goal) || 1;
-                        const raised = Number(campaign.raised) || 0;
-                        const pct = goal > 0 ? Math.min((raised / goal) * 100, 100) : 0;
-                        return (
-                          <div key={campaign.id} className="flex-shrink-0 w-[85vw] max-w-[340px] snap-center snap-always">
-                            <Link
-                              href={`/campaigns/${campaign.id}`}
-                              className="flex flex-row rounded-xl gradient-border-little-warriors bg-white/95 dark:bg-gray-700/95 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 ease-in-out"
-                            >
-                              <div className="relative w-32 sm:w-40 flex-shrink-0 aspect-square bg-gray-200 dark:bg-gray-600">
-                                {campaign.image ? (
-                                  <SafeImage
-                                    src={campaign.image}
-                                    alt={campaign.title}
-                                    fill
-                                    className="object-cover"
-                                    sizes="(max-width: 640px) 128px, 160px"
-                                    fallback={
-                                      <div className="absolute inset-0 flex items-center justify-center bg-primary-100 text-primary-600 text-2xl font-semibold">
-                                        {campaign.title.charAt(0)}
-                                      </div>
-                                    }
-                                  />
-                                ) : (
-                                  <div className="absolute inset-0 flex items-center justify-center bg-primary-100 text-primary-600 text-2xl font-semibold">
-                                    {campaign.title.charAt(0)}
-                                  </div>
-                                )}
-                              </div>
-                              <div className="flex flex-col flex-1 min-w-0 p-4 justify-center">
-                                <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                                  <Users className="w-3.5 h-3.5" />
-                                  {(campaign.backers ?? 0).toLocaleString()} donors
-                                </p>
-                                <span className="mt-1 inline-flex w-fit items-center gap-1 px-2 py-0.5 rounded-full bg-pink-100 dark:bg-pink-900/40 text-pink-700 dark:text-pink-300 text-[10px] font-semibold border border-pink-300 dark:border-pink-700">
-                                  <Baby className="w-3 h-3" />
-                                  Little Warrior
-                                </span>
-                                <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mt-1">
-                                  {campaign.title}
-                                </h3>
-                                <p className="text-base font-bold bg-gradient-to-r from-primary-500 to-verified-500 dark:from-primary-400 dark:to-verified-400 bg-clip-text text-transparent mt-1">
-                                  {Math.round(pct)}% Funded
-                                </p>
-                                <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5 mt-2">
-                                  <div
-                                    className="bg-gradient-to-r from-primary-500 to-verified-500 h-2.5 rounded-full transition-all duration-300 ease-in-out"
-                                    style={{ width: `${pct}%` }}
-                                  />
+                {/* Mobile: stacked list layout (same structure as Campaigns Needing Support) */}
+                <div className="md:hidden">
+                  <ul className="flex flex-col gap-4 list-none p-0 m-0">
+                    {littleWarriorsCampaigns.map((campaign) => {
+                      const goal = Number(campaign.goal) || 1;
+                      const raised = Number(campaign.raised) || 0;
+                      const pct = goal > 0 ? Math.min((raised / goal) * 100, 100) : 0;
+                      return (
+                        <li key={campaign.id}>
+                          <Link
+                            href={`/campaigns/${campaign.id}`}
+                            className="flex flex-row rounded-xl gradient-border-little-warriors bg-white/95 dark:bg-gray-700/95 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 ease-in-out"
+                          >
+                            <div className="relative w-32 flex-shrink-0 aspect-square bg-gray-200 dark:bg-gray-600">
+                              {campaign.image ? (
+                                <SafeImage
+                                  src={campaign.image}
+                                  alt={campaign.title}
+                                  fill
+                                  className="object-cover"
+                                  sizes="(max-width: 640px) 128px, 160px"
+                                  fallback={
+                                    <div className="absolute inset-0 flex items-center justify-center bg-primary-100 text-primary-600 text-2xl font-semibold">
+                                      {campaign.title.charAt(0)}
+                                    </div>
+                                  }
+                                />
+                              ) : (
+                                <div className="absolute inset-0 flex items-center justify-center bg-primary-100 text-primary-600 text-2xl font-semibold">
+                                  {campaign.title.charAt(0)}
                                 </div>
-                                <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-2">
-                                  {formatCurrency(raised)} raised
-                                </p>
+                              )}
+                            </div>
+                            <div className="flex flex-col flex-1 min-w-0 p-4 justify-center">
+                              <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                <Users className="w-3.5 h-3.5" />
+                                {(campaign.backers ?? 0).toLocaleString()} donors
+                              </p>
+                              <span className="mt-1 inline-flex w-fit items-center gap-1 px-2 py-0.5 rounded-full bg-pink-100 dark:bg-pink-900/40 text-pink-700 dark:text-pink-300 text-[10px] font-semibold border border-pink-300 dark:border-pink-700">
+                                <Baby className="w-3 h-3" />
+                                Little Warrior
+                              </span>
+                              <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mt-1">
+                                {campaign.title}
+                              </h3>
+                              <p className="text-base font-bold bg-gradient-to-r from-primary-500 to-verified-500 dark:from-primary-400 dark:to-verified-400 bg-clip-text text-transparent mt-1">
+                                {Math.round(pct)}% Funded
+                              </p>
+                              <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5 mt-2">
+                                <div
+                                  className="bg-gradient-to-r from-primary-500 to-verified-500 h-2.5 rounded-full transition-all duration-300 ease-in-out"
+                                  style={{ width: `${pct}%` }}
+                                />
                               </div>
-                            </Link>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  {littleWarriorsCampaigns.length > 1 && (
-                    <div className="flex justify-center gap-2 pt-3 pb-1">
-                      {littleWarriorsCampaigns.map((_, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onClick={() => scrollLwMobileToIndex(i)}
-                          aria-label={`Go to slide ${i + 1}`}
-                          className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-                            lwCurrentMobileIndex === i ? "bg-pink-500 scale-110" : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  )}
+                              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-2">
+                                {formatCurrency(raised)} raised
+                              </p>
+                            </div>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </div>
 
                 {/* Desktop: carousel with arrows (Campaigns Needing Support card layout) */}
