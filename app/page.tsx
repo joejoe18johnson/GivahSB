@@ -151,7 +151,8 @@ export default function Home() {
   };
 
   // Little Warriors is admin-classified (or creator-selected) via isLittleWarriors flag.
-  const littleWarriorsCampaigns = campaigns.filter((c) => !!c.isLittleWarriors);
+  // Only show up to 3 Little Warriors campaigns at a time on the home section.
+  const littleWarriorsCampaigns = campaigns.filter((c) => !!c.isLittleWarriors).slice(0, 3);
   const lwScrollRef = useRef<HTMLDivElement>(null);
   const lwMobileScrollRef = useRef<HTMLDivElement>(null);
   const lwMobileScrollRaf = useRef<number | null>(null);
@@ -356,12 +357,12 @@ export default function Home() {
                               <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mt-1">
                                 {campaign.title}
                               </h3>
-                              <p className="text-base font-bold bg-gradient-to-r from-primary-500 to-verified-500 dark:from-primary-400 dark:to-verified-400 bg-clip-text text-transparent mt-1">
+                              <p className="text-base font-bold bg-gradient-to-r from-pink-500 to-blue-500 dark:from-pink-400 dark:to-blue-400 bg-clip-text text-transparent mt-1">
                                 {Math.round(pct)}% Funded
                               </p>
                               <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5 mt-2">
                                 <div
-                                  className="bg-gradient-to-r from-primary-500 to-verified-500 h-2.5 rounded-full transition-all duration-300 ease-in-out"
+                                  className="bg-gradient-to-r from-pink-500 to-blue-500 h-2.5 rounded-full transition-all duration-300 ease-in-out"
                                   style={{ width: `${pct}%` }}
                                 />
                               </div>
@@ -444,12 +445,12 @@ export default function Home() {
                                 <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mt-1">
                                   {campaign.title}
                                 </h3>
-                                <p className="text-base font-bold bg-gradient-to-r from-primary-500 to-verified-500 dark:from-primary-400 dark:to-verified-400 bg-clip-text text-transparent mt-1">
+                                <p className="text-base font-bold bg-gradient-to-r from-pink-500 to-blue-500 dark:from-pink-400 dark:to-blue-400 bg-clip-text text-transparent mt-1">
                                   {Math.round(pct)}% Funded
                                 </p>
                                 <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5 mt-2">
                                   <div
-                                    className="bg-gradient-to-r from-primary-500 to-verified-500 h-2.5 rounded-full transition-all duration-300 ease-in-out"
+                                    className="bg-gradient-to-r from-pink-500 to-blue-500 h-2.5 rounded-full transition-all duration-300 ease-in-out"
                                     style={{ width: `${pct}%` }}
                                   />
                                 </div>
