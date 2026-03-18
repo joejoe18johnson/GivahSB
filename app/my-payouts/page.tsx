@@ -85,6 +85,13 @@ export default function MyPayoutsPage() {
 
   const completed = payouts.filter((p) => p.status === "completed");
   const nonCompleted = payouts.filter((p) => p.status !== "completed");
+  const getPayoutDisplayStatus = (status: string) => {
+    if (status === "pending") return "Pending";
+    if (status === "processing") return "Ongoing";
+    if (status === "rejected") return "Rejected";
+    if (status === "completed") return "Completed";
+    return status;
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
@@ -191,7 +198,7 @@ export default function MyPayoutsPage() {
                             {p.status === "pending" && <Clock className="w-3 h-3" />}
                             {p.status === "processing" && <Loader2 className="w-3 h-3 animate-spin" />}
                             {p.status === "rejected" && <XCircle className="w-3 h-3" />}
-                            {p.status}
+                            {getPayoutDisplayStatus(p.status)}
                           </span>
                         </td>
                       </tr>

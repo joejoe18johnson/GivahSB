@@ -406,7 +406,7 @@ export default function AdminPayoutsPage() {
                       >
                         {p.status === "pending" && "Pending"}
                         {p.status === "completed" && "Completed"}
-                        {p.status === "processing" && "Processing"}
+                        {p.status === "processing" && "Ongoing"}
                         {p.status === "rejected" && "Rejected"}
                         {!["pending", "completed", "processing", "rejected"].includes(p.status) && p.status}
                       </span>
@@ -495,7 +495,7 @@ export default function AdminPayoutsPage() {
                 <p><span className="font-medium text-gray-500">Campaign</span><br />{selectedPayout.campaignTitle || "—"}</p>
                 <p><span className="font-medium text-gray-500">Amount</span><br />{formatAmount(selectedPayout.raised)}</p>
                 <p><span className="font-medium text-gray-500">Creator</span><br />{selectedPayout.creatorName || "—"} · {selectedPayout.creatorEmail || ""}</p>
-                <p><span className="font-medium text-gray-500">Status</span><br /><span className="capitalize">{selectedPayout.status}</span></p>
+                <p><span className="font-medium text-gray-500">Status</span><br /><span className="capitalize">{selectedPayout.status === "processing" ? "Ongoing" : selectedPayout.status}</span></p>
                 <p><span className="font-medium text-gray-500">Bank</span><br />{selectedPayout.bankName} · {selectedPayout.accountType}</p>
                 <p><span className="font-medium text-gray-500">Account holder</span><br />{selectedPayout.accountHolderName}</p>
                 <p><span className="font-medium text-gray-500">Account number</span><br />{selectedPayout.accountNumber}{selectedPayout.branch ? ` · ${selectedPayout.branch}` : ""}</p>
