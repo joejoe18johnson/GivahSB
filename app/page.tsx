@@ -235,8 +235,21 @@ export default function Home() {
     setLwCurrentPage(nextPage);
   };
 
+  /** Derive current page from scroll position so arrow clicks never use stale React state. */
+  const getLwPageFromScroll = (): number => {
+    const el = lwScrollRef.current;
+    if (!el) return 1;
+    const cards = getLwCardElements();
+    if (cards.length === 0) return 1;
+    const eps = 6;
+    const idx = cards.findIndex((c) => c.offsetLeft >= el.scrollLeft - eps);
+    const currentStartIndex = idx === -1 ? cards.length - 1 : idx;
+    return Math.min(lwTotalPages, Math.floor(currentStartIndex / lwCardsPerPage) + 1);
+  };
+
   const scrollLw = (direction: "left" | "right") => {
-    const nextPage = direction === "left" ? lwCurrentPage - 1 : lwCurrentPage + 1;
+    const currentPage = getLwPageFromScroll();
+    const nextPage = direction === "left" ? currentPage - 1 : currentPage + 1;
     scrollLwToPage(nextPage);
   };
 
@@ -449,7 +462,11 @@ export default function Home() {
                     className="overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-proximity scrollbar-hide"
                     style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                   >
-                    <div className="flex gap-6 py-2 w-full justify-center">
+                    {/*
+                      w-max: track width = sum of cards (enables overflow + scroll).
+                      min-w-full: when row is narrower than viewport, row still fills width so justify-center centers cards.
+                    */}
+                    <div className="flex gap-6 py-2 w-max min-w-full justify-center">
                       {littleWarriorsCampaigns.map((campaign) => {
                         const goal = Number(campaign.goal) || 1;
                         const raised = Number(campaign.raised) || 0;
