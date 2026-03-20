@@ -9,7 +9,7 @@ import HeroCommunityVisual from "@/components/HeroCommunityVisual";
 import { TrendingUp, FileText, Share2, ArrowUpRight, Shield, DollarSign, Calendar, Users, CheckCircle2, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Baby } from "lucide-react";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 const permanentMarker = Permanent_Marker({ weight: "400", subsets: ["latin"] });
@@ -153,132 +153,56 @@ export default function Home() {
   // Little Warriors is admin-classified (or creator-selected) via isLittleWarriors flag.
   // Only show up to 3 Little Warriors campaigns at a time on the home section.
   const littleWarriorsCampaigns = campaigns.filter((c) => !!c.isLittleWarriors).slice(0, 3);
-  const lwScrollRef = useRef<HTMLDivElement>(null);
-  const lwMobileScrollRef = useRef<HTMLDivElement>(null);
-  const lwMobileScrollRaf = useRef<number | null>(null);
-  const [lwCurrentPage, setLwCurrentPage] = useState(1);
-  const [lwCurrentMobileIndex, setLwCurrentMobileIndex] = useState(0);
-  const [lwCanScrollLeft, setLwCanScrollLeft] = useState(false);
-  const [lwCanScrollRight, setLwCanScrollRight] = useState(false);
+  /** Desktop carousel: transform-based (native overflow scroll broke when track expanded to full width). */
+  const lwTrackRef = useRef<HTMLDivElement>(null);
+  const lwViewportRef = useRef<HTMLDivElement>(null);
+  const lwTouchStartX = useRef<number | null>(null);
+  const [lwPageIndex, setLwPageIndex] = useState(0);
+  const [lwTranslateX, setLwTranslateX] = useState(0);
   const lwCardsPerPage = 2;
   const lwTotalPages = Math.max(1, Math.ceil(littleWarriorsCampaigns.length / lwCardsPerPage));
+  const lwMaxPageIndex = Math.max(0, lwTotalPages - 1);
 
-  const getLwCardElements = () => {
-    const el = lwScrollRef.current;
-    if (!el) return [] as HTMLElement[];
-    return Array.from(el.querySelectorAll<HTMLElement>("[data-lw-card='1']"));
-  };
+  const lwMeasureTranslate = useCallback(() => {
+    const track = lwTrackRef.current;
+    if (!track) return;
+    const cards = track.querySelectorAll<HTMLElement>("[data-lw-card='1']");
+    const idx = lwPageIndex * lwCardsPerPage;
+    const card = cards[idx];
+    if (!card) {
+      setLwTranslateX(0);
+      return;
+    }
+    setLwTranslateX(-card.offsetLeft);
+  }, [lwPageIndex, littleWarriorsCampaigns.length, lwCardsPerPage]);
 
-  const updateLwMobileIndex = () => {
-    const el = lwMobileScrollRef.current;
-    if (!el?.firstElementChild) return;
-    const card = el.firstElementChild as HTMLElement;
-    const cardWidth = card.offsetWidth + 16;
-    const index = Math.round(el.scrollLeft / cardWidth);
-    const clamped = Math.max(0, Math.min(index, littleWarriorsCampaigns.length - 1));
-    setLwCurrentMobileIndex(clamped);
-  };
+  useLayoutEffect(() => {
+    lwMeasureTranslate();
+  }, [lwMeasureTranslate]);
 
-  const scrollLwMobileToIndex = (index: number) => {
-    const el = lwMobileScrollRef.current;
-    if (!el?.firstElementChild) return;
-    const card = el.firstElementChild as HTMLElement;
-    const cardWidth = card.offsetWidth + 16;
-    el.scrollTo({ left: index * cardWidth, behavior: "smooth" });
-    setLwCurrentMobileIndex(index);
-  };
-
-  const updateLwScrollState = () => {
-    const el = lwScrollRef.current;
-    if (!el) return;
-    setLwCanScrollLeft(el.scrollLeft > 0);
-    setLwCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 1);
-
-    // Derive the current "page" from which card is closest to the scroll position.
-    const cards = getLwCardElements();
-    if (cards.length === 0) return;
-
-    const eps = 6;
-    const idx = cards.findIndex((c) => c.offsetLeft >= el.scrollLeft - eps);
-    const currentStartIndex = idx === -1 ? cards.length - 1 : idx;
-    const page = Math.min(lwTotalPages, Math.floor(currentStartIndex / lwCardsPerPage) + 1);
-    setLwCurrentPage((p) => (page >= 1 && page <= lwTotalPages ? page : p));
-  };
-
-  const scrollLwToCardIndex = (index: number, behavior: ScrollBehavior = "smooth") => {
-    const el = lwScrollRef.current;
-    if (!el) return;
-
-    const cards = getLwCardElements();
-    if (cards.length === 0) return;
-
-    // Center the visible "page group" (up to `lwCardsPerPage` cards) in the scroll viewport.
-    const clampedStart = Math.max(0, Math.min(index, cards.length - 1));
-    const first = cards[clampedStart];
-    const second = cards[clampedStart + 1] ?? null;
-
-    const groupLeft = first.offsetLeft;
-    const groupRight = second ? second.offsetLeft + second.offsetWidth : first.offsetLeft + first.offsetWidth;
-    const groupWidth = groupRight - groupLeft;
-
-    const maxScrollLeft = el.scrollWidth - el.clientWidth;
-    const targetLeft = groupLeft - (el.clientWidth - groupWidth) / 2;
-    const clampedLeft = Math.max(0, Math.min(targetLeft, maxScrollLeft));
-
-    el.scrollTo({ left: clampedLeft, behavior });
-  };
-
-  const scrollLwToPage = (page: number, behavior: ScrollBehavior = "smooth") => {
-    const nextPage = Math.max(1, Math.min(lwTotalPages, page));
-    const startIndex = (nextPage - 1) * lwCardsPerPage;
-    scrollLwToCardIndex(startIndex, behavior);
-    setLwCurrentPage(nextPage);
-  };
-
-  /** Derive current page from scroll position so arrow clicks never use stale React state. */
-  const getLwPageFromScroll = (): number => {
-    const el = lwScrollRef.current;
-    if (!el) return 1;
-    const cards = getLwCardElements();
-    if (cards.length === 0) return 1;
-    const eps = 6;
-    const idx = cards.findIndex((c) => c.offsetLeft >= el.scrollLeft - eps);
-    const currentStartIndex = idx === -1 ? cards.length - 1 : idx;
-    return Math.min(lwTotalPages, Math.floor(currentStartIndex / lwCardsPerPage) + 1);
-  };
-
-  const scrollLw = (direction: "left" | "right") => {
-    const currentPage = getLwPageFromScroll();
-    const nextPage = direction === "left" ? currentPage - 1 : currentPage + 1;
-    scrollLwToPage(nextPage);
-  };
+  useLayoutEffect(() => {
+    const track = lwTrackRef.current;
+    if (!track || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => lwMeasureTranslate());
+    ro.observe(track);
+    return () => ro.disconnect();
+  }, [lwMeasureTranslate]);
 
   useEffect(() => {
-    const el = lwScrollRef.current;
-    const onScroll = () => updateLwScrollState();
-    updateLwScrollState();
-    const t = setTimeout(updateLwScrollState, 100);
-    if (el) el.addEventListener("scroll", onScroll);
-    window.addEventListener("resize", onScroll);
-    return () => {
-      clearTimeout(t);
-      if (el) el.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [littleWarriorsCampaigns.length]);
+    setLwPageIndex((p) => Math.min(p, lwMaxPageIndex));
+  }, [lwMaxPageIndex]);
 
-  // Initial alignment: keep the first Little Warriors "page group" centered in the viewport.
-  useEffect(() => {
-    const el = lwScrollRef.current;
-    if (!el) return;
-    if (littleWarriorsCampaigns.length === 0) return;
+  const onLwTouchStart = (e: React.TouchEvent) => {
+    lwTouchStartX.current = e.touches[0].clientX;
+  };
 
-    const t = setTimeout(() => {
-      // Only auto-center if we haven't been scrolled already.
-      if (el.scrollLeft === 0) scrollLwToPage(1, "auto");
-    }, 60);
-    return () => clearTimeout(t);
-  }, [littleWarriorsCampaigns.length]);
+  const onLwTouchEnd = (e: React.TouchEvent) => {
+    if (lwTouchStartX.current == null) return;
+    const dx = e.changedTouches[0].clientX - lwTouchStartX.current;
+    lwTouchStartX.current = null;
+    if (dx < -50) setLwPageIndex((p) => Math.min(lwMaxPageIndex, p + 1));
+    else if (dx > 50) setLwPageIndex((p) => Math.max(0, p - 1));
+  };
 
   return (
     <>
@@ -344,7 +268,7 @@ export default function Home() {
       </div>
 
       {/* Little Warriors */}
-      <section className="py-8 md:py-12 overflow-hidden bg-gradient-to-br from-pink-50 via-blue-50 to-pink-100 dark:from-pink-950/30 dark:via-blue-950/20 dark:to-pink-950/30 animate-fade-in opacity-0 [animation-delay:0.22s] [animation-fill-mode:forwards]">
+      <section className="py-8 md:py-12 overflow-x-visible overflow-y-visible bg-gradient-to-br from-pink-50 via-blue-50 to-pink-100 dark:from-pink-950/30 dark:via-blue-950/20 dark:to-pink-950/30 animate-fade-in opacity-0 [animation-delay:0.22s] [animation-fill-mode:forwards]">
         <div className="container mx-auto px-4">
           <div className="mb-6 text-center">
             <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-4">
@@ -437,12 +361,12 @@ export default function Home() {
                   </ul>
                 </div>
 
-                {/* Desktop: carousel with arrows (Campaigns Needing Support card layout) */}
+                {/* Desktop: transform carousel — arrows + swipe (native overflow had no scroll when track filled viewport) */}
                 <div className="hidden md:block relative">
                   <button
                     type="button"
-                    onClick={() => scrollLw("left")}
-                    disabled={!lwCanScrollLeft}
+                    onClick={() => setLwPageIndex((p) => Math.max(0, p - 1))}
+                    disabled={lwPageIndex <= 0}
                     className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 z-20 w-10 h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-lg flex items-center justify-center text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-pink-500 hover:text-pink-600 disabled:opacity-40 disabled:pointer-events-none transition-all"
                     aria-label="Previous"
                   >
@@ -450,23 +374,25 @@ export default function Home() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => scrollLw("right")}
-                    disabled={!lwCanScrollRight}
+                    onClick={() => setLwPageIndex((p) => Math.min(lwMaxPageIndex, p + 1))}
+                    disabled={lwPageIndex >= lwMaxPageIndex}
                     className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 z-20 w-10 h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-lg flex items-center justify-center text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-pink-500 hover:text-pink-600 disabled:opacity-40 disabled:pointer-events-none transition-all"
                     aria-label="Next"
                   >
                     <ChevronRight className="w-5 h-5" />
                   </button>
                   <div
-                    ref={lwScrollRef}
-                    className="overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-proximity scrollbar-hide"
-                    style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                    ref={lwViewportRef}
+                    onTouchStart={onLwTouchStart}
+                    onTouchEnd={onLwTouchEnd}
+                    className="overflow-hidden w-full touch-pan-x select-none"
+                    style={{ WebkitOverflowScrolling: "touch" }}
                   >
-                    {/*
-                      w-max: track width = sum of cards (enables overflow + scroll).
-                      min-w-full: when row is narrower than viewport, row still fills width so justify-center centers cards.
-                    */}
-                    <div className="flex gap-6 py-2 w-max min-w-full justify-center">
+                    <div
+                      ref={lwTrackRef}
+                      className="flex flex-nowrap gap-6 py-2 w-max transition-transform duration-300 ease-out will-change-transform"
+                      style={{ transform: `translate3d(${lwTranslateX}px, 0, 0)` }}
+                    >
                       {littleWarriorsCampaigns.map((campaign) => {
                         const goal = Number(campaign.goal) || 1;
                         const raised = Number(campaign.raised) || 0;
@@ -531,14 +457,14 @@ export default function Home() {
                 </div>
                 {lwTotalPages > 1 && (
                   <div className="hidden md:flex justify-center gap-2 mt-6">
-                    {Array.from({ length: lwTotalPages }, (_, i) => i + 1).map((page) => (
+                    {Array.from({ length: lwTotalPages }, (_, i) => i).map((pageIdx) => (
                       <button
-                        key={page}
+                        key={pageIdx}
                         type="button"
-                        onClick={() => scrollLwToPage(page)}
-                        aria-label={`Go to page ${page}`}
+                        onClick={() => setLwPageIndex(pageIdx)}
+                        aria-label={`Go to page ${pageIdx + 1}`}
                         className={`w-2.5 h-2.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-                          lwCurrentPage === page ? "bg-pink-500 scale-110" : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400"
+                          lwPageIndex === pageIdx ? "bg-pink-500 scale-110" : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400"
                         }`}
                       />
                     ))}
