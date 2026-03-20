@@ -173,7 +173,8 @@ export default function Home() {
       setLwTranslateX(0);
       return;
     }
-    setLwTranslateX(-card.offsetLeft);
+    // Round for crisp alignment on Retina / subpixel layouts
+    setLwTranslateX(-Math.round(card.offsetLeft));
   }, [lwPageIndex, littleWarriorsCampaigns.length, lwCardsPerPage]);
 
   useLayoutEffect(() => {
@@ -362,7 +363,7 @@ export default function Home() {
                 </div>
 
                 {/* Desktop: transform carousel — arrows + swipe (native overflow had no scroll when track filled viewport) */}
-                <div className="hidden md:block relative">
+                <div className="hidden md:block relative w-full mx-auto">
                   <button
                     type="button"
                     onClick={() => setLwPageIndex((p) => Math.max(0, p - 1))}
@@ -385,13 +386,13 @@ export default function Home() {
                     ref={lwViewportRef}
                     onTouchStart={onLwTouchStart}
                     onTouchEnd={onLwTouchEnd}
-                    className="overflow-hidden w-full touch-pan-x select-none"
+                    className="overflow-hidden w-full min-w-0 max-w-full mx-auto touch-pan-x select-none flex flex-row justify-center"
                     style={{ WebkitOverflowScrolling: "touch" }}
                   >
                     <div
                       ref={lwTrackRef}
-                      className="flex flex-nowrap gap-6 py-2 w-max transition-transform duration-300 ease-out will-change-transform"
-                      style={{ transform: `translate3d(${lwTranslateX}px, 0, 0)` }}
+                      className="flex shrink-0 flex-nowrap gap-6 py-2 w-max max-w-none mx-auto transition-transform duration-300 ease-out will-change-transform [backface-visibility:hidden]"
+                      style={{ transform: `translate3d(${Math.round(lwTranslateX)}px, 0, 0)` }}
                     >
                       {littleWarriorsCampaigns.map((campaign) => {
                         const goal = Number(campaign.goal) || 1;
