@@ -160,10 +160,14 @@ export default function Home() {
   const [lwCurrentMobileIndex, setLwCurrentMobileIndex] = useState(0);
   const [lwCanScrollLeft, setLwCanScrollLeft] = useState(false);
   const [lwCanScrollRight, setLwCanScrollRight] = useState(false);
-  const LW_CARD_WIDTH = 360;
   const lwCardsPerPage = 2;
   const lwTotalPages = Math.max(1, Math.ceil(littleWarriorsCampaigns.length / lwCardsPerPage));
-  const LW_PAGE_WIDTH = LW_CARD_WIDTH * lwCardsPerPage + 24 * (lwCardsPerPage - 1);
+
+  const getLwCardElements = () => {
+    const el = lwScrollRef.current;
+    if (!el) return [] as HTMLElement[];
+    return Array.from(el.querySelectorAll<HTMLElement>("[data-lw-card='1']"));
+  };
 
   const updateLwMobileIndex = () => {
     const el = lwMobileScrollRef.current;
@@ -189,21 +193,51 @@ export default function Home() {
     if (!el) return;
     setLwCanScrollLeft(el.scrollLeft > 0);
     setLwCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 1);
-    const page = Math.min(lwTotalPages, Math.round(el.scrollLeft / LW_PAGE_WIDTH) + 1);
+
+    // Derive the current "page" from which card is closest to the scroll position.
+    const cards = getLwCardElements();
+    if (cards.length === 0) return;
+
+    const eps = 6;
+    const idx = cards.findIndex((c) => c.offsetLeft >= el.scrollLeft - eps);
+    const currentStartIndex = idx === -1 ? cards.length - 1 : idx;
+    const page = Math.min(lwTotalPages, Math.floor(currentStartIndex / lwCardsPerPage) + 1);
     setLwCurrentPage((p) => (page >= 1 && page <= lwTotalPages ? page : p));
   };
 
-  const scrollLwToPage = (page: number) => {
+  const scrollLwToCardIndex = (index: number, behavior: ScrollBehavior = "smooth") => {
     const el = lwScrollRef.current;
     if (!el) return;
-    el.scrollTo({ left: (page - 1) * LW_PAGE_WIDTH, behavior: "smooth" });
-    setLwCurrentPage(page);
+
+    const cards = getLwCardElements();
+    if (cards.length === 0) return;
+
+    // Center the visible "page group" (up to `lwCardsPerPage` cards) in the scroll viewport.
+    const clampedStart = Math.max(0, Math.min(index, cards.length - 1));
+    const first = cards[clampedStart];
+    const second = cards[clampedStart + 1] ?? null;
+
+    const groupLeft = first.offsetLeft;
+    const groupRight = second ? second.offsetLeft + second.offsetWidth : first.offsetLeft + first.offsetWidth;
+    const groupWidth = groupRight - groupLeft;
+
+    const maxScrollLeft = el.scrollWidth - el.clientWidth;
+    const targetLeft = groupLeft - (el.clientWidth - groupWidth) / 2;
+    const clampedLeft = Math.max(0, Math.min(targetLeft, maxScrollLeft));
+
+    el.scrollTo({ left: clampedLeft, behavior });
+  };
+
+  const scrollLwToPage = (page: number, behavior: ScrollBehavior = "smooth") => {
+    const nextPage = Math.max(1, Math.min(lwTotalPages, page));
+    const startIndex = (nextPage - 1) * lwCardsPerPage;
+    scrollLwToCardIndex(startIndex, behavior);
+    setLwCurrentPage(nextPage);
   };
 
   const scrollLw = (direction: "left" | "right") => {
-    const el = lwScrollRef.current;
-    if (!el) return;
-    el.scrollBy({ left: direction === "left" ? -LW_PAGE_WIDTH : LW_PAGE_WIDTH, behavior: "smooth" });
+    const nextPage = direction === "left" ? lwCurrentPage - 1 : lwCurrentPage + 1;
+    scrollLwToPage(nextPage);
   };
 
   useEffect(() => {
@@ -218,6 +252,19 @@ export default function Home() {
       if (el) el.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
+  }, [littleWarriorsCampaigns.length]);
+
+  // Initial alignment: keep the first Little Warriors "page group" centered in the viewport.
+  useEffect(() => {
+    const el = lwScrollRef.current;
+    if (!el) return;
+    if (littleWarriorsCampaigns.length === 0) return;
+
+    const t = setTimeout(() => {
+      // Only auto-center if we haven't been scrolled already.
+      if (el.scrollLeft === 0) scrollLwToPage(1, "auto");
+    }, 60);
+    return () => clearTimeout(t);
   }, [littleWarriorsCampaigns.length]);
 
   return (
@@ -399,16 +446,16 @@ export default function Home() {
                   </button>
                   <div
                     ref={lwScrollRef}
-                    className="overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory scrollbar-hide -mx-2 px-2"
+                    className="overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-proximity scrollbar-hide"
                     style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                   >
-                    <div className="flex gap-6 py-2">
+                    <div className="flex gap-6 py-2 w-full justify-center">
                       {littleWarriorsCampaigns.map((campaign) => {
                         const goal = Number(campaign.goal) || 1;
                         const raised = Number(campaign.raised) || 0;
                         const pct = goal > 0 ? Math.min((raised / goal) * 100, 100) : 0;
                         return (
-                          <div key={campaign.id} className="flex-shrink-0 w-[320px] sm:w-[360px] snap-start">
+                          <div key={campaign.id} data-lw-card="1" className="flex-shrink-0 w-[320px] sm:w-[360px] snap-start">
                             <Link
                               href={`/campaigns/${campaign.id}`}
                               className="flex flex-row rounded-xl gradient-border-little-warriors bg-white/95 dark:bg-gray-700/95 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 ease-in-out"
